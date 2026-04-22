@@ -9,16 +9,13 @@
       --bg: #111827;
       --bg-2: #0f172a;
       --panel: #1e293b;
-      --panel-2: #243247;
-      --card: #2a3447;
-      --line: #475569;
-      --soft-line: rgba(203, 213, 225, 0.16);
+      --card: #22304a;
+      --line: rgba(148, 163, 184, 0.14);
+      --soft-line: rgba(203, 213, 225, 0.12);
       --text: #f8fafc;
       --muted: #94a3b8;
       --accent: #f59e0b;
       --accent-2: #fb923c;
-      --green: #22c55e;
-      --red: #ef4444;
       --blue: #38bdf8;
       --shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
     }
@@ -28,14 +25,14 @@
     body {
       margin: 0;
       font-family: Inter, Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
+      background: linear-gradient(180deg, #081120 0%, #111827 100%);
       color: var(--text);
     }
 
     .container {
-      max-width: 1580px;
+      max-width: 1560px;
       margin: 0 auto;
-      padding: 24px;
+      padding: 22px;
     }
 
     .topbar {
@@ -49,7 +46,7 @@
 
     .title {
       font-size: 30px;
-      font-weight: 800;
+      font-weight: 900;
       margin: 0;
     }
 
@@ -69,15 +66,16 @@
       border: 1px solid rgba(245, 158, 11, 0.26);
       color: #fdba74;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 330px minmax(0, 1fr);
       gap: 22px;
+      align-items: start;
     }
 
     .sidebar {
@@ -87,11 +85,12 @@
     }
 
     .card {
-      background: rgba(30, 41, 59, 0.95);
-      border: 1px solid rgba(148, 163, 184, 0.14);
+      background: rgba(30, 41, 59, 0.96);
+      border: 1px solid var(--line);
       border-radius: 22px;
       box-shadow: var(--shadow);
       padding: 18px;
+      min-width: 0;
     }
 
     .card + .card {
@@ -101,7 +100,7 @@
     .section-title {
       margin: 0 0 14px;
       font-size: 18px;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .muted {
@@ -126,7 +125,7 @@
       letter-spacing: 0.5px;
     }
 
-    input, button, textarea {
+    input, button {
       width: 100%;
       border: 1px solid rgba(148, 163, 184, 0.16);
       border-radius: 14px;
@@ -137,7 +136,7 @@
       outline: none;
     }
 
-    input:focus, textarea:focus {
+    input:focus {
       border-color: rgba(56, 189, 248, 0.55);
       box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
     }
@@ -147,7 +146,7 @@
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       border: none;
       color: white;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .btn-row {
@@ -164,6 +163,7 @@
     .board-stack {
       display: grid;
       gap: 22px;
+      min-width: 0;
     }
 
     .hero {
@@ -176,6 +176,7 @@
       background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(15,23,42,0.98));
       border: 1px solid rgba(245,158,11,0.24);
       box-shadow: var(--shadow);
+      min-width: 0;
     }
 
     .hero h2 {
@@ -191,6 +192,7 @@
 
     .hero-score {
       text-align: right;
+      flex-shrink: 0;
     }
 
     .hero-score .small {
@@ -209,13 +211,22 @@
 
     .columns-2 {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1.2fr);
       gap: 22px;
+      min-width: 0;
+    }
+
+    .table-shell {
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.10);
+      background: linear-gradient(180deg, rgba(15,23,42,0.45), rgba(15,23,42,0.2));
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
     }
 
     th, td {
@@ -223,6 +234,10 @@
       text-align: left;
       border-bottom: 1px solid rgba(148, 163, 184, 0.12);
       font-size: 14px;
+      vertical-align: middle;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     th {
@@ -230,11 +245,32 @@
       color: #cbd5e1;
       text-transform: uppercase;
       letter-spacing: 0.6px;
+      background: rgba(255,255,255,0.03);
     }
 
     tr:last-child td { border-bottom: none; }
 
-    .rank-top4 { background: rgba(34, 197, 94, 0.08); }
+    .rank-1 {
+      background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(245,158,11,0.04));
+    }
+
+    .rank-2, .rank-3, .rank-4 {
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .table-team {
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .table-points {
+      font-weight: 900;
+      color: #f8fafc;
+    }
+
+    .table-muted {
+      color: var(--muted);
+    }
 
     .stage-tabs {
       display: flex;
@@ -244,6 +280,7 @@
       margin-bottom: 20px;
       padding-bottom: 10px;
       font-weight: 800;
+      overflow-x: auto;
     }
 
     .stage-tab.active {
@@ -273,8 +310,8 @@
 
     .bracket-grid {
       display: grid;
-      grid-template-columns: 360px 280px 280px;
-      gap: 26px;
+      grid-template-columns: 1.25fr 0.95fr 0.95fr;
+      gap: 24px;
       min-width: 980px;
       align-items: start;
     }
@@ -283,14 +320,13 @@
       background: rgba(255,255,255,0.04);
       border-radius: 18px;
       padding: 14px;
-      position: relative;
       min-height: 520px;
     }
 
     .stage-column h3 {
       margin: 0 0 16px;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .match-card {
@@ -299,7 +335,6 @@
       border-radius: 16px;
       padding: 12px;
       margin-bottom: 14px;
-      position: relative;
       box-shadow: 0 10px 24px rgba(0,0,0,0.18);
     }
 
@@ -315,6 +350,7 @@
       display: flex;
       justify-content: space-between;
       gap: 10px;
+      text-transform: uppercase;
     }
 
     .team-line {
@@ -368,37 +404,36 @@
     }
 
     .lobby-grid {
-  display: grid;
-  gap: 8px;
-  margin-top: 10px;
-}
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
 
-.lobby-input {
-  margin-top: 0;
-  font-size: 13px;
-  padding: 9px 10px;
-  border-radius: 10px;
-}
+    .lobby-input {
+      margin-top: 0;
+      font-size: 13px;
+      padding: 9px 10px;
+      border-radius: 10px;
+    }
 
-.lobby-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
+    .lobby-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
 
-.lobby-link {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 0;
-  color: #7dd3fc;
-  font-size: 13px;
-  text-decoration: none;
-  padding: 7px 10px;
-  border-radius: 999px;
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.18);
-}
+    .lobby-link {
+      display: inline-flex;
+      align-items: center;
+      color: #7dd3fc;
+      font-size: 13px;
+      text-decoration: none;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+    }
 
     .lobby-link:hover { text-decoration: underline; }
 
@@ -409,7 +444,7 @@
       border-radius: 999px;
       background: rgba(245,158,11,0.14);
       border: 1px solid rgba(245,158,11,0.28);
-      font-weight: 800;
+      font-weight: 900;
       color: #fdba74;
       font-size: 13px;
     }
@@ -421,9 +456,11 @@
     }
 
     @media (max-width: 1250px) {
-      .layout, .columns-2 {
+      .layout,
+      .columns-2 {
         grid-template-columns: 1fr;
       }
+
       .sidebar {
         position: static;
       }
@@ -432,10 +469,12 @@
     @media (max-width: 768px) {
       .container { padding: 14px; }
       .title { font-size: 24px; }
+      .hero { grid-template-columns: 1fr; }
       .hero h2 { font-size: 22px; }
+      .hero-score { text-align: left; }
       .hero-score .big { font-size: 28px; }
-      .stage-tabs { gap: 12px; font-size: 14px; overflow-x: auto; }
       .btn-row { grid-template-columns: 1fr; }
+      th, td { white-space: normal; }
     }
   </style>
 </head>
@@ -444,7 +483,7 @@
     <div class="topbar">
       <div>
         <h1 class="title">CS2 Tournament Board</h1>
-        <div class="subtitle">Онлайн-табло, Swiss/групповой этап по очкам → автоматический полуфинал → финал</div>
+        <div class="subtitle">Онлайн-табло, групповой этап по очкам → автоматический полуфинал → финал</div>
       </div>
       <div class="pill">Major-style board</div>
     </div>
@@ -460,26 +499,27 @@
             <div class="field"><label>Команда D</label><input id="team-d" value="Team D" /></div>
             <div class="field"><label>Команда E</label><input id="team-e" value="Team E" /></div>
           </div>
+
           <div class="btn-row">
             <button id="applyTeamsBtn">Применить</button>
             <button class="btn-secondary" id="resetBtn">Сбросить</button>
           </div>
-          <div class="small-note">В твоем расписании сейчас 5 команд: A, B, C, D, E. Если нужен именно формат на 6 команд, надо будет дать корректную сетку для шестой команды.</div>
+
+          <div class="small-note">
+            Сейчас сетка построена под 5 команд: A, B, C, D, E.
+          </div>
         </div>
 
         <div class="card">
           <h2 class="section-title">Правила</h2>
           <div class="muted">
-            Игры проводятся на платформе СYBERSHOKE<br>
             Победа = 3 очка<br>
             Поражение = 0 очков<br><br>
-            Полуфинал формируется автоматически:
-            <br>1 место vs 4 место
-            <br>2 место vs 3 место
-            <br><br>
-            Финал формируется автоматически из победителей полуфиналов.
-            <br><br>
-            У каждого матча можно указать ссылку на лобби BO3.
+            Полуфинал формируется автоматически:<br>
+            1 место vs 4 место<br>
+            2 место vs 3 место<br><br>
+            Финал формируется автоматически из победителей полуфиналов.<br><br>
+            Для каждого матча доступны 3 ссылки на лобби под BO3.
           </div>
         </div>
       </aside>
@@ -501,41 +541,49 @@
         <section class="columns-2">
           <div class="card">
             <h2 class="section-title">Турнирная таблица</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Команда</th>
-                  <th>Игры</th>
-                  <th>Победы</th>
-                  <th>Поражения</th>
-                  <th>Очки</th>
-                </tr>
-              </thead>
-              <tbody id="standingsBody"></tbody>
-            </table>
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 52px;">#</th>
+                    <th>Команда</th>
+                    <th style="width: 72px;">Игры</th>
+                    <th style="width: 90px;">Победы</th>
+                    <th style="width: 110px;">Поражения</th>
+                    <th style="width: 72px;">Очки</th>
+                  </tr>
+                </thead>
+                <tbody id="standingsBody"></tbody>
+              </table>
+            </div>
             <div class="small-note">Топ-4 автоматически попадают в полуфинал.</div>
           </div>
 
           <div class="card">
             <h2 class="section-title">Все матчи этапа</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Матч</th>
-                  <th>Победитель</th>
-                </tr>
-              </thead>
-              <tbody id="summaryMatchesBody"></tbody>
-            </table>
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 52px;">#</th>
+                    <th>Матч</th>
+                    <th style="width: 180px;">Победитель</th>
+                  </tr>
+                </thead>
+                <tbody id="summaryMatchesBody"></tbody>
+              </table>
+            </div>
           </div>
         </section>
 
         <section class="bracket-card">
-          <div style="font-size: 30px; font-weight: 800; margin-bottom: 10px;">Турнирная сетка</div>
+          <div style="font-size: 30px; font-weight: 900; margin-bottom: 10px;">Турнирная сетка</div>
           <div class="stage-tabs">
+            <div class="stage-tab">Этап 1</div>
+            <div class="stage-tab">Этап 2</div>
+            <div class="stage-tab">Этап 3</div>
             <div class="stage-tab active">Плей-офф</div>
+            <div class="stage-tab">Шоу-матч</div>
           </div>
 
           <div class="bracket-grid">
@@ -569,26 +617,34 @@
     };
 
     const schedule = [
-      ['a', 'b'], ['e', 'd'], ['e', 'c'], ['a', 'e'], ['a', 'd'],
-      ['c', 'd'], ['a', 'c'], ['d', 'b'], ['b', 'c'], ['e', 'b']
+      ['a', 'b'],
+      ['e', 'd'],
+      ['e', 'c'],
+      ['a', 'e'],
+      ['a', 'd'],
+      ['c', 'd'],
+      ['a', 'c'],
+      ['d', 'b'],
+      ['b', 'c'],
+      ['e', 'b']
     ];
 
-    const stateKey = 'cs2_major_style_board_v2';
+    const stateKey = 'cs2_major_style_board_v3';
 
     let state = {
       teams: { ...defaultTeams },
       regular: schedule.map((pair, i) => ({
-  id: i + 1,
-  team1: pair[0],
-  team2: pair[1],
-  winner: '',
-  lobbies: ['', '', '']
-})),
-semifinals: [
-  { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] },
-  { id: 2, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
-],
-final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
+        id: i + 1,
+        team1: pair[0],
+        team2: pair[1],
+        winner: '',
+        lobbies: ['', '', '']
+      })),
+      semifinals: [
+        { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] },
+        { id: 2, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
+      ],
+      final: { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
     };
 
     function saveState() {
@@ -596,50 +652,54 @@ final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
     }
 
     function loadState() {
-  const raw = localStorage.getItem(stateKey);
-  if (!raw) return;
+      const raw = localStorage.getItem(stateKey);
+      if (!raw) return;
 
-  try {
-    const parsed = JSON.parse(raw);
-    if (parsed?.teams && parsed?.regular) {
-      state = parsed;
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed?.teams && parsed?.regular) {
+          state = parsed;
 
-      state.regular = state.regular.map((m) => ({
-        ...m,
-        lobbies: Array.isArray(m.lobbies) ? [...m.lobbies, '', '', ''].slice(0, 3) : [m.lobby || '', '', '']
-      }));
+          state.regular = state.regular.map((m, index) => ({
+            id: m.id || index + 1,
+            team1: m.team1 || '',
+            team2: m.team2 || '',
+            winner: m.winner || '',
+            lobbies: Array.isArray(m.lobbies) ? [...m.lobbies, '', '', ''].slice(0, 3) : [m.lobby || '', '', '']
+          }));
 
-      state.semifinals = (state.semifinals || []).map((m, idx) => ({
-        id: idx + 1,
-        team1: m.team1 || '',
-        team2: m.team2 || '',
-        winner: m.winner || '',
-        lobbies: Array.isArray(m.lobbies) ? [...m.lobbies, '', '', ''].slice(0, 3) : [m.lobby || '', '', '']
-      }));
+          state.semifinals = (state.semifinals || []).map((m, index) => ({
+            id: m.id || index + 1,
+            team1: m.team1 || '',
+            team2: m.team2 || '',
+            winner: m.winner || '',
+            lobbies: Array.isArray(m.lobbies) ? [...m.lobbies, '', '', ''].slice(0, 3) : [m.lobby || '', '', '']
+          }));
 
-      while (state.semifinals.length < 2) {
-        state.semifinals.push({
-          id: state.semifinals.length + 1,
-          team1: '',
-          team2: '',
-          winner: '',
-          lobbies: ['', '', '']
-        });
+          while (state.semifinals.length < 2) {
+            state.semifinals.push({
+              id: state.semifinals.length + 1,
+              team1: '',
+              team2: '',
+              winner: '',
+              lobbies: ['', '', '']
+            });
+          }
+
+          state.final = {
+            id: 1,
+            team1: state.final?.team1 || '',
+            team2: state.final?.team2 || '',
+            winner: state.final?.winner || '',
+            lobbies: Array.isArray(state.final?.lobbies)
+              ? [...state.final.lobbies, '', '', ''].slice(0, 3)
+              : [state.final?.lobby || '', '', '']
+          };
+        }
+      } catch (e) {
+        console.error(e);
       }
-
-      state.final = {
-        team1: state.final?.team1 || '',
-        team2: state.final?.team2 || '',
-        winner: state.final?.winner || '',
-        lobbies: Array.isArray(state.final?.lobbies)
-          ? [...state.final.lobbies, '', '', ''].slice(0, 3)
-          : [state.final?.lobby || '', '', '']
-      };
     }
-  } catch (e) {
-    console.error(e);
-  }
-}
 
     function getTeamName(key) {
       return state.teams[key] || key || '—';
@@ -662,13 +722,22 @@ final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
 
     function calculateStandings() {
       const stats = {};
+
       Object.keys(state.teams).forEach((key) => {
-        stats[key] = { key, name: getTeamName(key), played: 0, wins: 0, losses: 0, points: 0 };
+        stats[key] = {
+          key,
+          name: getTeamName(key),
+          played: 0,
+          wins: 0,
+          losses: 0,
+          points: 0
+        };
       });
 
       state.regular.forEach((match) => {
         if (!match.winner) return;
         const loser = match.winner === match.team1 ? match.team2 : match.team1;
+
         stats[match.team1].played += 1;
         stats[match.team2].played += 1;
         stats[match.winner].wins += 1;
@@ -686,6 +755,7 @@ final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
 
     function hydratePlayoffFromStandings(standings) {
       const allDone = state.regular.every((m) => !!m.winner);
+
       if (!allDone || standings.length < 4) {
         state.semifinals[0].team1 = '';
         state.semifinals[0].team2 = '';
@@ -706,16 +776,19 @@ final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
 
       const oldSf1 = [state.semifinals[0].team1, state.semifinals[0].team2].join('|');
       const oldSf2 = [state.semifinals[1].team1, state.semifinals[1].team2].join('|');
-      const newSf1 = [sf1t1, sf1t2].join('|');
-      const newSf2 = [sf2t1, sf2t2].join('|');
 
       state.semifinals[0].team1 = sf1t1;
       state.semifinals[0].team2 = sf1t2;
       state.semifinals[1].team1 = sf2t1;
       state.semifinals[1].team2 = sf2t2;
 
-      if (oldSf1 !== newSf1) state.semifinals[0].winner = '';
-      if (oldSf2 !== newSf2) state.semifinals[1].winner = '';
+      if (oldSf1 !== [sf1t1, sf1t2].join('|')) {
+        state.semifinals[0].winner = '';
+      }
+
+      if (oldSf2 !== [sf2t1, sf2t2].join('|')) {
+        state.semifinals[1].winner = '';
+      }
 
       const finalT1 = state.semifinals[0].winner || '';
       const finalT2 = state.semifinals[1].winner || '';
@@ -724,92 +797,120 @@ final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
 
       state.final.team1 = finalT1;
       state.final.team2 = finalT2;
-      if (oldFinal !== newFinal) state.final.winner = '';
+
+      if (oldFinal !== newFinal) {
+        state.final.winner = '';
+      }
     }
 
     function renderStandings(standings) {
       const body = document.getElementById('standingsBody');
-      body.innerHTML = standings.map((team, idx) => `
-        <tr class="${idx < 4 ? 'rank-top4' : ''}">
-          <td>${idx + 1}</td>
-          <td>${team.name}</td>
-          <td>${team.played}</td>
-          <td>${team.wins}</td>
-          <td>${team.losses}</td>
-          <td><strong>${team.points}</strong></td>
-        </tr>
-      `).join('');
+
+      body.innerHTML = standings.map((team, idx) => {
+        const rankClass = idx === 0 ? 'rank-1' : idx < 4 ? `rank-${idx + 1}` : '';
+        return `
+          <tr class="${rankClass}">
+            <td><strong>${idx + 1}</strong></td>
+            <td class="table-team">${team.name}</td>
+            <td class="table-muted">${team.played}</td>
+            <td class="table-muted">${team.wins}</td>
+            <td class="table-muted">${team.losses}</td>
+            <td class="table-points">${team.points}</td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function renderSummaryTable() {
       const body = document.getElementById('summaryMatchesBody');
+
       body.innerHTML = state.regular.map((match) => `
         <tr>
-          <td>${match.id}</td>
-          <td>${getTeamName(match.team1)} vs ${getTeamName(match.team2)}</td>
-          <td>${match.winner ? getTeamName(match.winner) : '—'}</td>
+          <td><strong>${match.id}</strong></td>
+          <td class="table-team">${getTeamName(match.team1)} vs ${getTeamName(match.team2)}</td>
+          <td class="table-muted">${match.winner ? getTeamName(match.winner) : '—'}</td>
         </tr>
       `).join('');
     }
 
-    function renderMatchCard(match, type, live = false) {
-  const team1Name = getTeamName(match.team1);
-  const team2Name = getTeamName(match.team2);
-  const lobbies = Array.isArray(match.lobbies) ? match.lobbies : [match.lobby || '', '', ''];
-  const radioName = `${type.replace(/\s+/g, '_')}_${match.id || 'final'}`;
+    function renderMatchCard(match, stage, live = false) {
+      const team1Name = getTeamName(match.team1);
+      const team2Name = getTeamName(match.team2);
+      const lobbies = Array.isArray(match.lobbies) ? match.lobbies : ['', '', ''];
 
-  return `
-    <div class="match-card ${live ? 'live' : ''}">
-      <div class="match-title">
-        <span>${type}</span>
-        <span>${match.winner ? 'Завершен' : live ? 'Сейчас идет' : 'Ожидает'}</span>
-      </div>
+      const stageLabel =
+        stage === 'regular' ? 'Main stage' :
+        stage === 'semifinal' ? 'Semifinal' :
+        'Final';
 
-      <div class="team-line ${match.winner === match.team1 ? 'winner' : ''}">
-        <div class="team-name">${team1Name || 'TBD'}</div>
-        <div>${match.winner === match.team1 ? '✔' : ''}</div>
-      </div>
-      <div class="team-line ${match.winner === match.team2 ? 'winner' : ''}">
-        <div class="team-name">${team2Name || 'TBD'}</div>
-        <div>${match.winner === match.team2 ? '✔' : ''}</div>
-      </div>
+      const radioName = `${stage}_${match.id || 'final'}`;
 
-      ${match.team1 && match.team2 ? `
-        <div class="check-wrap">
-          <label class="check-btn">
-            <input type="radio" name="${radioName}" ${match.winner === match.team1 ? 'checked' : ''} onchange="setWinner('${type}', ${match.id || 1}, '${match.team1}')">
-            ${team1Name}
-          </label>
-          <label class="check-btn">
-            <input type="radio" name="${radioName}" ${match.winner === match.team2 ? 'checked' : ''} onchange="setWinner('${type}', ${match.id || 1}, '${match.team2}')">
-            ${team2Name}
-          </label>
+      return `
+        <div class="match-card ${live ? 'live' : ''}">
+          <div class="match-title">
+            <span>${stageLabel}</span>
+            <span>${match.winner ? 'Завершен' : live ? 'Сейчас идет' : 'Ожидает'}</span>
+          </div>
+
+          <div class="team-line ${match.winner === match.team1 ? 'winner' : ''}">
+            <div class="team-name">${team1Name || 'TBD'}</div>
+            <div>${match.winner === match.team1 ? '✔' : ''}</div>
+          </div>
+          <div class="team-line ${match.winner === match.team2 ? 'winner' : ''}">
+            <div class="team-name">${team2Name || 'TBD'}</div>
+            <div>${match.winner === match.team2 ? '✔' : ''}</div>
+          </div>
+
+          ${match.team1 && match.team2 ? `
+            <div class="check-wrap">
+              <label class="check-btn">
+                <input
+                  type="radio"
+                  name="${radioName}"
+                  ${match.winner === match.team1 ? 'checked' : ''}
+                  onchange="setWinner('${stage}', ${match.id || 1}, '${match.team1}')"
+                >
+                ${team1Name}
+              </label>
+              <label class="check-btn">
+                <input
+                  type="radio"
+                  name="${radioName}"
+                  ${match.winner === match.team2 ? 'checked' : ''}
+                  onchange="setWinner('${stage}', ${match.id || 1}, '${match.team2}')"
+                >
+                ${team2Name}
+              </label>
+            </div>
+          ` : `<div class="small-note">Пара определится автоматически</div>`}
+
+          <div class="lobby-grid">
+            <input class="lobby-input" placeholder="Ссылка на лобби 1" value="${lobbies[0] || ''}" oninput="setLobby('${stage}', ${match.id || 1}, 0, this.value)">
+            <input class="lobby-input" placeholder="Ссылка на лобби 2" value="${lobbies[1] || ''}" oninput="setLobby('${stage}', ${match.id || 1}, 1, this.value)">
+            <input class="lobby-input" placeholder="Ссылка на лобби 3" value="${lobbies[2] || ''}" oninput="setLobby('${stage}', ${match.id || 1}, 2, this.value)">
+          </div>
+
+          <div class="lobby-links">
+            ${lobbies[0] ? `<a class="lobby-link" href="${lobbies[0]}" target="_blank" rel="noopener noreferrer">Лобби 1</a>` : ''}
+            ${lobbies[1] ? `<a class="lobby-link" href="${lobbies[1]}" target="_blank" rel="noopener noreferrer">Лобби 2</a>` : ''}
+            ${lobbies[2] ? `<a class="lobby-link" href="${lobbies[2]}" target="_blank" rel="noopener noreferrer">Лобби 3</a>` : ''}
+          </div>
         </div>
-      ` : `<div class="small-note">Пара определится автоматически</div>`}
-
-      <div class="lobby-grid">
-        <input class="lobby-input" placeholder="Ссылка на лобби 1" value="${lobbies[0] || ''}" oninput="setLobby('${type}', ${match.id || 1}, 0, this.value)">
-        <input class="lobby-input" placeholder="Ссылка на лобби 2" value="${lobbies[1] || ''}" oninput="setLobby('${type}', ${match.id || 1}, 1, this.value)">
-        <input class="lobby-input" placeholder="Ссылка на лобби 3" value="${lobbies[2] || ''}" oninput="setLobby('${type}', ${match.id || 1}, 2, this.value)">
-      </div>
-
-      <div class="lobby-links">
-        ${lobbies[0] ? `<a class="lobby-link" href="${lobbies[0]}" target="_blank" rel="noopener noreferrer">Открыть лобби 1</a>` : ''}
-        ${lobbies[1] ? `<a class="lobby-link" href="${lobbies[1]}" target="_blank" rel="noopener noreferrer">Открыть лобби 2</a>` : ''}
-        ${lobbies[2] ? `<a class="lobby-link" href="${lobbies[2]}" target="_blank" rel="noopener noreferrer">Открыть лобби 3</a>` : ''}
-      </div>
-    </div>
-  `;
-}
+      `;
+    }
 
     function renderRegularMatches() {
       const container = document.getElementById('regularMatches');
       const firstOpenIndex = state.regular.findIndex((m) => !m.winner);
-      container.innerHTML = state.regular.map((match, idx) => renderMatchCard(match, 'regular', idx === firstOpenIndex)).join('');
+
+      container.innerHTML = state.regular
+        .map((match, idx) => renderMatchCard(match, 'regular', idx === firstOpenIndex))
+        .join('');
     }
 
     function renderSemifinals() {
       const container = document.getElementById('semifinalMatches');
+
       container.innerHTML = `
         ${renderMatchCard(state.semifinals[0], 'semifinal', !state.semifinals[0].winner && !!state.semifinals[0].team1 && !!state.semifinals[0].team2)}
         ${renderMatchCard(state.semifinals[1], 'semifinal', !state.semifinals[1].winner && !!state.semifinals[1].team1 && !!state.semifinals[1].team2)}
@@ -818,7 +919,11 @@ final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
 
     function renderFinal() {
       const container = document.getElementById('finalMatch');
-      container.innerHTML = renderMatchCard(state.final, 'final', !state.final.winner && !!state.final.team1 && !!state.final.team2);
+      container.innerHTML = renderMatchCard(
+        state.final,
+        'final',
+        !state.final.winner && !!state.final.team1 && !!state.final.team2
+      );
     }
 
     function renderHero(standings) {
@@ -873,58 +978,65 @@ final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
         const match = state.regular.find((m) => m.id === id);
         if (match) match.winner = winner;
       }
+
       if (stage === 'semifinal') {
         const match = state.semifinals.find((m) => m.id === id);
         if (match) match.winner = winner;
       }
+
       if (stage === 'final') {
         state.final.winner = winner;
       }
+
       saveState();
       render();
     }
 
     function setLobby(stage, id, index, value) {
-  const applyLobby = (match) => {
-    if (!Array.isArray(match.lobbies)) {
-      match.lobbies = ['', '', ''];
+      const applyLobby = (match) => {
+        if (!Array.isArray(match.lobbies)) {
+          match.lobbies = ['', '', ''];
+        }
+        match.lobbies[index] = value;
+      };
+
+      if (stage === 'regular') {
+        const match = state.regular.find((m) => m.id === id);
+        if (match) applyLobby(match);
+      }
+
+      if (stage === 'semifinal') {
+        const match = state.semifinals.find((m) => m.id === id);
+        if (match) applyLobby(match);
+      }
+
+      if (stage === 'final') {
+        applyLobby(state.final);
+      }
+
+      saveState();
     }
-    match.lobbies[index] = value;
-  };
-
-  if (stage === 'regular') {
-    const match = state.regular.find((m) => m.id === id);
-    if (match) applyLobby(match);
-  }
-
-  if (stage === 'semifinal') {
-    const match = state.semifinals.find((m) => m.id === id);
-    if (match) applyLobby(match);
-  }
-
-  if (stage === 'final') {
-    applyLobby(state.final);
-  }
-
-  saveState();
-  render();
-}
 
     function resetAll() {
       state = {
         teams: { ...defaultTeams },
         regular: schedule.map((pair, i) => ({
-  id: i + 1,
-  team1: pair[0],
-  team2: pair[1],
-  winner: '',
-  lobbies: ['', '', '']
-})),
-semifinals: [
-  { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] },
-  { id: 2, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
-],
-final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
+          id: i + 1,
+          team1: pair[0],
+          team2: pair[1],
+          winner: '',
+          lobbies: ['', '', '']
+        })),
+        semifinals: [
+          { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] },
+          { id: 2, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
+        ],
+        final: { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
+      };
+
+      saveState();
+      render();
+    }
 
     function render() {
       syncInputs();
@@ -944,7 +1056,9 @@ final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
 
     document.getElementById('applyTeamsBtn').addEventListener('click', setTeamsFromInputs);
     document.getElementById('resetBtn').addEventListener('click', () => {
-      if (confirm('Сбросить названия, результаты и ссылки на лобби?')) resetAll();
+      if (confirm('Сбросить названия, результаты и ссылки на лобби?')) {
+        resetAll();
+      }
     });
 
     loadState();
