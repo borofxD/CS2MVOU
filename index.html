@@ -484,19 +484,54 @@
       margin: 0;
       accent-color: var(--accent);
     }
+     .lobby-grid {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
 
-    .lobby-grid {
-      display: grid;
-      gap: 8px;
-      margin-top: 10px;
-    }
+.lobby-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px 34px;
+  gap: 8px;
+  align-items: center;
+}
 
-    .lobby-input {
-      margin-top: 0;
-      font-size: 13px;
-      padding: 9px 10px;
-      border-radius: 10px;
-    }
+.lobby-input {
+  margin-top: 0;
+  font-size: 13px;
+  padding: 9px 10px;
+  border-radius: 10px;
+}
+
+.lobby-score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(148,163,184,0.10);
+  font-size: 15px;
+  font-weight: 900;
+  color: #f8fafc;
+  white-space: nowrap;
+}
+
+.lobby-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  color: #7dd3fc;
+  text-decoration: none;
+  font-size: 14px;
+}
 
     .lobby-links {
       display: flex;
@@ -564,10 +599,10 @@
   <div class="container">
     <div class="topbar">
       <div>
-        <h1 class="title">CS2 Tournament Board</h1>
+        <h1 class="title">CS2 MVOU Tournament</h1>
         <div class="subtitle">Онлайн-табло, групповой этап по очкам → автоматический полуфинал → финал</div>
       </div>
-      <div class="pill">Major-style board</div>
+      <div class="pill">Major board</div>
     </div>
 
     <div class="layout">
@@ -726,20 +761,56 @@
 
 
     let state = {
-      teams: { ...defaultTeams },
       regular: schedule.map((pair, i) => ({
-        id: i + 1,
-        team1: pair[0],
-        team2: pair[1],
-        winner: '',
-        lobbies: ['', '', '']
-      })),
-      semifinals: [
-        { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] },
-        { id: 2, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
-      ],
-      final: { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
-    };
+  id: i + 1,
+  team1: pair[0],
+  team2: pair[1],
+  winner: '',
+  lobbies: ['', '', ''],
+  lobbyScores: [
+    { left: null, right: null, updatedAt: null },
+    { left: null, right: null, updatedAt: null },
+    { left: null, right: null, updatedAt: null }
+  ]
+})),
+semifinals: [
+  {
+    id: 1,
+    team1: '',
+    team2: '',
+    winner: '',
+    lobbies: ['', '', ''],
+    lobbyScores: [
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null }
+    ]
+  },
+  {
+    id: 2,
+    team1: '',
+    team2: '',
+    winner: '',
+    lobbies: ['', '', ''],
+    lobbyScores: [
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null }
+    ]
+  }
+],
+final: {
+  id: 1,
+  team1: '',
+  team2: '',
+  winner: '',
+  lobbies: ['', '', ''],
+  lobbyScores: [
+    { left: null, right: null, updatedAt: null },
+    { left: null, right: null, updatedAt: null },
+    { left: null, right: null, updatedAt: null }
+  ]
+}
 
     async function saveState() {
   try {
@@ -770,6 +841,18 @@
           lobbies: Array.isArray(m.lobbies)
             ? [...m.lobbies, '', '', ''].slice(0, 3)
             : [m.lobby || '', '', '']
+          ,
+lobbyScores: Array.isArray(m.lobbyScores)
+  ? [...m.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
+      left: s?.left ?? null,
+      right: s?.right ?? null,
+      updatedAt: s?.updatedAt ?? null
+    }))
+  : [
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null }
+    ]
         }));
 
         state.semifinals = (state.semifinals || []).map((m, index) => ({
@@ -780,6 +863,18 @@
           lobbies: Array.isArray(m.lobbies)
             ? [...m.lobbies, '', '', ''].slice(0, 3)
             : [m.lobby || '', '', '']
+          ,
+lobbyScores: Array.isArray(m.lobbyScores)
+  ? [...m.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
+      left: s?.left ?? null,
+      right: s?.right ?? null,
+      updatedAt: s?.updatedAt ?? null
+    }))
+  : [
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null }
+    ]
         }));
 
         while (state.semifinals.length < 2) {
@@ -790,6 +885,18 @@
             winner: '',
             lobbies: ['', '', '']
           });
+          ,
+lobbyScores: Array.isArray(state.final?.lobbyScores)
+  ? [...state.final.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
+      left: s?.left ?? null,
+      right: s?.right ?? null,
+      updatedAt: s?.updatedAt ?? null
+    }))
+  : [
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null }
+    ]
         }
 
         state.final = {
@@ -813,7 +920,123 @@
     function getTeamName(key) {
       return state.teams[key] || key || '—';
     }
+    const lobbyPollingMap = new Map();
 
+function emptyLobbyScore() {
+  return {
+    left: null,
+    right: null,
+    updatedAt: null
+  };
+}
+
+function ensureLobbyScoreArray(match) {
+  if (!Array.isArray(match.lobbyScores)) {
+    match.lobbyScores = [emptyLobbyScore(), emptyLobbyScore(), emptyLobbyScore()];
+  }
+
+  match.lobbyScores = [...match.lobbyScores, emptyLobbyScore(), emptyLobbyScore(), emptyLobbyScore()]
+    .slice(0, 3)
+    .map((s) => ({
+      left: s?.left ?? null,
+      right: s?.right ?? null,
+      updatedAt: s?.updatedAt ?? null
+    }));
+}
+
+function extractLobbyId(url) {
+  if (!url) return null;
+  const match = url.match(/match\/(\d+)/);
+  return match ? match[1] : null;
+}
+
+async function fetchLobbyScoreById(idLobby) {
+  try {
+    if (!idLobby) return null;
+
+    const response = await fetch('https://api.cybershoke.net/api/v1/custom-matches/lobbys/info', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id_lobby: String(idLobby)
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const json = await response.json();
+
+    return {
+      left: json?.data?.match_stats?.base?.team_3?.score ?? null,
+      right: json?.data?.match_stats?.base?.team_2?.score ?? null,
+      updatedAt: new Date().toLocaleTimeString('ru-RU')
+    };
+  } catch (error) {
+    console.error('Ошибка загрузки счета:', error);
+    return null;
+  }
+}
+
+async function refreshLobbyScore(match, lobbyIndex) {
+  ensureLobbyScoreArray(match);
+
+  const url = match.lobbies?.[lobbyIndex];
+  const idLobby = extractLobbyId(url);
+
+  if (!url || !idLobby) {
+    match.lobbyScores[lobbyIndex] = emptyLobbyScore();
+    return;
+  }
+
+  const score = await fetchLobbyScoreById(idLobby);
+
+  if (!score) {
+    match.lobbyScores[lobbyIndex] = emptyLobbyScore();
+    return;
+  }
+
+  match.lobbyScores[lobbyIndex] = score;
+}
+
+function getPollingKey(stage, id, index) {
+  return `${stage}-${id}-${index}`;
+}
+
+function stopLobbyPolling(stage, id, index) {
+  const key = getPollingKey(stage, id, index);
+  if (!lobbyPollingMap.has(key)) return;
+
+  clearInterval(lobbyPollingMap.get(key));
+  lobbyPollingMap.delete(key);
+}
+
+function startLobbyPolling(match, stage, id, index) {
+  const key = getPollingKey(stage, id, index);
+
+  stopLobbyPolling(stage, id, index);
+
+  const url = match.lobbies?.[index];
+  if (!url || !extractLobbyId(url)) {
+    return;
+  }
+
+  refreshLobbyScore(match, index).then(() => {
+    saveState();
+    render();
+  });
+
+  const intervalId = setInterval(async () => {
+    await refreshLobbyScore(match, index);
+    saveState();
+    render();
+  }, 3 * 60 * 1000);
+
+  lobbyPollingMap.set(key, intervalId);
+}
     function setTeamsFromInputs() {
       ['a', 'b', 'c', 'd', 'e'].forEach((key) => {
         const val = document.getElementById(`team-${key}`).value.trim();
@@ -943,70 +1166,80 @@
     }
 
     function renderMatchCard(match, stage, live = false) {
-      const team1Name = getTeamName(match.team1);
-      const team2Name = getTeamName(match.team2);
-      const lobbies = Array.isArray(match.lobbies) ? match.lobbies : ['', '', ''];
+  const team1Name = getTeamName(match.team1);
+  const team2Name = getTeamName(match.team2);
+  const lobbies = Array.isArray(match.lobbies) ? match.lobbies : ['', '', ''];
 
-      const stageLabel =
-        stage === 'regular' ? 'Main stage' :
-        stage === 'semifinal' ? 'Semifinal' :
-        'Final';
+  ensureLobbyScoreArray(match);
+  const lobbyScores = match.lobbyScores;
 
-      const radioName = `${stage}_${match.id || 'final'}`;
+  const stageLabel =
+    stage === 'regular' ? 'Main stage' :
+    stage === 'semifinal' ? 'Semifinal' :
+    'Final';
 
-      return `
-        <div class="match-card ${live ? 'live' : ''}">
-          <div class="match-title">
-            <span>${stageLabel}</span>
-            <span>${match.winner ? 'Завершен' : live ? 'Сейчас идет' : 'Ожидает'}</span>
-          </div>
+  const radioName = `${stage}_${match.id || 'final'}`;
 
-          <div class="team-line ${match.winner === match.team1 ? 'winner' : ''}">
-            <div class="team-name">${team1Name || 'TBD'}</div>
-            <div>${match.winner === match.team1 ? '✔' : ''}</div>
-          </div>
-          <div class="team-line ${match.winner === match.team2 ? 'winner' : ''}">
-            <div class="team-name">${team2Name || 'TBD'}</div>
-            <div>${match.winner === match.team2 ? '✔' : ''}</div>
-          </div>
+  return `
+    <div class="match-card ${live ? 'live' : ''}">
+      <div class="match-title">
+        <span>${stageLabel}</span>
+        <span>${match.winner ? 'Завершен' : live ? 'Сейчас идет' : 'Ожидает'}</span>
+      </div>
 
-          ${match.team1 && match.team2 ? `
-            <div class="check-wrap">
-              <label class="check-btn">
-                <input
-                  type="radio"
-                  name="${radioName}"
-                  ${match.winner === match.team1 ? 'checked' : ''}
-                  onchange="setWinner('${stage}', ${match.id || 1}, '${match.team1}')"
-                >
-                ${team1Name}
-              </label>
-              <label class="check-btn">
-                <input
-                  type="radio"
-                  name="${radioName}"
-                  ${match.winner === match.team2 ? 'checked' : ''}
-                  onchange="setWinner('${stage}', ${match.id || 1}, '${match.team2}')"
-                >
-                ${team2Name}
-              </label>
-            </div>
-          ` : `<div class="small-note">Пара определится автоматически</div>`}
+      <div class="team-line ${match.winner === match.team1 ? 'winner' : ''}">
+        <div class="team-name">${team1Name || 'TBD'}</div>
+        <div>${match.winner === match.team1 ? '✔' : ''}</div>
+      </div>
+      <div class="team-line ${match.winner === match.team2 ? 'winner' : ''}">
+        <div class="team-name">${team2Name || 'TBD'}</div>
+        <div>${match.winner === match.team2 ? '✔' : ''}</div>
+      </div>
 
-          <div class="lobby-grid">
-            <input class="lobby-input" placeholder="Ссылка на лобби 1" value="${lobbies[0] || ''}" oninput="setLobby('${stage}', ${match.id || 1}, 0, this.value)">
-            <input class="lobby-input" placeholder="Ссылка на лобби 2" value="${lobbies[1] || ''}" oninput="setLobby('${stage}', ${match.id || 1}, 1, this.value)">
-            <input class="lobby-input" placeholder="Ссылка на лобби 3" value="${lobbies[2] || ''}" oninput="setLobby('${stage}', ${match.id || 1}, 2, this.value)">
-          </div>
-
-          <div class="lobby-links">
-            ${lobbies[0] ? `<a class="lobby-link" href="${lobbies[0]}" target="_blank" rel="noopener noreferrer">Лобби 1</a>` : ''}
-            ${lobbies[1] ? `<a class="lobby-link" href="${lobbies[1]}" target="_blank" rel="noopener noreferrer">Лобби 2</a>` : ''}
-            ${lobbies[2] ? `<a class="lobby-link" href="${lobbies[2]}" target="_blank" rel="noopener noreferrer">Лобби 3</a>` : ''}
-          </div>
+      ${match.team1 && match.team2 ? `
+        <div class="check-wrap">
+          <label class="check-btn">
+            <input
+              type="radio"
+              name="${radioName}"
+              ${match.winner === match.team1 ? 'checked' : ''}
+              onchange="setWinner('${stage}', ${match.id || 1}, '${match.team1}')"
+            >
+            ${team1Name}
+          </label>
+          <label class="check-btn">
+            <input
+              type="radio"
+              name="${radioName}"
+              ${match.winner === match.team2 ? 'checked' : ''}
+              onchange="setWinner('${stage}', ${match.id || 1}, '${match.team2}')"
+            >
+            ${team2Name}
+          </label>
         </div>
-      `;
-    }
+      ` : `<div class="small-note">Пара определится автоматически</div>`}
+
+      <div class="lobby-grid">
+        ${[0, 1, 2].map((index) => `
+          <div class="lobby-row">
+            <input
+              class="lobby-input"
+              placeholder="Ссылка на лобби ${index + 1}"
+              value="${lobbies[index] || ''}"
+              oninput="setLobby('${stage}', ${match.id || 1}, ${index}, this.value)"
+            >
+            <div class="lobby-score">
+              ${lobbyScores[index]?.left ?? '—'} : ${lobbyScores[index]?.right ?? '—'}
+            </div>
+            ${lobbies[index]
+              ? `<a class="lobby-open" href="${lobbies[index]}" target="_blank" rel="noopener noreferrer">↗</a>`
+              : `<div></div>`}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
 
     function renderRegularMatches() {
       const container = document.getElementById('regularMatches');
@@ -1102,50 +1335,101 @@
     }
 
     function setLobby(stage, id, index, value) {
-      const applyLobby = (match) => {
-        if (!Array.isArray(match.lobbies)) {
-          match.lobbies = ['', '', ''];
-        }
-        match.lobbies[index] = value;
-      };
-
-      if (stage === 'regular') {
-        const match = state.regular.find((m) => m.id === id);
-        if (match) applyLobby(match);
-      }
-
-      if (stage === 'semifinal') {
-        const match = state.semifinals.find((m) => m.id === id);
-        if (match) applyLobby(match);
-      }
-
-      if (stage === 'final') {
-        applyLobby(state.final);
-      }
-
-      saveState();
+  const applyLobby = (match, stageKey, matchId) => {
+    if (!Array.isArray(match.lobbies)) {
+      match.lobbies = ['', '', ''];
     }
 
-    function resetAll() {
-      state = {
-        teams: { ...defaultTeams },
-        regular: schedule.map((pair, i) => ({
-          id: i + 1,
-          team1: pair[0],
-          team2: pair[1],
-          winner: '',
-          lobbies: ['', '', '']
-        })),
-        semifinals: [
-          { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] },
-          { id: 2, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
-        ],
-        final: { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
-      };
+    ensureLobbyScoreArray(match);
 
+    match.lobbies[index] = value;
+
+    if (!value || !value.trim()) {
+      stopLobbyPolling(stageKey, matchId, index);
+      match.lobbyScores[index] = emptyLobbyScore();
       saveState();
       render();
+      return;
     }
+
+    startLobbyPolling(match, stageKey, matchId, index);
+    saveState();
+    render();
+  };
+
+  if (stage === 'regular') {
+    const match = state.regular.find((m) => m.id === id);
+    if (match) applyLobby(match, 'regular', id);
+  }
+
+  if (stage === 'semifinal') {
+    const match = state.semifinals.find((m) => m.id === id);
+    if (match) applyLobby(match, 'semifinal', id);
+  }
+
+  if (stage === 'final') {
+    applyLobby(state.final, 'final', 1);
+  }
+}
+
+    function resetAll() {
+  state = {
+    teams: { ...defaultTeams },
+    regular: schedule.map((pair, i) => ({
+      id: i + 1,
+      team1: pair[0],
+      team2: pair[1],
+      winner: '',
+      lobbies: ['', '', ''],
+      lobbyScores: [
+        { left: null, right: null, updatedAt: null },
+        { left: null, right: null, updatedAt: null },
+        { left: null, right: null, updatedAt: null }
+      ]
+    })),
+    semifinals: [
+      {
+        id: 1,
+        team1: '',
+        team2: '',
+        winner: '',
+        lobbies: ['', '', ''],
+        lobbyScores: [
+          { left: null, right: null, updatedAt: null },
+          { left: null, right: null, updatedAt: null },
+          { left: null, right: null, updatedAt: null }
+        ]
+      },
+      {
+        id: 2,
+        team1: '',
+        team2: '',
+        winner: '',
+        lobbies: ['', '', ''],
+        lobbyScores: [
+          { left: null, right: null, updatedAt: null },
+          { left: null, right: null, updatedAt: null },
+          { left: null, right: null, updatedAt: null }
+        ]
+      }
+    ],
+    final: {
+      id: 1,
+      team1: '',
+      team2: '',
+      winner: '',
+      lobbies: ['', '', ''],
+      lobbyScores: [
+        { left: null, right: null, updatedAt: null },
+        { left: null, right: null, updatedAt: null },
+        { left: null, right: null, updatedAt: null }
+      ]
+    }
+  };
+
+  saveState();
+  render();
+}
 
     function render() {
       syncInputs();
