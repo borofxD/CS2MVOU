@@ -4,6 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CS2 Major Style Tournament Board</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDvFiGYmxX9zV2u85olE4uYFGZRfylMbSA",
+      authDomain: "cs2tour-af040.firebaseapp.com",
+      projectId: "cs2tour-af040",
+      storageBucket: "cs2tour-af040.firebasestorage.app",
+      messagingSenderId: "638256790497",
+      appId: "1:638256790497:web:15ff1d1f564d987dedf0a0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const ref = doc(db, "tournaments", "main");
+
+    window.db = db;
+    window.ref = ref;
+    window.onSnapshot = onSnapshot;
+    window.setDoc = setDoc;
+  </script>
   <style>
     :root {
       --bg: #111827;
@@ -627,7 +649,6 @@
       ['e', 'b']
     ];
 
-    const stateKey = 'cs2_major_style_board_v3';
 
     let state = {
       teams: { ...defaultTeams },
@@ -645,59 +666,74 @@
       final: { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
     };
 
-    function saveState() {
-      localStorage.setItem(stateKey, JSON.stringify(state));
-    }
+    async function saveState() {
+  try {
+    await window.setDoc(window.ref, { state }, { merge: true });
+  } catch (e) {
+    console.error(e);
+  }
+}
 
     function loadState() {
-      const raw = localStorage.getItem(stateKey);
-      if (!raw) return;
+  window.onSnapshot(window.ref, (docSnap) => {
+    try {
+      const remoteState = docSnap.data()?.state;
 
-      try {
-        const parsed = JSON.parse(raw);
-        if (parsed?.teams && parsed?.regular) {
-          state = parsed;
-
-          state.regular = state.regular.map((m, index) => ({
-            id: m.id || index + 1,
-            team1: m.team1 || '',
-            team2: m.team2 || '',
-            winner: m.winner || '',
-            lobbies: Array.isArray(m.lobbies) ? [...m.lobbies, '', '', ''].slice(0, 3) : [m.lobby || '', '', '']
-          }));
-
-          state.semifinals = (state.semifinals || []).map((m, index) => ({
-            id: m.id || index + 1,
-            team1: m.team1 || '',
-            team2: m.team2 || '',
-            winner: m.winner || '',
-            lobbies: Array.isArray(m.lobbies) ? [...m.lobbies, '', '', ''].slice(0, 3) : [m.lobby || '', '', '']
-          }));
-
-          while (state.semifinals.length < 2) {
-            state.semifinals.push({
-              id: state.semifinals.length + 1,
-              team1: '',
-              team2: '',
-              winner: '',
-              lobbies: ['', '', '']
-            });
-          }
-
-          state.final = {
-            id: 1,
-            team1: state.final?.team1 || '',
-            team2: state.final?.team2 || '',
-            winner: state.final?.winner || '',
-            lobbies: Array.isArray(state.final?.lobbies)
-              ? [...state.final.lobbies, '', '', ''].slice(0, 3)
-              : [state.final?.lobby || '', '', '']
-          };
-        }
-      } catch (e) {
-        console.error(e);
+      if (!remoteState) {
+        saveState();
+        return;
       }
+
+      if (remoteState?.teams && remoteState?.regular) {
+        state = remoteState;
+
+        state.regular = state.regular.map((m, index) => ({
+          id: m.id || index + 1,
+          team1: m.team1 || '',
+          team2: m.team2 || '',
+          winner: m.winner || '',
+          lobbies: Array.isArray(m.lobbies)
+            ? [...m.lobbies, '', '', ''].slice(0, 3)
+            : [m.lobby || '', '', '']
+        }));
+
+        state.semifinals = (state.semifinals || []).map((m, index) => ({
+          id: m.id || index + 1,
+          team1: m.team1 || '',
+          team2: m.team2 || '',
+          winner: m.winner || '',
+          lobbies: Array.isArray(m.lobbies)
+            ? [...m.lobbies, '', '', ''].slice(0, 3)
+            : [m.lobby || '', '', '']
+        }));
+
+        while (state.semifinals.length < 2) {
+          state.semifinals.push({
+            id: state.semifinals.length + 1,
+            team1: '',
+            team2: '',
+            winner: '',
+            lobbies: ['', '', '']
+          });
+        }
+
+        state.final = {
+          id: 1,
+          team1: state.final?.team1 || '',
+          team2: state.final?.team2 || '',
+          winner: state.final?.winner || '',
+          lobbies: Array.isArray(state.final?.lobbies)
+            ? [...state.final.lobbies, '', '', ''].slice(0, 3)
+            : [state.final?.lobby || '', '', '']
+        };
+
+        render();
+      }
+    } catch (e) {
+      console.error(e);
     }
+  });
+}
 
     function getTeamName(key) {
       return state.teams[key] || key || '—';
@@ -1046,7 +1082,6 @@
       renderSemifinals();
       renderFinal();
       renderHero(standings);
-      saveState();
     }
 
     window.setWinner = setWinner;
@@ -1058,9 +1093,8 @@
         resetAll();
       }
     });
-
-    loadState();
     render();
+    loadState();
   </script>
 </body>
 </html>
