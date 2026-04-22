@@ -367,20 +367,38 @@
       accent-color: var(--accent);
     }
 
-    .lobby-input {
-      margin-top: 10px;
-      font-size: 13px;
-      padding: 9px 10px;
-      border-radius: 10px;
-    }
+    .lobby-grid {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
 
-    .lobby-link {
-      display: inline-block;
-      margin-top: 8px;
-      color: #7dd3fc;
-      font-size: 13px;
-      text-decoration: none;
-    }
+.lobby-input {
+  margin-top: 0;
+  font-size: 13px;
+  padding: 9px 10px;
+  border-radius: 10px;
+}
+
+.lobby-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.lobby-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0;
+  color: #7dd3fc;
+  font-size: 13px;
+  text-decoration: none;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+}
 
     .lobby-link:hover { text-decoration: underline; }
 
@@ -560,17 +578,17 @@
     let state = {
       teams: { ...defaultTeams },
       regular: schedule.map((pair, i) => ({
-        id: i + 1,
-        team1: pair[0],
-        team2: pair[1],
-        winner: '',
-        lobby: ''
-      })),
-      semifinals: [
-        { id: 1, team1: '', team2: '', winner: '', lobby: '' },
-        { id: 2, team1: '', team2: '', winner: '', lobby: '' }
-      ],
-      final: { team1: '', team2: '', winner: '', lobby: '' }
+  id: i + 1,
+  team1: pair[0],
+  team2: pair[1],
+  winner: '',
+  lobbies: ['', '', '']
+})),
+semifinals: [
+  { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] },
+  { id: 2, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
+],
+final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
     };
 
     function saveState() {
@@ -578,15 +596,50 @@
     }
 
     function loadState() {
-      const raw = localStorage.getItem(stateKey);
-      if (!raw) return;
-      try {
-        const parsed = JSON.parse(raw);
-        if (parsed?.teams && parsed?.regular) state = parsed;
-      } catch (e) {
-        console.error(e);
+  const raw = localStorage.getItem(stateKey);
+  if (!raw) return;
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed?.teams && parsed?.regular) {
+      state = parsed;
+
+      state.regular = state.regular.map((m) => ({
+        ...m,
+        lobbies: Array.isArray(m.lobbies) ? [...m.lobbies, '', '', ''].slice(0, 3) : [m.lobby || '', '', '']
+      }));
+
+      state.semifinals = (state.semifinals || []).map((m, idx) => ({
+        id: idx + 1,
+        team1: m.team1 || '',
+        team2: m.team2 || '',
+        winner: m.winner || '',
+        lobbies: Array.isArray(m.lobbies) ? [...m.lobbies, '', '', ''].slice(0, 3) : [m.lobby || '', '', '']
+      }));
+
+      while (state.semifinals.length < 2) {
+        state.semifinals.push({
+          id: state.semifinals.length + 1,
+          team1: '',
+          team2: '',
+          winner: '',
+          lobbies: ['', '', '']
+        });
       }
+
+      state.final = {
+        team1: state.final?.team1 || '',
+        team2: state.final?.team2 || '',
+        winner: state.final?.winner || '',
+        lobbies: Array.isArray(state.final?.lobbies)
+          ? [...state.final.lobbies, '', '', ''].slice(0, 3)
+          : [state.final?.lobby || '', '', '']
+      };
     }
+  } catch (e) {
+    console.error(e);
+  }
+}
 
     function getTeamName(key) {
       return state.teams[key] || key || '—';
@@ -700,43 +753,54 @@
     }
 
     function renderMatchCard(match, type, live = false) {
-      const team1Name = getTeamName(match.team1);
-      const team2Name = getTeamName(match.team2);
-      const lobbyLink = match.lobby?.trim();
-      return `
-        <div class="match-card ${live ? 'live' : ''}">
-          <div class="match-title">
-            <span>${type}</span>
-            <span>${match.winner ? 'Завершен' : live ? 'Сейчас идет' : 'Ожидает'}</span>
-          </div>
+  const team1Name = getTeamName(match.team1);
+  const team2Name = getTeamName(match.team2);
+  const lobbies = Array.isArray(match.lobbies) ? match.lobbies : [match.lobby || '', '', ''];
+  const radioName = `${type.replace(/\s+/g, '_')}_${match.id || 'final'}`;
 
-          <div class="team-line ${match.winner === match.team1 ? 'winner' : ''}">
-            <div class="team-name">${team1Name || 'TBD'}</div>
-            <div>${match.winner === match.team1 ? '✔' : ''}</div>
-          </div>
-          <div class="team-line ${match.winner === match.team2 ? 'winner' : ''}">
-            <div class="team-name">${team2Name || 'TBD'}</div>
-            <div>${match.winner === match.team2 ? '✔' : ''}</div>
-          </div>
+  return `
+    <div class="match-card ${live ? 'live' : ''}">
+      <div class="match-title">
+        <span>${type}</span>
+        <span>${match.winner ? 'Завершен' : live ? 'Сейчас идет' : 'Ожидает'}</span>
+      </div>
 
-          ${match.team1 && match.team2 ? `
-            <div class="check-wrap">
-              <label class="check-btn">
-                <input type="radio" name="${type.replace(/\s+/g,'_')}_${match.id}" ${match.winner === match.team1 ? 'checked' : ''} onchange="setWinner('${type}', ${match.id}, '${match.team1}')">
-                ${team1Name}
-              </label>
-              <label class="check-btn">
-                <input type="radio" name="${type.replace(/\s+/g,'_')}_${match.id}" ${match.winner === match.team2 ? 'checked' : ''} onchange="setWinner('${type}', ${match.id}, '${match.team2}')">
-                ${team2Name}
-              </label>
-            </div>
-          ` : `<div class="small-note">Пара определится автоматически</div>`}
+      <div class="team-line ${match.winner === match.team1 ? 'winner' : ''}">
+        <div class="team-name">${team1Name || 'TBD'}</div>
+        <div>${match.winner === match.team1 ? '✔' : ''}</div>
+      </div>
+      <div class="team-line ${match.winner === match.team2 ? 'winner' : ''}">
+        <div class="team-name">${team2Name || 'TBD'}</div>
+        <div>${match.winner === match.team2 ? '✔' : ''}</div>
+      </div>
 
-          <input class="lobby-input" placeholder="Ссылка на лобби BO3" value="${match.lobby || ''}" oninput="setLobby('${type}', ${match.id}, this.value)">
-          ${lobbyLink ? `<a class="lobby-link" href="${lobbyLink}" target="_blank" rel="noopener noreferrer">Открыть лобби</a>` : ''}
+      ${match.team1 && match.team2 ? `
+        <div class="check-wrap">
+          <label class="check-btn">
+            <input type="radio" name="${radioName}" ${match.winner === match.team1 ? 'checked' : ''} onchange="setWinner('${type}', ${match.id || 1}, '${match.team1}')">
+            ${team1Name}
+          </label>
+          <label class="check-btn">
+            <input type="radio" name="${radioName}" ${match.winner === match.team2 ? 'checked' : ''} onchange="setWinner('${type}', ${match.id || 1}, '${match.team2}')">
+            ${team2Name}
+          </label>
         </div>
-      `;
-    }
+      ` : `<div class="small-note">Пара определится автоматически</div>`}
+
+      <div class="lobby-grid">
+        <input class="lobby-input" placeholder="Ссылка на лобби 1" value="${lobbies[0] || ''}" oninput="setLobby('${type}', ${match.id || 1}, 0, this.value)">
+        <input class="lobby-input" placeholder="Ссылка на лобби 2" value="${lobbies[1] || ''}" oninput="setLobby('${type}', ${match.id || 1}, 1, this.value)">
+        <input class="lobby-input" placeholder="Ссылка на лобби 3" value="${lobbies[2] || ''}" oninput="setLobby('${type}', ${match.id || 1}, 2, this.value)">
+      </div>
+
+      <div class="lobby-links">
+        ${lobbies[0] ? `<a class="lobby-link" href="${lobbies[0]}" target="_blank" rel="noopener noreferrer">Открыть лобби 1</a>` : ''}
+        ${lobbies[1] ? `<a class="lobby-link" href="${lobbies[1]}" target="_blank" rel="noopener noreferrer">Открыть лобби 2</a>` : ''}
+        ${lobbies[2] ? `<a class="lobby-link" href="${lobbies[2]}" target="_blank" rel="noopener noreferrer">Открыть лобби 3</a>` : ''}
+      </div>
+    </div>
+  `;
+}
 
     function renderRegularMatches() {
       const container = document.getElementById('regularMatches');
@@ -820,35 +884,47 @@
       render();
     }
 
-    function setLobby(stage, id, value) {
-      if (stage === 'regular') {
-        const match = state.regular.find((m) => m.id === id);
-        if (match) match.lobby = value;
-      }
-      if (stage === 'semifinal') {
-        const match = state.semifinals.find((m) => m.id === id);
-        if (match) match.lobby = value;
-      }
-      if (stage === 'final') {
-        state.final.lobby = value;
-      }
-      saveState();
-      render();
+    function setLobby(stage, id, index, value) {
+  const applyLobby = (match) => {
+    if (!Array.isArray(match.lobbies)) {
+      match.lobbies = ['', '', ''];
     }
+    match.lobbies[index] = value;
+  };
+
+  if (stage === 'regular') {
+    const match = state.regular.find((m) => m.id === id);
+    if (match) applyLobby(match);
+  }
+
+  if (stage === 'semifinal') {
+    const match = state.semifinals.find((m) => m.id === id);
+    if (match) applyLobby(match);
+  }
+
+  if (stage === 'final') {
+    applyLobby(state.final);
+  }
+
+  saveState();
+  render();
+}
 
     function resetAll() {
       state = {
         teams: { ...defaultTeams },
-        regular: schedule.map((pair, i) => ({ id: i + 1, team1: pair[0], team2: pair[1], winner: '', lobby: '' })),
-        semifinals: [
-          { id: 1, team1: '', team2: '', winner: '', lobby: '' },
-          { id: 2, team1: '', team2: '', winner: '', lobby: '' }
-        ],
-        final: { team1: '', team2: '', winner: '', lobby: '' }
-      };
-      saveState();
-      render();
-    }
+        regular: schedule.map((pair, i) => ({
+  id: i + 1,
+  team1: pair[0],
+  team2: pair[1],
+  winner: '',
+  lobbies: ['', '', '']
+})),
+semifinals: [
+  { id: 1, team1: '', team2: '', winner: '', lobbies: ['', '', ''] },
+  { id: 2, team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
+],
+final: { team1: '', team2: '', winner: '', lobbies: ['', '', ''] }
 
     function render() {
       syncInputs();
