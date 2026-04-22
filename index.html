@@ -758,23 +758,47 @@
       ['b', 'c'],
       ['e', 'b']
     ];
-
-
-    let state = {
-      regular: schedule.map((pair, i) => ({
-  id: i + 1,
-  team1: pair[0],
-  team2: pair[1],
-  winner: '',
-  lobbies: ['', '', ''],
-  lobbyScores: [
-    { left: null, right: null, updatedAt: null },
-    { left: null, right: null, updatedAt: null },
-    { left: null, right: null, updatedAt: null }
-  ]
-})),
-semifinals: [
-  {
+   let state = {
+  teams: { ...defaultTeams },
+  regular: schedule.map((pair, i) => ({
+    id: i + 1,
+    team1: pair[0],
+    team2: pair[1],
+    winner: '',
+    lobbies: ['', '', ''],
+    lobbyScores: [
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null },
+      { left: null, right: null, updatedAt: null }
+    ]
+  })),
+  semifinals: [
+    {
+      id: 1,
+      team1: '',
+      team2: '',
+      winner: '',
+      lobbies: ['', '', ''],
+      lobbyScores: [
+        { left: null, right: null, updatedAt: null },
+        { left: null, right: null, updatedAt: null },
+        { left: null, right: null, updatedAt: null }
+      ]
+    },
+    {
+      id: 2,
+      team1: '',
+      team2: '',
+      winner: '',
+      lobbies: ['', '', ''],
+      lobbyScores: [
+        { left: null, right: null, updatedAt: null },
+        { left: null, right: null, updatedAt: null },
+        { left: null, right: null, updatedAt: null }
+      ]
+    }
+  ],
+  final: {
     id: 1,
     team1: '',
     team2: '',
@@ -785,33 +809,8 @@ semifinals: [
       { left: null, right: null, updatedAt: null },
       { left: null, right: null, updatedAt: null }
     ]
-  },
-  {
-    id: 2,
-    team1: '',
-    team2: '',
-    winner: '',
-    lobbies: ['', '', ''],
-    lobbyScores: [
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null }
-    ]
   }
-],
-final: {
-  id: 1,
-  team1: '',
-  team2: '',
-  winner: '',
-  lobbies: ['', '', ''],
-  lobbyScores: [
-    { left: null, right: null, updatedAt: null },
-    { left: null, right: null, updatedAt: null },
-    { left: null, right: null, updatedAt: null }
-  ]
-}
-
+};
     async function saveState() {
   try {
     await window.setDoc(window.ref, { state }, { merge: true });
@@ -840,19 +839,18 @@ final: {
           winner: m.winner || '',
           lobbies: Array.isArray(m.lobbies)
             ? [...m.lobbies, '', '', ''].slice(0, 3)
-            : [m.lobby || '', '', '']
-          ,
-lobbyScores: Array.isArray(m.lobbyScores)
-  ? [...m.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
-      left: s?.left ?? null,
-      right: s?.right ?? null,
-      updatedAt: s?.updatedAt ?? null
-    }))
-  : [
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null }
-    ]
+            : ['', '', ''],
+          lobbyScores: Array.isArray(m.lobbyScores)
+            ? [...m.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
+                left: s?.left ?? null,
+                right: s?.right ?? null,
+                updatedAt: s?.updatedAt ?? null
+              }))
+            : [
+                { left: null, right: null, updatedAt: null },
+                { left: null, right: null, updatedAt: null },
+                { left: null, right: null, updatedAt: null }
+              ]
         }));
 
         state.semifinals = (state.semifinals || []).map((m, index) => ({
@@ -862,19 +860,18 @@ lobbyScores: Array.isArray(m.lobbyScores)
           winner: m.winner || '',
           lobbies: Array.isArray(m.lobbies)
             ? [...m.lobbies, '', '', ''].slice(0, 3)
-            : [m.lobby || '', '', '']
-          ,
-lobbyScores: Array.isArray(m.lobbyScores)
-  ? [...m.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
-      left: s?.left ?? null,
-      right: s?.right ?? null,
-      updatedAt: s?.updatedAt ?? null
-    }))
-  : [
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null }
-    ]
+            : ['', '', ''],
+          lobbyScores: Array.isArray(m.lobbyScores)
+            ? [...m.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
+                left: s?.left ?? null,
+                right: s?.right ?? null,
+                updatedAt: s?.updatedAt ?? null
+              }))
+            : [
+                { left: null, right: null, updatedAt: null },
+                { left: null, right: null, updatedAt: null },
+                { left: null, right: null, updatedAt: null }
+              ]
         }));
 
         while (state.semifinals.length < 2) {
@@ -883,20 +880,13 @@ lobbyScores: Array.isArray(m.lobbyScores)
             team1: '',
             team2: '',
             winner: '',
-            lobbies: ['', '', '']
+            lobbies: ['', '', ''],
+            lobbyScores: [
+              { left: null, right: null, updatedAt: null },
+              { left: null, right: null, updatedAt: null },
+              { left: null, right: null, updatedAt: null }
+            ]
           });
-          ,
-lobbyScores: Array.isArray(state.final?.lobbyScores)
-  ? [...state.final.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
-      left: s?.left ?? null,
-      right: s?.right ?? null,
-      updatedAt: s?.updatedAt ?? null
-    }))
-  : [
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null }
-    ]
         }
 
         state.final = {
@@ -906,7 +896,18 @@ lobbyScores: Array.isArray(state.final?.lobbyScores)
           winner: state.final?.winner || '',
           lobbies: Array.isArray(state.final?.lobbies)
             ? [...state.final.lobbies, '', '', ''].slice(0, 3)
-            : [state.final?.lobby || '', '', '']
+            : ['', '', ''],
+          lobbyScores: Array.isArray(state.final?.lobbyScores)
+            ? [...state.final.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
+                left: s?.left ?? null,
+                right: s?.right ?? null,
+                updatedAt: s?.updatedAt ?? null
+              }))
+            : [
+                { left: null, right: null, updatedAt: null },
+                { left: null, right: null, updatedAt: null },
+                { left: null, right: null, updatedAt: null }
+              ]
         };
 
         render();
