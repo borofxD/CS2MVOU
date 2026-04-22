@@ -955,7 +955,7 @@ async function fetchLobbyScoreById(idLobby) {
   try {
     if (!idLobby) return null;
 
-    const response = await fetch('https://api.cybershoke.net/api/v1/custom-matches/lobbys/info', {
+    const response = await fetch('https://corsproxy.io/?https://api.cybershoke.net/api/v1/custom-matches/lobbys/info', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
