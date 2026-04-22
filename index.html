@@ -1087,14 +1087,17 @@
     window.setWinner = setWinner;
     window.setLobby = setLobby;
 
+    window.addEventListener('load', () => {
     document.getElementById('applyTeamsBtn').addEventListener('click', setTeamsFromInputs);
     document.getElementById('resetBtn').addEventListener('click', () => {
-      if (confirm('Сбросить названия, результаты и ссылки на лобби?')) {
-        resetAll();
-      }
-    });
-    render();
-    loadState();
+    if (confirm('Сбросить названия, результаты и ссылки на лобби?')) {
+      resetAll();
+    }
+  });
+
+  render();
+  loadState();
+});
   </script>
 </body>
 </html>
