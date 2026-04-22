@@ -189,85 +189,108 @@
     }
 
     .hero {
-     display: grid;
-     grid-template-columns: minmax(320px, 1fr) minmax(420px, 560px) auto;
-     gap: 18px;
-     align-items: stretch;
-     padding: 20px;
-     border-radius: 22px;
-     background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(15,23,42,0.98));
-    border: 1px solid rgba(245,158,11,0.24);
-    box-shadow: var(--shadow);
-   min-width: 0;
-   }
-    .hero-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(420px, 560px) 150px;
+  gap: 20px;
+  align-items: stretch;
+  padding: 20px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(245,158,11,0.10), rgba(15,23,42,0.98));
+  border: 1px solid rgba(245,158,11,0.24);
+  box-shadow: var(--shadow);
   min-width: 0;
 }
-
-.hero-stream {
-  min-width: 420px;
+.hero-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-width: 0;
+  padding-top: 8px;
 }
-
+.hero h2 {
+  margin: 14px 0 0;
+  font-size: 30px;
+  font-weight: 900;
+}
+.hero p {
+  margin: 0;
+  color: #cbd5e1;
+}
+.hero-meta-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+.hero-stream-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  color: #7dd3fc;
+  font-size: 13px;
+  font-weight: 700;
+}
+.hero-stream {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
 .hero-stream-frame {
   width: 100%;
   height: 300px;
   border: 0;
-  border-radius: 16px;
+  border-radius: 18px;
   display: block;
   background: #0b1220;
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.08);
 }
-
+.hero-score {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding-top: 8px;
+  text-align: right;
+}
+.hero-score-card {
+  width: 100%;
+  padding: 14px 12px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(148, 163, 184, 0.10);
+}
+.hero-score .small {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+}
+.hero-score .big {
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 8px;
+}
 @media (max-width: 1200px) {
   .hero {
     grid-template-columns: 1fr;
   }
-
   .hero-stream {
     min-width: 0;
   }
-
   .hero-stream-frame {
     height: 360px;
   }
-
   .hero-score {
     text-align: left;
+    padding-top: 0;
   }
 }
-
-    .hero h2 {
-      margin: 0;
-      font-size: 30px;
-      font-weight: 900;
-    }
-
-    .hero p {
-      margin: 8px 0 0;
-      color: #cbd5e1;
-    }
-
-    .hero-score {
-      text-align: right;
-      flex-shrink: 0;
-    }
-
-    .hero-score .small {
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-
-    .hero-score .big {
-      font-size: 42px;
-      font-weight: 900;
-      line-height: 1;
-      margin-top: 4px;
-    }
-
     .columns-2 {
       display: grid;
       grid-template-columns: minmax(540px, 0.95fr) minmax(540px, 1.05fr);
@@ -589,21 +612,27 @@
   <div class="hero-main">
     <div class="pill" id="heroStatus">Сейчас играют</div>
     <h2 id="heroMatch">—</h2>
-    <p id="heroMeta">Заполни названия команд и отмечай победителей.</p>
-    <div id="championBadge"></div>
+
+    <div class="hero-meta-wrap">
+      <p id="heroMeta">Заполни названия команд и отмечай победителей.</p>
+      <div class="hero-stream-note">● Twitch stream</div>
+      <div id="championBadge"></div>
+    </div>
   </div>
 
-    <div class="hero-stream">
+  <div class="hero-stream">
     <iframe
-    class="hero-stream-frame"
-    src="https://player.twitch.tv/?channel=cocomiracle1&parent=borofxd.github.io&muted=true"
-    allowfullscreen>
-  </iframe>
+      class="hero-stream-frame"
+      src="https://player.twitch.tv/?channel=cocomiracle1&parent=borofxd.github.io&muted=true"
+      allowfullscreen>
+    </iframe>
   </div>
 
   <div class="hero-score">
-    <div class="small">Завершено матчей</div>
-    <div class="big" id="doneCounter">0 / 10</div>
+    <div class="hero-score-card">
+      <div class="small">Завершено матчей</div>
+      <div class="big" id="doneCounter">0 / 10</div>
+    </div>
   </div>
 </section>
 
