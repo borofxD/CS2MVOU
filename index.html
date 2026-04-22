@@ -955,7 +955,7 @@ async function fetchLobbyScoreById(idLobby) {
   try {
     if (!idLobby) return null;
 
-    const response = await fetch('https://corsproxy.io/?https://api.cybershoke.net/api/v1/custom-matches/lobbys/info', {
+    const response = await fetch('https://script.google.com/macros/s/AKfycbwnEZxjKnjewiTii-UGiXw7c3sMCr-ubek1IqdkYMFbBOMvWxxnL-qbG3zIAagdjiEY/exec', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -972,10 +972,10 @@ async function fetchLobbyScoreById(idLobby) {
     const json = await response.json();
 
     return {
-      left: json?.data?.match_stats?.base?.team_3?.score ?? null,
-      right: json?.data?.match_stats?.base?.team_2?.score ?? null,
-      updatedAt: new Date().toLocaleTimeString('ru-RU')
-    };
+  left: json?.left ?? null,
+  right: json?.right ?? null,
+  updatedAt: new Date().toLocaleTimeString('ru-RU')
+   };
   } catch (error) {
     console.error('Ошибка загрузки счета:', error);
     return null;
