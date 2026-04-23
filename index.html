@@ -293,7 +293,7 @@
 
     .top-grid {
       display: grid;
-      grid-template-columns: minmax(440px, 1fr) minmax(440px, 1fr) minmax(360px, 0.9fr);
+      grid-template-columns: minmax(520px, 1fr) minmax(520px, 1fr) minmax(420px, 0.95fr);
       gap: 22px;
       min-width: 0;
     }
@@ -304,7 +304,33 @@
       border: 1px solid rgba(148, 163, 184, 0.10);
       background: linear-gradient(180deg, rgba(15,23,42,0.45), rgba(15,23,42,0.2));
     }
+    .standings-table table {
+  table-layout: fixed;
+}
 
+.standings-table th:nth-child(1),
+.standings-table td:nth-child(1) {
+  width: 52px;
+}
+
+.standings-table th:nth-child(2),
+.standings-table td:nth-child(2) {
+  width: 180px;
+}
+
+.standings-table th:nth-child(3),
+.standings-table td:nth-child(3),
+.standings-table th:nth-child(4),
+.standings-table td:nth-child(4),
+.standings-table th:nth-child(6),
+.standings-table td:nth-child(6) {
+  width: 88px;
+}
+
+.standings-table th:nth-child(5),
+.standings-table td:nth-child(5) {
+  width: 110px;
+}
     table {
       width: 100%;
       border-collapse: collapse;
@@ -445,7 +471,12 @@
       border-bottom-color: transparent;
     }
 
-    .team-name { font-weight: 700; }
+    .team-name {
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
     .check-wrap {
       display: flex;
@@ -537,8 +568,8 @@
     }
 
     .score-input {
-      width: 58px;
-      min-width: 58px;
+      width: 52px;
+      min-width: 52px;
       text-align: center;
       padding: 8px 6px;
       border-radius: 10px;
@@ -568,7 +599,7 @@
 
     .map-controls {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 150px 34px;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 260px) 34px;
       gap: 8px;
       align-items: center;
     }
@@ -580,15 +611,18 @@
     }
 
     .map-winner-wrap {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 6px;
-      justify-content: center;
+      min-width: 0;
     }
 
     .mini-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      min-width: 0;
+      width: 100%;
       padding: 8px 10px;
       border-radius: 10px;
       border: 1px solid rgba(148,163,184,0.14);
@@ -598,6 +632,8 @@
       font-weight: 800;
       cursor: pointer;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .mini-btn.active-left {
@@ -794,7 +830,7 @@
         <section class="top-grid">
           <div class="card">
             <h2 class="section-title">Турнирная таблица</h2>
-            <div class="table-shell">
+            <div class="table-shell standings-table">
               <table>
                 <thead>
                   <tr>
@@ -814,7 +850,7 @@
 
           <div class="card">
             <h2 class="section-title">Все матчи этапа</h2>
-            <div class="table-shell">
+            <div class="table-shell standings-table">
               <table>
                 <thead>
                   <tr>
@@ -887,13 +923,13 @@
               <thead>
                 <tr>
                   <th style="width: 42px;">#</th>
-                  <th style="width: 180px;">Игрок</th>
-                  <th style="width: 160px;">Команда</th>
-                  <th style="width: 72px;">Карты</th>
-                  <th style="width: 72px;">K</th>
-                  <th style="width: 72px;">A</th>
-                  <th style="width: 72px;">D</th>
-                  <th style="width: 90px;">Rating</th>
+                  <th style="width: 220px;">Игрок</th>
+                  <th style="width: 190px;">Команда</th>
+                  <th style="width: 90px;">Карты</th>
+                  <th style="width: 90px;">K</th>
+                  <th style="width: 90px;">A</th>
+                  <th style="width: 90px;">D</th>
+                  <th style="width: 100px;">Rating</th>
                 </tr>
               </thead>
               <tbody id="playersEditorBody"></tbody>
@@ -965,7 +1001,7 @@
         createMatch(2, '', '', 3)
       ],
       final: createMatch(1, '', '', 5),
-      players: Array.from({ length: 20 }, (_, i) => createPlayer(i))
+      players: Array.from({ length: 25 }, (_, i) => createPlayer(i))
     };
 
     async function saveState() {
@@ -1008,7 +1044,7 @@
     }
 
     function ensurePlayersLength() {
-      while (state.players.length < 20) {
+      while (state.players.length < 25) {
         state.players.push(createPlayer(state.players.length));
       }
     }
@@ -1031,7 +1067,7 @@
               final: normalizeMatch(remoteState.final || {}, 1, 5),
               players: Array.isArray(remoteState.players)
                 ? remoteState.players.map((p, index) => normalizePlayer(p, index))
-                : Array.from({ length: 20 }, (_, i) => createPlayer(i))
+                : Array.from({ length: 25 }, (_, i) => createPlayer(i))
             };
 
             while (state.regular.length < schedule.length) {
@@ -1374,7 +1410,7 @@
           createMatch(2, '', '', 3)
         ],
         final: createMatch(1, '', '', 5),
-        players: Array.from({ length: 20 }, (_, i) => createPlayer(i))
+        players: Array.from({ length: 25 }, (_, i) => createPlayer(i))
       };
 
       saveState();
