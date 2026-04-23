@@ -775,7 +775,6 @@
 
           <div class="btn-row">
             <button id="applyTeamsBtn">Применить</button>
-            <button class="btn-secondary" id="resetBtn">Сбросить</button>
           </div>
 
           <div class="small-note">
@@ -1683,11 +1682,6 @@
 
     window.addEventListener('load', () => {
       document.getElementById('applyTeamsBtn').addEventListener('click', setTeamsFromInputs);
-      document.getElementById('resetBtn').addEventListener('click', () => {
-        if (confirm('Сбросить названия, результаты, карты, лобби и статистику игроков?')) {
-          resetAll();
-        }
-      });
 
       render();
       loadState();
