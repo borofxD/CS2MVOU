@@ -56,7 +56,7 @@
     }
 
     .container {
-      max-width: 1720px;
+      max-width: 1740px;
       margin: 0 auto;
       padding: 22px;
     }
@@ -147,7 +147,7 @@
       letter-spacing: 0.5px;
     }
 
-    input, button {
+    input, button, select {
       width: 100%;
       border: 1px solid rgba(148, 163, 184, 0.16);
       border-radius: 14px;
@@ -158,7 +158,7 @@
       outline: none;
     }
 
-    input:focus {
+    input:focus, select:focus {
       border-color: rgba(56, 189, 248, 0.55);
       box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
     }
@@ -169,6 +169,11 @@
       border: none;
       color: white;
       font-weight: 800;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .btn-row {
@@ -286,9 +291,9 @@
       margin-top: 8px;
     }
 
-    .columns-2 {
+    .top-grid {
       display: grid;
-      grid-template-columns: minmax(540px, 0.95fr) minmax(540px, 1.05fr);
+      grid-template-columns: minmax(440px, 1fr) minmax(440px, 1fr) minmax(360px, 0.9fr);
       gap: 22px;
       min-width: 0;
     }
@@ -633,11 +638,8 @@
       font-size: 13px;
     }
 
-    .players-layout {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 22px;
-      min-width: 0;
+    .players-editor-card {
+      margin-top: 0;
     }
 
     .editor-table-wrap,
@@ -648,11 +650,21 @@
       background: linear-gradient(180deg, rgba(15,23,42,0.45), rgba(15,23,42,0.2));
     }
 
-    .tiny-input {
+    .tiny-input, .tiny-select {
       width: 100%;
       padding: 8px 8px;
       border-radius: 10px;
       font-size: 13px;
+      min-width: 0;
+    }
+
+    .tiny-select {
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, #94a3b8 50%), linear-gradient(135deg, #94a3b8 50%, transparent 50%);
+      background-position: calc(100% - 16px) calc(50% - 2px), calc(100% - 11px) calc(50% - 2px);
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      padding-right: 28px;
     }
 
     .player-rating {
@@ -666,15 +678,18 @@
       color: var(--muted);
     }
 
-    @media (max-width: 1380px) {
-      .players-layout {
-        grid-template-columns: 1fr;
+    @media (max-width: 1500px) {
+      .top-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .top-grid > .card:last-child {
+        grid-column: 1 / -1;
       }
     }
 
     @media (max-width: 1250px) {
       .layout,
-      .columns-2 {
+      .top-grid {
         grid-template-columns: 1fr;
       }
       .sidebar { position: static; }
@@ -704,7 +719,7 @@
     <div class="topbar">
       <div>
         <h1 class="title">CS2 MVOU Tournament</h1>
-        <div class="subtitle">BO3 групповой этап и полуфиналы, BO5 финал, очки по картам, топ-10 игроков</div>
+        <div class="subtitle">BO3 групповой этап и полуфиналы, BO5 финал, очки по картам, топ-10 игроков наверху</div>
       </div>
       <div class="pill">Major board</div>
     </div>
@@ -738,12 +753,12 @@
             Полуфинал: BO3<br>
             Финал: BO5<br><br>
             Победитель карты отмечается вручную.<br>
-            Победитель встречи может быть выставлен вручную, но если серия уже закрыта по картам — определяется автоматически.<br>
+            Победитель встречи можно выбрать вручную, но если серия уже закрыта по картам — он определяется автоматически.<br>
             Очки в таблице = выигранные карты.<br><br>
             2:0 → 2 и 0 очков<br>
             2:1 → 2 и 1 очко<br>
             3:2 → 3 и 2 очка в финале<br><br>
-            Блок игроков считает общий турнирный рейтинг по ручным K/A/D и сыгранным картам.
+            Top-10 игроков считает внутренний Rating 1.0.
           </div>
         </div>
       </aside>
@@ -776,7 +791,7 @@
           </div>
         </section>
 
-        <section class="columns-2">
+        <section class="top-grid">
           <div class="card">
             <h2 class="section-title">Турнирная таблица</h2>
             <div class="table-shell">
@@ -813,6 +828,29 @@
               </table>
             </div>
           </div>
+
+          <div class="card">
+            <h2 class="section-title">Топ-10 игроков турнира</h2>
+            <div class="small-note" style="margin-top:0; margin-bottom:14px;">
+              Rating 1.0 — внутренний турнирный показатель на базе Maps/K/A/D.
+            </div>
+            <div class="leaderboard-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 42px;">#</th>
+                    <th>Игрок</th>
+                    <th style="width: 140px;">Команда</th>
+                    <th style="width: 72px;">K</th>
+                    <th style="width: 72px;">A</th>
+                    <th style="width: 72px;">D</th>
+                    <th style="width: 90px;">Rating</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboardBody"></tbody>
+              </table>
+            </div>
+          </div>
         </section>
 
         <section class="bracket-card">
@@ -839,52 +877,27 @@
           </div>
         </section>
 
-        <section class="players-layout">
-          <div class="card">
-            <h2 class="section-title">Редактор статистики игроков</h2>
-            <div class="small-note" style="margin-top:0; margin-bottom:14px;">
-              Вноси кумулятивную статистику игрока по турниру: сыгранные карты, килы, ассисты, смерти.
-            </div>
-            <div class="editor-table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th style="width: 42px;">#</th>
-                    <th style="width: 180px;">Игрок</th>
-                    <th style="width: 140px;">Команда</th>
-                    <th style="width: 72px;">Карты</th>
-                    <th style="width: 72px;">K</th>
-                    <th style="width: 72px;">A</th>
-                    <th style="width: 72px;">D</th>
-                    <th style="width: 90px;">Rating</th>
-                  </tr>
-                </thead>
-                <tbody id="playersEditorBody"></tbody>
-              </table>
-            </div>
+        <section class="card players-editor-card">
+          <h2 class="section-title">Редактор статистики игроков</h2>
+          <div class="small-note" style="margin-top:0; margin-bottom:14px;">
+            Вноси кумулятивную статистику игрока по турниру: сыгранные карты, килы, ассисты, смерти.
           </div>
-
-          <div class="card">
-            <h2 class="section-title">Топ-10 игроков турнира</h2>
-            <div class="small-note" style="margin-top:0; margin-bottom:14px;">
-              Rating — внутренний турнирный показатель на базе Maps/K/A/D, а не официальный HLTV Rating 2.0.
-            </div>
-            <div class="leaderboard-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th style="width: 42px;">#</th>
-                    <th>Игрок</th>
-                    <th style="width: 140px;">Команда</th>
-                    <th style="width: 72px;">K</th>
-                    <th style="width: 72px;">A</th>
-                    <th style="width: 72px;">D</th>
-                    <th style="width: 90px;">Rating</th>
-                  </tr>
-                </thead>
-                <tbody id="leaderboardBody"></tbody>
-              </table>
-            </div>
+          <div class="editor-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 42px;">#</th>
+                  <th style="width: 180px;">Игрок</th>
+                  <th style="width: 160px;">Команда</th>
+                  <th style="width: 72px;">Карты</th>
+                  <th style="width: 72px;">K</th>
+                  <th style="width: 72px;">A</th>
+                  <th style="width: 72px;">D</th>
+                  <th style="width: 90px;">Rating</th>
+                </tr>
+              </thead>
+              <tbody id="playersEditorBody"></tbody>
+            </table>
           </div>
         </section>
       </main>
@@ -1043,6 +1056,13 @@
       return state.teams[key] || key || '—';
     }
 
+    function getTeamOptions() {
+      return Object.entries(state.teams).map(([key, name]) => ({
+        key,
+        name: name || defaultTeams[key] || key
+      }));
+    }
+
     function setTeamsFromInputs() {
       ['a', 'b', 'c', 'd', 'e'].forEach((key) => {
         const val = document.getElementById(`team-${key}`).value.trim();
@@ -1065,16 +1085,18 @@
     function getSeriesScore(match) {
       const result = { left: 0, right: 0 };
       if (!Array.isArray(match.maps)) return result;
+      if (!match.team1 || !match.team2 || match.team1 === match.team2) return result;
 
       match.maps.forEach((map) => {
-        if (map.winner === match.team1) result.left += 1;
-        if (map.winner === match.team2) result.right += 1;
+        if (map.winner && map.winner === match.team1) result.left += 1;
+        if (map.winner && map.winner === match.team2) result.right += 1;
       });
 
       return result;
     }
 
     function getAutoWinner(match, stage) {
+      if (!match.team1 || !match.team2 || match.team1 === match.team2) return '';
       const need = getMatchMapsToWin(stage);
       const series = getSeriesScore(match);
 
@@ -1176,7 +1198,7 @@
       }
     }
 
-    function calculateTournamentRating(player) {
+    function calculateRating10(player) {
       const maps = Number(player.maps) || 0;
       const kills = Number(player.kills) || 0;
       const assists = Number(player.assists) || 0;
@@ -1187,8 +1209,9 @@
       const kpr = kills / maps;
       const apr = assists / maps;
       const dpr = deaths / maps;
+      const kd = deaths > 0 ? kills / deaths : kills;
 
-      const rating = 0.7 + kpr * 0.7 + apr * 0.12 - dpr * 0.41;
+      const rating = (kpr * 0.55) + (apr * 0.08) + (kd * 0.37);
       return Math.max(0, rating);
     }
 
@@ -1201,7 +1224,7 @@
           killsNum: Number(p.kills) || 0,
           assistsNum: Number(p.assists) || 0,
           deathsNum: Number(p.deaths) || 0,
-          rating: calculateTournamentRating(p)
+          rating: calculateRating10(p)
         }))
         .sort((a, b) => {
           if (b.rating !== a.rating) return b.rating - a.rating;
@@ -1246,16 +1269,25 @@
 
     function renderPlayersEditor() {
       const body = document.getElementById('playersEditorBody');
+      const teamOptions = getTeamOptions();
+
       body.innerHTML = state.players.map((player, index) => `
         <tr>
           <td><strong>${index + 1}</strong></td>
           <td><input class="tiny-input" value="${player.name || ''}" onchange="setPlayerField(${index}, 'name', this.value)"></td>
-          <td><input class="tiny-input" value="${player.team || ''}" onchange="setPlayerField(${index}, 'team', this.value)"></td>
+          <td>
+            <select class="tiny-select" onchange="setPlayerField(${index}, 'team', this.value)">
+              <option value="">—</option>
+              ${teamOptions.map((team) => `
+                <option value="${team.key}" ${player.team === team.key ? 'selected' : ''}>${team.name}</option>
+              `).join('')}
+            </select>
+          </td>
           <td><input class="tiny-input" type="number" min="0" value="${player.maps}" onchange="setPlayerField(${index}, 'maps', this.value)"></td>
           <td><input class="tiny-input" type="number" min="0" value="${player.kills}" onchange="setPlayerField(${index}, 'kills', this.value)"></td>
           <td><input class="tiny-input" type="number" min="0" value="${player.assists}" onchange="setPlayerField(${index}, 'assists', this.value)"></td>
           <td><input class="tiny-input" type="number" min="0" value="${player.deaths}" onchange="setPlayerField(${index}, 'deaths', this.value)"></td>
-          <td class="player-rating">${calculateTournamentRating(player).toFixed(2)}</td>
+          <td class="player-rating">${calculateRating10(player).toFixed(2)}</td>
         </tr>
       `).join('');
     }
@@ -1268,7 +1300,7 @@
         <tr class="${index === 0 ? 'rank-1' : index < 4 ? `rank-${index + 1}` : ''}">
           <td><strong>${index + 1}</strong></td>
           <td class="table-team">${player.name}</td>
-          <td class="table-muted">${player.team || '—'}</td>
+          <td class="table-muted">${player.team ? getTeamName(player.team) : '—'}</td>
           <td class="table-muted">${player.killsNum}</td>
           <td class="table-muted">${player.assistsNum}</td>
           <td class="table-muted">${player.deathsNum}</td>
@@ -1290,7 +1322,7 @@
 
     function setWinner(stage, id, winner) {
       const match = getMatchByStage(stage, id);
-      if (!match) return;
+      if (!match || !winner) return;
 
       match.winner = winner;
       saveState();
@@ -1299,7 +1331,7 @@
 
     function setMapWinner(stage, id, mapIndex, winner) {
       const match = getMatchByStage(stage, id);
-      if (!match || !match.maps[mapIndex]) return;
+      if (!match || !match.maps[mapIndex] || !winner) return;
 
       match.maps[mapIndex].winner = winner;
       saveState();
@@ -1361,6 +1393,7 @@
       const series = getSeriesScore(match);
       const autoWinner = getAutoWinner(match, stage);
       const resolvedWinner = getResolvedWinner(match, stage);
+      const teamsReady = !!match.team1 && !!match.team2 && match.team1 !== match.team2;
 
       return `
         <div class="match-card ${live ? 'live' : ''}">
@@ -1378,7 +1411,7 @@
             <div>${resolvedWinner === match.team2 ? '✔' : ''}</div>
           </div>
 
-          ${match.team1 && match.team2 ? `
+          ${teamsReady ? `
             <div class="check-wrap">
               <label class="check-btn">
                 <input
@@ -1450,13 +1483,15 @@
                         type="button"
                         class="mini-btn ${map.winner === match.team1 ? 'active-left' : ''}"
                         onclick="setMapWinner('${stage}', ${match.id || 1}, ${index}, '${match.team1}')"
-                      >${team1Name}</button>
+                        ${teamsReady ? '' : 'disabled'}
+                      >${teamsReady ? team1Name : '—'}</button>
 
                       <button
                         type="button"
                         class="mini-btn ${map.winner === match.team2 ? 'active-right' : ''}"
                         onclick="setMapWinner('${stage}', ${match.id || 1}, ${index}, '${match.team2}')"
-                      >${team2Name}</button>
+                        ${teamsReady ? '' : 'disabled'}
+                      >${teamsReady ? team2Name : '—'}</button>
                     </div>
 
                     ${map.lobby
@@ -1556,11 +1591,11 @@
       hydratePlayoffFromStandings(standings);
       renderStandings(standings);
       renderSummaryTable();
+      renderLeaderboard();
       renderRegularMatches();
       renderSemifinals();
       renderFinal();
       renderPlayersEditor();
-      renderLeaderboard();
       renderHero(standings);
     }
 
