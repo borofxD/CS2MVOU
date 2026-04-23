@@ -41,8 +41,6 @@
       --accent-2: #fb923c;
       --blue: #38bdf8;
       --green: #22c55e;
-      --red: #ef4444;
-      --gold: #fbbf24;
       --shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
     }
 
@@ -56,7 +54,7 @@
     }
 
     .container {
-      max-width: 1740px;
+      max-width: 1780px;
       margin: 0 auto;
       padding: 22px;
     }
@@ -216,6 +214,9 @@
       margin: 14px 0 0;
       font-size: 30px;
       font-weight: 900;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .hero p {
@@ -293,44 +294,19 @@
 
     .top-grid {
       display: grid;
-      grid-template-columns: minmax(520px, 1fr) minmax(520px, 1fr) minmax(420px, 0.95fr);
+      grid-template-columns: minmax(500px, 1fr) minmax(500px, 1fr) minmax(360px, 0.9fr);
       gap: 22px;
       min-width: 0;
     }
 
     .table-shell {
-      overflow: hidden;
+      overflow-x: auto;
+      overflow-y: hidden;
       border-radius: 16px;
       border: 1px solid rgba(148, 163, 184, 0.10);
       background: linear-gradient(180deg, rgba(15,23,42,0.45), rgba(15,23,42,0.2));
     }
-    .standings-table table {
-  table-layout: fixed;
-}
 
-.standings-table th:nth-child(1),
-.standings-table td:nth-child(1) {
-  width: 52px;
-}
-
-.standings-table th:nth-child(2),
-.standings-table td:nth-child(2) {
-  width: 180px;
-}
-
-.standings-table th:nth-child(3),
-.standings-table td:nth-child(3),
-.standings-table th:nth-child(4),
-.standings-table td:nth-child(4),
-.standings-table th:nth-child(6),
-.standings-table td:nth-child(6) {
-  width: 88px;
-}
-
-.standings-table th:nth-child(5),
-.standings-table td:nth-child(5) {
-  width: 110px;
-}
     table {
       width: 100%;
       border-collapse: collapse;
@@ -358,6 +334,18 @@
 
     tr:last-child td { border-bottom: none; }
 
+    .standings-table table {
+      min-width: 590px;
+    }
+
+    .summary-table table {
+      min-width: 640px;
+    }
+
+    .leaderboard-table table {
+      min-width: 520px;
+    }
+
     .rank-1 { background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(245,158,11,0.04)); }
     .rank-2, .rank-3, .rank-4 { background: rgba(59, 130, 246, 0.08); }
 
@@ -372,6 +360,14 @@
     }
 
     .table-muted { color: var(--muted); }
+
+    .player-name-only {
+      font-weight: 700;
+      color: #f8fafc;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
     .stage-tabs {
       display: flex;
@@ -406,14 +402,13 @@
       border-radius: 24px;
       padding: 20px;
       box-shadow: var(--shadow);
-      overflow-x: auto;
+      overflow: visible;
     }
 
     .bracket-grid {
       display: grid;
-      grid-template-columns: 1.25fr 0.95fr 0.95fr;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr);
       gap: 24px;
-      min-width: 980px;
       align-items: start;
     }
 
@@ -422,6 +417,7 @@
       border-radius: 18px;
       padding: 14px;
       min-height: 520px;
+      min-width: 0;
     }
 
     .stage-column h3 {
@@ -437,6 +433,7 @@
       padding: 12px;
       margin-bottom: 14px;
       box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+      min-width: 0;
     }
 
     .match-card.live {
@@ -461,6 +458,7 @@
       align-items: center;
       padding: 8px 10px;
       border-bottom: 1px solid rgba(203,213,225,0.10);
+      min-width: 0;
     }
 
     .team-line:last-of-type { border-bottom: none; }
@@ -476,6 +474,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      min-width: 0;
     }
 
     .check-wrap {
@@ -497,12 +496,18 @@
       cursor: pointer;
       user-select: none;
       font-size: 13px;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .check-btn input {
       width: auto;
       margin: 0;
       accent-color: var(--accent);
+      flex: 0 0 auto;
     }
 
     .series-box {
@@ -542,6 +547,7 @@
       border-radius: 12px;
       background: rgba(255,255,255,0.035);
       border: 1px solid rgba(148,163,184,0.10);
+      min-width: 0;
     }
 
     .map-top {
@@ -550,6 +556,7 @@
       align-items: center;
       gap: 10px;
       margin-bottom: 8px;
+      min-width: 0;
     }
 
     .map-label {
@@ -558,6 +565,7 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       font-weight: 800;
+      flex: 0 0 auto;
     }
 
     .map-score-edit {
@@ -565,11 +573,12 @@
       align-items: center;
       gap: 6px;
       min-width: 0;
+      flex: 0 0 auto;
     }
 
     .score-input {
-      width: 52px;
-      min-width: 52px;
+      width: 48px;
+      min-width: 48px;
       text-align: center;
       padding: 8px 6px;
       border-radius: 10px;
@@ -599,22 +608,32 @@
 
     .map-controls {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(220px, 260px) 34px;
+      grid-template-columns: minmax(0, 1fr);
       gap: 8px;
       align-items: center;
     }
 
-    .map-lobby-input {
-      font-size: 13px;
-      padding: 9px 10px;
-      border-radius: 10px;
+    .map-lobby-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 34px;
+      gap: 8px;
+      align-items: center;
+      min-width: 0;
     }
 
-    .map-winner-wrap {
+    .map-actions-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 6px;
       min-width: 0;
+    }
+
+    .map-lobby-input {
+      width: 100%;
+      min-width: 0;
+      font-size: 13px;
+      padding: 9px 10px;
+      border-radius: 10px;
     }
 
     .mini-btn {
@@ -678,12 +697,15 @@
       margin-top: 0;
     }
 
-    .editor-table-wrap,
-    .leaderboard-wrap {
+    .editor-table-wrap {
       overflow-x: auto;
       border-radius: 16px;
       border: 1px solid rgba(148, 163, 184, 0.10);
       background: linear-gradient(180deg, rgba(15,23,42,0.45), rgba(15,23,42,0.2));
+    }
+
+    .editor-table table {
+      min-width: 980px;
     }
 
     .tiny-input, .tiny-select {
@@ -718,6 +740,7 @@
       .top-grid {
         grid-template-columns: 1fr 1fr;
       }
+
       .top-grid > .card:last-child {
         grid-column: 1 / -1;
       }
@@ -728,14 +751,31 @@
       .top-grid {
         grid-template-columns: 1fr;
       }
+
       .sidebar { position: static; }
     }
 
     @media (max-width: 1200px) {
-      .hero { grid-template-columns: 1fr; }
-      .hero-stream { min-width: 0; }
-      .hero-stream-frame { height: 360px; }
-      .hero-score { text-align: left; padding-top: 0; }
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stream {
+        min-width: 0;
+      }
+
+      .hero-stream-frame {
+        height: 360px;
+      }
+
+      .hero-score {
+        text-align: left;
+        padding-top: 0;
+      }
+
+      .bracket-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 768px) {
@@ -745,8 +785,6 @@
       .hero-score .big { font-size: 28px; }
       .btn-row { grid-template-columns: 1fr; }
       th, td { white-space: normal; }
-      .map-controls { grid-template-columns: 1fr; }
-      .map-winner-wrap { justify-content: flex-start; }
     }
   </style>
 </head>
@@ -755,7 +793,7 @@
     <div class="topbar">
       <div>
         <h1 class="title">CS2 MVOU Tournament</h1>
-        <div class="subtitle">BO3 групповой этап и полуфиналы, BO5 финал, очки по картам, топ-10 игроков наверху</div>
+        <div class="subtitle">BO3 групповой этап и полуфиналы, BO5 финал, очки по картам, никнеймы игроков без команды в топе</div>
       </div>
       <div class="pill">Major board</div>
     </div>
@@ -836,10 +874,10 @@
                   <tr>
                     <th style="width: 52px;">#</th>
                     <th style="width: 180px;">Команда</th>
-                    <th style="width: 80px;">Встречи</th>
-                    <th style="width: 72px;">Победы</th>
-                    <th style="width: 90px;">Поражения</th>
-                    <th style="width: 72px;">Очки</th>
+                    <th style="width: 88px;">Встречи</th>
+                    <th style="width: 88px;">Победы</th>
+                    <th style="width: 110px;">Поражения</th>
+                    <th style="width: 88px;">Очки</th>
                   </tr>
                 </thead>
                 <tbody id="standingsBody"></tbody>
@@ -850,7 +888,7 @@
 
           <div class="card">
             <h2 class="section-title">Все матчи этапа</h2>
-            <div class="table-shell standings-table">
+            <div class="table-shell summary-table">
               <table>
                 <thead>
                   <tr>
@@ -870,13 +908,12 @@
             <div class="small-note" style="margin-top:0; margin-bottom:14px;">
               Rating 1.0 — внутренний турнирный показатель на базе Maps/K/A/D.
             </div>
-            <div class="leaderboard-wrap">
+            <div class="leaderboard-wrap table-shell leaderboard-table">
               <table>
                 <thead>
                   <tr>
                     <th style="width: 42px;">#</th>
                     <th>Игрок</th>
-                    <th style="width: 140px;">Команда</th>
                     <th style="width: 72px;">K</th>
                     <th style="width: 72px;">A</th>
                     <th style="width: 72px;">D</th>
@@ -918,7 +955,7 @@
           <div class="small-note" style="margin-top:0; margin-bottom:14px;">
             Вноси кумулятивную статистику игрока по турниру: сыгранные карты, килы, ассисты, смерти.
           </div>
-          <div class="editor-table-wrap">
+          <div class="editor-table-wrap table-shell editor-table">
             <table>
               <thead>
                 <tr>
@@ -1244,7 +1281,6 @@
 
       const kpr = kills / maps;
       const apr = assists / maps;
-      const dpr = deaths / maps;
       const kd = deaths > 0 ? kills / deaths : kills;
 
       const rating = (kpr * 0.55) + (apr * 0.08) + (kd * 0.37);
@@ -1335,8 +1371,7 @@
       body.innerHTML = players.map((player, index) => `
         <tr class="${index === 0 ? 'rank-1' : index < 4 ? `rank-${index + 1}` : ''}">
           <td><strong>${index + 1}</strong></td>
-          <td class="table-team">${player.name}</td>
-          <td class="table-muted">${player.team ? getTeamName(player.team) : '—'}</td>
+          <td><div class="player-name-only">${player.name}</div></td>
           <td class="table-muted">${player.killsNum}</td>
           <td class="table-muted">${player.assistsNum}</td>
           <td class="table-muted">${player.deathsNum}</td>
@@ -1345,7 +1380,7 @@
       `).join('');
 
       if (!players.length) {
-        body.innerHTML = `<tr><td colspan="7" class="table-muted">Пока нет данных по игрокам</td></tr>`;
+        body.innerHTML = `<tr><td colspan="6" class="table-muted">Пока нет данных по игрокам</td></tr>`;
       }
     }
 
@@ -1507,14 +1542,19 @@
                   </div>
 
                   <div class="map-controls">
-                    <input
-                      class="map-lobby-input"
-                      placeholder="Ссылка на лобби ${index + 1}"
-                      value="${map.lobby || ''}"
-                      onchange="setMapLobby('${stage}', ${match.id || 1}, ${index}, this.value)"
-                    >
+                    <div class="map-lobby-row">
+                      <input
+                        class="map-lobby-input"
+                        placeholder="Ссылка на лобби ${index + 1}"
+                        value="${map.lobby || ''}"
+                        onchange="setMapLobby('${stage}', ${match.id || 1}, ${index}, this.value)"
+                      >
+                      ${map.lobby
+                        ? `<a class="lobby-open" href="${map.lobby}" target="_blank" rel="noopener noreferrer">↗</a>`
+                        : `<div></div>`}
+                    </div>
 
-                    <div class="map-winner-wrap">
+                    <div class="map-actions-row">
                       <button
                         type="button"
                         class="mini-btn ${map.winner === match.team1 ? 'active-left' : ''}"
@@ -1529,10 +1569,6 @@
                         ${teamsReady ? '' : 'disabled'}
                       >${teamsReady ? team2Name : '—'}</button>
                     </div>
-
-                    ${map.lobby
-                      ? `<a class="lobby-open" href="${map.lobby}" target="_blank" rel="noopener noreferrer">↗</a>`
-                      : `<div></div>`}
                   </div>
                 </div>
               `;
