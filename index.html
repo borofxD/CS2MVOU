@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS2 Major Style Tournament Board</title>
+  <title>CS2 MVOU Tournament</title>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -21,11 +22,11 @@
     const db = getFirestore(app);
     const ref = doc(db, "tournaments", "main");
 
-    window.db = db;
     window.ref = ref;
     window.onSnapshot = onSnapshot;
     window.setDoc = setDoc;
   </script>
+
   <style>
     :root {
       --bg: #111827;
@@ -39,6 +40,9 @@
       --accent: #f59e0b;
       --accent-2: #fb923c;
       --blue: #38bdf8;
+      --green: #22c55e;
+      --red: #ef4444;
+      --gold: #fbbf24;
       --shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
     }
 
@@ -52,7 +56,7 @@
     }
 
     .container {
-      max-width: 1560px;
+      max-width: 1720px;
       margin: 0 auto;
       padding: 22px;
     }
@@ -115,9 +119,7 @@
       min-width: 0;
     }
 
-    .card + .card {
-      margin-top: 18px;
-    }
+    .card + .card { margin-top: 18px; }
 
     .section-title {
       margin: 0 0 14px;
@@ -125,9 +127,7 @@
       font-weight: 900;
     }
 
-    .muted {
-      color: var(--muted);
-    }
+    .muted { color: var(--muted); }
 
     .team-grid {
       display: grid;
@@ -178,9 +178,7 @@
       margin-top: 14px;
     }
 
-    .btn-secondary {
-      background: #334155;
-    }
+    .btn-secondary { background: #334155; }
 
     .board-stack {
       display: grid;
@@ -189,108 +187,105 @@
     }
 
     .hero {
-  display: grid;
-  grid-template-columns: minmax(320px, 1fr) minmax(420px, 560px) 150px;
-  gap: 20px;
-  align-items: stretch;
-  padding: 20px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, rgba(245,158,11,0.10), rgba(15,23,42,0.98));
-  border: 1px solid rgba(245,158,11,0.24);
-  box-shadow: var(--shadow);
-  min-width: 0;
-}
-.hero-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  min-width: 0;
-  padding-top: 8px;
-}
-.hero h2 {
-  margin: 14px 0 0;
-  font-size: 30px;
-  font-weight: 900;
-}
-.hero p {
-  margin: 0;
-  color: #cbd5e1;
-}
-.hero-meta-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 12px;
-}
-.hero-stream-note {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.18);
-  color: #7dd3fc;
-  font-size: 13px;
-  font-weight: 700;
-}
-.hero-stream {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-}
-.hero-stream-frame {
-  width: 100%;
-  height: 300px;
-  border: 0;
-  border-radius: 18px;
-  display: block;
-  background: #0b1220;
-  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.08);
-}
-.hero-score {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-  padding-top: 8px;
-  text-align: right;
-}
-.hero-score-card {
-  width: 100%;
-  padding: 14px 12px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(148, 163, 184, 0.10);
-}
-.hero-score .small {
-  color: var(--muted);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .7px;
-}
-.hero-score .big {
-  font-size: 44px;
-  font-weight: 900;
-  line-height: 1;
-  margin-top: 8px;
-}
-@media (max-width: 1200px) {
-  .hero {
-    grid-template-columns: 1fr;
-  }
-  .hero-stream {
-    min-width: 0;
-  }
-  .hero-stream-frame {
-    height: 360px;
-  }
-  .hero-score {
-    text-align: left;
-    padding-top: 0;
-  }
-}
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) minmax(420px, 560px) 150px;
+      gap: 20px;
+      align-items: stretch;
+      padding: 20px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(245,158,11,0.10), rgba(15,23,42,0.98));
+      border: 1px solid rgba(245,158,11,0.24);
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .hero-main {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-width: 0;
+      padding-top: 8px;
+    }
+
+    .hero h2 {
+      margin: 14px 0 0;
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #cbd5e1;
+    }
+
+    .hero-meta-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .hero-stream-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      color: #7dd3fc;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .hero-stream {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .hero-stream-frame {
+      width: 100%;
+      height: 300px;
+      border: 0;
+      border-radius: 18px;
+      display: block;
+      background: #0b1220;
+      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.08);
+    }
+
+    .hero-score {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      padding-top: 8px;
+      text-align: right;
+    }
+
+    .hero-score-card {
+      width: 100%;
+      padding: 14px 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(148, 163, 184, 0.10);
+    }
+
+    .hero-score .small {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+    }
+
+    .hero-score .big {
+      font-size: 44px;
+      font-weight: 900;
+      line-height: 1;
+      margin-top: 8px;
+    }
+
     .columns-2 {
       display: grid;
       grid-template-columns: minmax(540px, 0.95fr) minmax(540px, 1.05fr);
@@ -308,8 +303,8 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      table-layout: auto;
-}
+      table-layout: fixed;
+    }
 
     th, td {
       padding: 12px 10px;
@@ -332,13 +327,8 @@
 
     tr:last-child td { border-bottom: none; }
 
-    .rank-1 {
-      background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(245,158,11,0.04));
-    }
-
-    .rank-2, .rank-3, .rank-4 {
-      background: rgba(59, 130, 246, 0.08);
-    }
+    .rank-1 { background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(245,158,11,0.04)); }
+    .rank-2, .rank-3, .rank-4 { background: rgba(59, 130, 246, 0.08); }
 
     .table-team {
       font-weight: 700;
@@ -350,9 +340,7 @@
       color: #f8fafc;
     }
 
-    .table-muted {
-      color: var(--muted);
-    }
+    .table-muted { color: var(--muted); }
 
     .stage-tabs {
       display: flex;
@@ -444,9 +432,7 @@
       border-bottom: 1px solid rgba(203,213,225,0.10);
     }
 
-    .team-line:last-of-type {
-      border-bottom: none;
-    }
+    .team-line:last-of-type { border-bottom: none; }
 
     .team-line.winner {
       background: rgba(245, 158, 11, 0.09);
@@ -454,9 +440,7 @@
       border-bottom-color: transparent;
     }
 
-    .team-name {
-      font-weight: 700;
-    }
+    .team-name { font-weight: 700; }
 
     .check-wrap {
       display: flex;
@@ -484,75 +468,158 @@
       margin: 0;
       accent-color: var(--accent);
     }
-     .lobby-grid {
-  display: grid;
-  gap: 8px;
-  margin-top: 10px;
-}
 
-.lobby-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 110px 34px;
-  gap: 8px;
-  align-items: center;
-}
-
-.lobby-input {
-  margin-top: 0;
-  font-size: 13px;
-  padding: 9px 10px;
-  border-radius: 10px;
-}
-
-.lobby-score {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  padding: 0 10px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(148,163,184,0.10);
-  font-size: 15px;
-  font-weight: 900;
-  color: #f8fafc;
-  white-space: nowrap;
-}
-
-.lobby-open {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 40px;
-  border-radius: 10px;
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.18);
-  color: #7dd3fc;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-    .lobby-links {
+    .series-box {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(148,163,184,0.10);
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
     }
 
-    .lobby-link {
+    .series-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .series-score {
+      font-size: 20px;
+      font-weight: 900;
+      color: #f8fafc;
+    }
+
+    .maps-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .map-row {
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(148,163,184,0.10);
+    }
+
+    .map-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .map-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 800;
+    }
+
+    .map-score-edit {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .score-input {
+      width: 58px;
+      min-width: 58px;
+      text-align: center;
+      padding: 8px 6px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 900;
+      background: #0b1220;
+      color: #f8fafc;
+      border: 1px solid rgba(148,163,184,0.14);
+    }
+
+    .score-input::-webkit-outer-spin-button,
+    .score-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .score-input[type=number] {
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+
+    .score-separator {
+      color: #f8fafc;
+      font-weight: 900;
+      font-size: 16px;
+    }
+
+    .map-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 150px 34px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .map-lobby-input {
+      font-size: 13px;
+      padding: 9px 10px;
+      border-radius: 10px;
+    }
+
+    .map-winner-wrap {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .mini-btn {
       display: inline-flex;
       align-items: center;
-      color: #7dd3fc;
-      font-size: 13px;
-      text-decoration: none;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.18);
+      justify-content: center;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.14);
+      background: rgba(255,255,255,0.04);
+      color: #f8fafc;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
     }
 
-    .lobby-link:hover { text-decoration: underline; }
+    .mini-btn.active-left {
+      background: rgba(34,197,94,0.16);
+      border-color: rgba(34,197,94,0.35);
+      color: #bbf7d0;
+    }
+
+    .mini-btn.active-right {
+      background: rgba(59,130,246,0.16);
+      border-color: rgba(59,130,246,0.35);
+      color: #bfdbfe;
+    }
+
+    .lobby-open {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      color: #7dd3fc;
+      text-decoration: none;
+      font-size: 14px;
+    }
 
     .champion {
       margin-top: 12px;
@@ -566,10 +633,43 @@
       font-size: 13px;
     }
 
+    .players-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+      min-width: 0;
+    }
+
+    .editor-table-wrap,
+    .leaderboard-wrap {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.10);
+      background: linear-gradient(180deg, rgba(15,23,42,0.45), rgba(15,23,42,0.2));
+    }
+
+    .tiny-input {
+      width: 100%;
+      padding: 8px 8px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .player-rating {
+      font-weight: 900;
+      color: #f8fafc;
+    }
+
     .small-note {
       margin-top: 12px;
       font-size: 13px;
       color: var(--muted);
+    }
+
+    @media (max-width: 1380px) {
+      .players-layout {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 1250px) {
@@ -577,21 +677,25 @@
       .columns-2 {
         grid-template-columns: 1fr;
       }
+      .sidebar { position: static; }
+    }
 
-      .sidebar {
-        position: static;
-      }
+    @media (max-width: 1200px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-stream { min-width: 0; }
+      .hero-stream-frame { height: 360px; }
+      .hero-score { text-align: left; padding-top: 0; }
     }
 
     @media (max-width: 768px) {
       .container { padding: 14px; }
       .title { font-size: 24px; }
-      .hero { grid-template-columns: 1fr; }
       .hero h2 { font-size: 22px; }
-      .hero-score { text-align: left; }
       .hero-score .big { font-size: 28px; }
       .btn-row { grid-template-columns: 1fr; }
       th, td { white-space: normal; }
+      .map-controls { grid-template-columns: 1fr; }
+      .map-winner-wrap { justify-content: flex-start; }
     }
   </style>
 </head>
@@ -600,7 +704,7 @@
     <div class="topbar">
       <div>
         <h1 class="title">CS2 MVOU Tournament</h1>
-        <div class="subtitle">Онлайн-табло, групповой этап по очкам → автоматический полуфинал → финал</div>
+        <div class="subtitle">BO3 групповой этап и полуфиналы, BO5 финал, очки по картам, топ-10 игроков</div>
       </div>
       <div class="pill">Major board</div>
     </div>
@@ -623,53 +727,54 @@
           </div>
 
           <div class="small-note">
-            Сейчас сетка построена под 5 команд: A, B, C, D, E.
+            Сетка построена под 5 команд: A, B, C, D, E.
           </div>
         </div>
 
         <div class="card">
           <h2 class="section-title">Правила</h2>
           <div class="muted">
-            Игры проводятся на платформе CYBERSHOKE<br>
-            Победа = 3 очка<br>
-            Поражение = 0 очков<br><br>
-            Полуфинал формируется автоматически:<br>
-            1 место vs 4 место<br>
-            2 место vs 3 место<br><br>
-            Финал формируется автоматически из победителей полуфиналов.<br><br>
-            Для каждого матча доступны 3 ссылки на лобби под BO3.
+            Групповой этап: BO3<br>
+            Полуфинал: BO3<br>
+            Финал: BO5<br><br>
+            Победитель карты отмечается вручную.<br>
+            Победитель встречи может быть выставлен вручную, но если серия уже закрыта по картам — определяется автоматически.<br>
+            Очки в таблице = выигранные карты.<br><br>
+            2:0 → 2 и 0 очков<br>
+            2:1 → 2 и 1 очко<br>
+            3:2 → 3 и 2 очка в финале<br><br>
+            Блок игроков считает общий турнирный рейтинг по ручным K/A/D и сыгранным картам.
           </div>
         </div>
       </aside>
 
       <main class="board-stack">
         <section class="hero">
-  <div class="hero-main">
-    <div class="pill" id="heroStatus">Сейчас играют</div>
-    <h2 id="heroMatch">—</h2>
+          <div class="hero-main">
+            <div class="pill" id="heroStatus">Сейчас играют</div>
+            <h2 id="heroMatch">—</h2>
+            <div class="hero-meta-wrap">
+              <p id="heroMeta">Заполни карты, победителей и статистику игроков.</p>
+              <div class="hero-stream-note">● Twitch stream</div>
+              <div id="championBadge"></div>
+            </div>
+          </div>
 
-    <div class="hero-meta-wrap">
-      <p id="heroMeta">Заполни названия команд и отмечай победителей.</p>
-      <div class="hero-stream-note">● Twitch stream</div>
-      <div id="championBadge"></div>
-    </div>
-  </div>
+          <div class="hero-stream">
+            <iframe
+              class="hero-stream-frame"
+              src="https://player.twitch.tv/?channel=cocomiracle1&parent=borofxd.github.io&muted=true"
+              allowfullscreen>
+            </iframe>
+          </div>
 
-  <div class="hero-stream">
-    <iframe
-      class="hero-stream-frame"
-      src="https://player.twitch.tv/?channel=cocomiracle1&parent=borofxd.github.io&muted=true"
-      allowfullscreen>
-    </iframe>
-  </div>
-
-  <div class="hero-score">
-    <div class="hero-score-card">
-      <div class="small">Завершено матчей</div>
-      <div class="big" id="doneCounter">0 / 10</div>
-    </div>
-  </div>
-</section>
+          <div class="hero-score">
+            <div class="hero-score-card">
+              <div class="small">Завершено встреч</div>
+              <div class="big" id="doneCounter">0 / 10</div>
+            </div>
+          </div>
+        </section>
 
         <section class="columns-2">
           <div class="card">
@@ -679,11 +784,10 @@
                 <thead>
                   <tr>
                     <th style="width: 52px;">#</th>
-                    <th style="width: 52px;"></th>
-                    <th style="width: 110px;>Команда</th>
-                    <th style="width: 72px;">Игры</th>
+                    <th style="width: 180px;">Команда</th>
+                    <th style="width: 80px;">Встречи</th>
                     <th style="width: 72px;">Победы</th>
-                    <th style="width: 72px;">Поражения</th>
+                    <th style="width: 90px;">Поражения</th>
                     <th style="width: 72px;">Очки</th>
                   </tr>
                 </thead>
@@ -701,6 +805,7 @@
                   <tr>
                     <th style="width: 52px;">#</th>
                     <th>Матч</th>
+                    <th style="width: 90px;">Серия</th>
                     <th style="width: 180px;">Победитель</th>
                   </tr>
                 </thead>
@@ -733,6 +838,55 @@
             </div>
           </div>
         </section>
+
+        <section class="players-layout">
+          <div class="card">
+            <h2 class="section-title">Редактор статистики игроков</h2>
+            <div class="small-note" style="margin-top:0; margin-bottom:14px;">
+              Вноси кумулятивную статистику игрока по турниру: сыгранные карты, килы, ассисты, смерти.
+            </div>
+            <div class="editor-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 42px;">#</th>
+                    <th style="width: 180px;">Игрок</th>
+                    <th style="width: 140px;">Команда</th>
+                    <th style="width: 72px;">Карты</th>
+                    <th style="width: 72px;">K</th>
+                    <th style="width: 72px;">A</th>
+                    <th style="width: 72px;">D</th>
+                    <th style="width: 90px;">Rating</th>
+                  </tr>
+                </thead>
+                <tbody id="playersEditorBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="section-title">Топ-10 игроков турнира</h2>
+            <div class="small-note" style="margin-top:0; margin-bottom:14px;">
+              Rating — внутренний турнирный показатель на базе Maps/K/A/D, а не официальный HLTV Rating 2.0.
+            </div>
+            <div class="leaderboard-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 42px;">#</th>
+                    <th>Игрок</th>
+                    <th style="width: 140px;">Команда</th>
+                    <th style="width: 72px;">K</th>
+                    <th style="width: 72px;">A</th>
+                    <th style="width: 72px;">D</th>
+                    <th style="width: 90px;">Rating</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboardBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   </div>
@@ -758,286 +912,137 @@
       ['b', 'c'],
       ['e', 'b']
     ];
-   let state = {
-  teams: { ...defaultTeams },
-  regular: schedule.map((pair, i) => ({
-    id: i + 1,
-    team1: pair[0],
-    team2: pair[1],
-    winner: '',
-    lobbies: ['', '', ''],
-    lobbyScores: [
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null }
-    ]
-  })),
-  semifinals: [
-    {
-      id: 1,
-      team1: '',
-      team2: '',
-      winner: '',
-      lobbies: ['', '', ''],
-      lobbyScores: [
-        { left: null, right: null, updatedAt: null },
-        { left: null, right: null, updatedAt: null },
-        { left: null, right: null, updatedAt: null }
-      ]
-    },
-    {
-      id: 2,
-      team1: '',
-      team2: '',
-      winner: '',
-      lobbies: ['', '', ''],
-      lobbyScores: [
-        { left: null, right: null, updatedAt: null },
-        { left: null, right: null, updatedAt: null },
-        { left: null, right: null, updatedAt: null }
-      ]
+
+    function createEmptyMap() {
+      return {
+        winner: '',
+        score1: '',
+        score2: '',
+        lobby: ''
+      };
     }
-  ],
-  final: {
-    id: 1,
-    team1: '',
-    team2: '',
-    winner: '',
-    lobbies: ['', '', ''],
-    lobbyScores: [
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null },
-      { left: null, right: null, updatedAt: null }
-    ]
-  }
-};
+
+    function createMatch(id, team1 = '', team2 = '', mapsCount = 3) {
+      return {
+        id,
+        team1,
+        team2,
+        winner: '',
+        maps: Array.from({ length: mapsCount }, () => createEmptyMap())
+      };
+    }
+
+    function createPlayer(index) {
+      return {
+        id: index + 1,
+        name: '',
+        team: '',
+        maps: '',
+        kills: '',
+        assists: '',
+        deaths: ''
+      };
+    }
+
+    let state = {
+      teams: { ...defaultTeams },
+      regular: schedule.map((pair, i) => createMatch(i + 1, pair[0], pair[1], 3)),
+      semifinals: [
+        createMatch(1, '', '', 3),
+        createMatch(2, '', '', 3)
+      ],
+      final: createMatch(1, '', '', 5),
+      players: Array.from({ length: 20 }, (_, i) => createPlayer(i))
+    };
+
     async function saveState() {
-  try {
-    await window.setDoc(window.ref, { state }, { merge: true });
-  } catch (e) {
-    console.error(e);
-  }
-}
+      try {
+        await window.setDoc(window.ref, { state }, { merge: true });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function normalizeMatch(match, id, mapsCount) {
+      const maps = Array.isArray(match?.maps) ? match.maps : [];
+      return {
+        id: match?.id || id,
+        team1: match?.team1 || '',
+        team2: match?.team2 || '',
+        winner: match?.winner || '',
+        maps: Array.from({ length: mapsCount }, (_, i) => {
+          const map = maps[i] || {};
+          return {
+            winner: map.winner || '',
+            score1: map.score1 ?? '',
+            score2: map.score2 ?? '',
+            lobby: map.lobby || ''
+          };
+        })
+      };
+    }
+
+    function normalizePlayer(player, index) {
+      return {
+        id: player?.id || index + 1,
+        name: player?.name || '',
+        team: player?.team || '',
+        maps: player?.maps ?? '',
+        kills: player?.kills ?? '',
+        assists: player?.assists ?? '',
+        deaths: player?.deaths ?? ''
+      };
+    }
+
+    function ensurePlayersLength() {
+      while (state.players.length < 20) {
+        state.players.push(createPlayer(state.players.length));
+      }
+    }
 
     function loadState() {
-  window.onSnapshot(window.ref, (docSnap) => {
-    try {
-      const remoteState = docSnap.data()?.state;
+      window.onSnapshot(window.ref, (docSnap) => {
+        try {
+          const remoteState = docSnap.data()?.state;
 
-      if (!remoteState) {
-        saveState();
-        return;
-      }
+          if (!remoteState) {
+            saveState();
+            return;
+          }
 
-      if (remoteState?.teams && remoteState?.regular) {
-        state = remoteState;
+          if (remoteState?.teams && remoteState?.regular) {
+            state = {
+              teams: { ...defaultTeams, ...(remoteState.teams || {}) },
+              regular: (remoteState.regular || []).map((m, index) => normalizeMatch(m, index + 1, 3)),
+              semifinals: (remoteState.semifinals || []).map((m, index) => normalizeMatch(m, index + 1, 3)),
+              final: normalizeMatch(remoteState.final || {}, 1, 5),
+              players: Array.isArray(remoteState.players)
+                ? remoteState.players.map((p, index) => normalizePlayer(p, index))
+                : Array.from({ length: 20 }, (_, i) => createPlayer(i))
+            };
 
-        state.regular = state.regular.map((m, index) => ({
-          id: m.id || index + 1,
-          team1: m.team1 || '',
-          team2: m.team2 || '',
-          winner: m.winner || '',
-          lobbies: Array.isArray(m.lobbies)
-            ? [...m.lobbies, '', '', ''].slice(0, 3)
-            : ['', '', ''],
-          lobbyScores: Array.isArray(m.lobbyScores)
-            ? [...m.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
-                left: s?.left ?? null,
-                right: s?.right ?? null,
-                updatedAt: s?.updatedAt ?? null
-              }))
-            : [
-                { left: null, right: null, updatedAt: null },
-                { left: null, right: null, updatedAt: null },
-                { left: null, right: null, updatedAt: null }
-              ]
-        }));
+            while (state.regular.length < schedule.length) {
+              const pair = schedule[state.regular.length];
+              state.regular.push(createMatch(state.regular.length + 1, pair[0], pair[1], 3));
+            }
 
-        state.semifinals = (state.semifinals || []).map((m, index) => ({
-          id: m.id || index + 1,
-          team1: m.team1 || '',
-          team2: m.team2 || '',
-          winner: m.winner || '',
-          lobbies: Array.isArray(m.lobbies)
-            ? [...m.lobbies, '', '', ''].slice(0, 3)
-            : ['', '', ''],
-          lobbyScores: Array.isArray(m.lobbyScores)
-            ? [...m.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
-                left: s?.left ?? null,
-                right: s?.right ?? null,
-                updatedAt: s?.updatedAt ?? null
-              }))
-            : [
-                { left: null, right: null, updatedAt: null },
-                { left: null, right: null, updatedAt: null },
-                { left: null, right: null, updatedAt: null }
-              ]
-        }));
+            while (state.semifinals.length < 2) {
+              state.semifinals.push(createMatch(state.semifinals.length + 1, '', '', 3));
+            }
 
-        while (state.semifinals.length < 2) {
-          state.semifinals.push({
-            id: state.semifinals.length + 1,
-            team1: '',
-            team2: '',
-            winner: '',
-            lobbies: ['', '', ''],
-            lobbyScores: [
-              { left: null, right: null, updatedAt: null },
-              { left: null, right: null, updatedAt: null },
-              { left: null, right: null, updatedAt: null }
-            ]
-          });
+            ensurePlayersLength();
+            render();
+          }
+        } catch (e) {
+          console.error(e);
         }
-
-        state.final = {
-          id: 1,
-          team1: state.final?.team1 || '',
-          team2: state.final?.team2 || '',
-          winner: state.final?.winner || '',
-          lobbies: Array.isArray(state.final?.lobbies)
-            ? [...state.final.lobbies, '', '', ''].slice(0, 3)
-            : ['', '', ''],
-          lobbyScores: Array.isArray(state.final?.lobbyScores)
-            ? [...state.final.lobbyScores, {}, {}, {}].slice(0, 3).map((s) => ({
-                left: s?.left ?? null,
-                right: s?.right ?? null,
-                updatedAt: s?.updatedAt ?? null
-              }))
-            : [
-                { left: null, right: null, updatedAt: null },
-                { left: null, right: null, updatedAt: null },
-                { left: null, right: null, updatedAt: null }
-              ]
-        };
-
-        render();
-      }
-    } catch (e) {
-      console.error(e);
+      });
     }
-  });
-}
 
     function getTeamName(key) {
       return state.teams[key] || key || '—';
     }
-    const lobbyPollingMap = new Map();
 
-function emptyLobbyScore() {
-  return {
-    left: null,
-    right: null,
-    updatedAt: null
-  };
-}
-
-function ensureLobbyScoreArray(match) {
-  if (!Array.isArray(match.lobbyScores)) {
-    match.lobbyScores = [emptyLobbyScore(), emptyLobbyScore(), emptyLobbyScore()];
-  }
-
-  match.lobbyScores = [...match.lobbyScores, emptyLobbyScore(), emptyLobbyScore(), emptyLobbyScore()]
-    .slice(0, 3)
-    .map((s) => ({
-      left: s?.left ?? null,
-      right: s?.right ?? null,
-      updatedAt: s?.updatedAt ?? null
-    }));
-}
-
-function extractLobbyId(url) {
-  if (!url) return null;
-  const match = url.match(/match\/(\d+)/);
-  return match ? match[1] : null;
-}
-
-async function fetchLobbyScoreById(idLobby) {
-  try {
-    if (!idLobby) return null;
-
-    const response = await fetch('https://script.google.com/macros/s/AKfycbwnEZxjKnjewiTii-UGiXw7c3sMCr-ubek1IqdkYMFbBOMvWxxnL-qbG3zIAagdjiEY/exec', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id_lobby: String(idLobby)
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const json = await response.json();
-
-    return {
-  left: json?.left ?? null,
-  right: json?.right ?? null,
-  updatedAt: new Date().toLocaleTimeString('ru-RU')
-   };
-  } catch (error) {
-    console.error('Ошибка загрузки счета:', error);
-    return null;
-  }
-}
-
-async function refreshLobbyScore(match, lobbyIndex) {
-  ensureLobbyScoreArray(match);
-
-  const url = match.lobbies?.[lobbyIndex];
-  const idLobby = extractLobbyId(url);
-
-  if (!url || !idLobby) {
-    match.lobbyScores[lobbyIndex] = emptyLobbyScore();
-    return;
-  }
-
-  const score = await fetchLobbyScoreById(idLobby);
-
-  if (!score) {
-    match.lobbyScores[lobbyIndex] = emptyLobbyScore();
-    return;
-  }
-
-  match.lobbyScores[lobbyIndex] = score;
-}
-
-function getPollingKey(stage, id, index) {
-  return `${stage}-${id}-${index}`;
-}
-
-function stopLobbyPolling(stage, id, index) {
-  const key = getPollingKey(stage, id, index);
-  if (!lobbyPollingMap.has(key)) return;
-
-  clearInterval(lobbyPollingMap.get(key));
-  lobbyPollingMap.delete(key);
-}
-
-function startLobbyPolling(match, stage, id, index) {
-  const key = getPollingKey(stage, id, index);
-
-  stopLobbyPolling(stage, id, index);
-
-  const url = match.lobbies?.[index];
-  if (!url || !extractLobbyId(url)) {
-    return;
-  }
-
-  refreshLobbyScore(match, index).then(() => {
-    saveState();
-    render();
-  });
-
-  const intervalId = setInterval(async () => {
-    await refreshLobbyScore(match, index);
-    saveState();
-    render();
-  }, 3 * 60 * 1000);
-
-  lobbyPollingMap.set(key, intervalId);
-}
     function setTeamsFromInputs() {
       ['a', 'b', 'c', 'd', 'e'].forEach((key) => {
         const val = document.getElementById(`team-${key}`).value.trim();
@@ -1051,6 +1056,35 @@ function startLobbyPolling(match, stage, id, index) {
       ['a', 'b', 'c', 'd', 'e'].forEach((key) => {
         document.getElementById(`team-${key}`).value = state.teams[key] || defaultTeams[key];
       });
+    }
+
+    function getMatchMapsToWin(stage) {
+      return stage === 'final' ? 3 : 2;
+    }
+
+    function getSeriesScore(match) {
+      const result = { left: 0, right: 0 };
+      if (!Array.isArray(match.maps)) return result;
+
+      match.maps.forEach((map) => {
+        if (map.winner === match.team1) result.left += 1;
+        if (map.winner === match.team2) result.right += 1;
+      });
+
+      return result;
+    }
+
+    function getAutoWinner(match, stage) {
+      const need = getMatchMapsToWin(stage);
+      const series = getSeriesScore(match);
+
+      if (series.left >= need) return match.team1;
+      if (series.right >= need) return match.team2;
+      return '';
+    }
+
+    function getResolvedWinner(match, stage) {
+      return getAutoWinner(match, stage) || match.winner || '';
     }
 
     function calculateStandings() {
@@ -1068,14 +1102,18 @@ function startLobbyPolling(match, stage, id, index) {
       });
 
       state.regular.forEach((match) => {
-        if (!match.winner) return;
-        const loser = match.winner === match.team1 ? match.team2 : match.team1;
+        const winner = getResolvedWinner(match, 'regular');
+        if (!winner) return;
+
+        const loser = winner === match.team1 ? match.team2 : match.team1;
+        const series = getSeriesScore(match);
 
         stats[match.team1].played += 1;
         stats[match.team2].played += 1;
-        stats[match.winner].wins += 1;
-        stats[match.winner].points += 3;
+        stats[winner].wins += 1;
         stats[loser].losses += 1;
+        stats[match.team1].points += series.left;
+        stats[match.team2].points += series.right;
       });
 
       return Object.values(stats).sort((a, b) => {
@@ -1086,59 +1124,95 @@ function startLobbyPolling(match, stage, id, index) {
       });
     }
 
+    function clearMatchProgress(match, mapsCount) {
+      match.winner = '';
+      match.maps = Array.from({ length: mapsCount }, () => createEmptyMap());
+    }
+
     function hydratePlayoffFromStandings(standings) {
-      const allDone = state.regular.every((m) => !!m.winner);
+      const allDone = state.regular.every((m) => !!getResolvedWinner(m, 'regular'));
 
       if (!allDone || standings.length < 4) {
-        state.semifinals[0].team1 = '';
-        state.semifinals[0].team2 = '';
-        state.semifinals[0].winner = '';
-        state.semifinals[1].team1 = '';
-        state.semifinals[1].team2 = '';
-        state.semifinals[1].winner = '';
+        state.semifinals.forEach((match) => {
+          if (match.team1 || match.team2 || match.winner) {
+            match.team1 = '';
+            match.team2 = '';
+            clearMatchProgress(match, 3);
+          }
+        });
+
         state.final.team1 = '';
         state.final.team2 = '';
-        state.final.winner = '';
+        clearMatchProgress(state.final, 5);
         return;
       }
 
-      const sf1t1 = standings[0].key;
-      const sf1t2 = standings[3].key;
-      const sf2t1 = standings[1].key;
-      const sf2t2 = standings[2].key;
+      const targets = [
+        [standings[0].key, standings[3].key],
+        [standings[1].key, standings[2].key]
+      ];
 
-      const oldSf1 = [state.semifinals[0].team1, state.semifinals[0].team2].join('|');
-      const oldSf2 = [state.semifinals[1].team1, state.semifinals[1].team2].join('|');
+      state.semifinals.forEach((match, index) => {
+        const [next1, next2] = targets[index];
+        const changed = match.team1 !== next1 || match.team2 !== next2;
 
-      state.semifinals[0].team1 = sf1t1;
-      state.semifinals[0].team2 = sf1t2;
-      state.semifinals[1].team1 = sf2t1;
-      state.semifinals[1].team2 = sf2t2;
+        match.team1 = next1;
+        match.team2 = next2;
 
-      if (oldSf1 !== [sf1t1, sf1t2].join('|')) {
-        state.semifinals[0].winner = '';
-      }
+        if (changed) {
+          clearMatchProgress(match, 3);
+        }
+      });
 
-      if (oldSf2 !== [sf2t1, sf2t2].join('|')) {
-        state.semifinals[1].winner = '';
-      }
-
-      const finalT1 = state.semifinals[0].winner || '';
-      const finalT2 = state.semifinals[1].winner || '';
-      const oldFinal = [state.final.team1, state.final.team2].join('|');
-      const newFinal = [finalT1, finalT2].join('|');
+      const finalT1 = getResolvedWinner(state.semifinals[0], 'semifinal') || '';
+      const finalT2 = getResolvedWinner(state.semifinals[1], 'semifinal') || '';
+      const finalChanged = state.final.team1 !== finalT1 || state.final.team2 !== finalT2;
 
       state.final.team1 = finalT1;
       state.final.team2 = finalT2;
 
-      if (oldFinal !== newFinal) {
-        state.final.winner = '';
+      if (finalChanged) {
+        clearMatchProgress(state.final, 5);
       }
+    }
+
+    function calculateTournamentRating(player) {
+      const maps = Number(player.maps) || 0;
+      const kills = Number(player.kills) || 0;
+      const assists = Number(player.assists) || 0;
+      const deaths = Number(player.deaths) || 0;
+
+      if (!maps) return 0;
+
+      const kpr = kills / maps;
+      const apr = assists / maps;
+      const dpr = deaths / maps;
+
+      const rating = 0.7 + kpr * 0.7 + apr * 0.12 - dpr * 0.41;
+      return Math.max(0, rating);
+    }
+
+    function getSortedPlayers() {
+      return state.players
+        .filter((p) => p.name && String(p.name).trim())
+        .map((p) => ({
+          ...p,
+          mapsNum: Number(p.maps) || 0,
+          killsNum: Number(p.kills) || 0,
+          assistsNum: Number(p.assists) || 0,
+          deathsNum: Number(p.deaths) || 0,
+          rating: calculateTournamentRating(p)
+        }))
+        .sort((a, b) => {
+          if (b.rating !== a.rating) return b.rating - a.rating;
+          if (b.killsNum !== a.killsNum) return b.killsNum - a.killsNum;
+          if (a.deathsNum !== b.deathsNum) return a.deathsNum - b.deathsNum;
+          return String(a.name).localeCompare(String(b.name), 'ru');
+        });
     }
 
     function renderStandings(standings) {
       const body = document.getElementById('standingsBody');
-
       body.innerHTML = standings.map((team, idx) => {
         const rankClass = idx === 0 ? 'rank-1' : idx < 4 ? `rank-${idx + 1}` : '';
         return `
@@ -1156,98 +1230,253 @@ function startLobbyPolling(match, stage, id, index) {
 
     function renderSummaryTable() {
       const body = document.getElementById('summaryMatchesBody');
+      body.innerHTML = state.regular.map((match) => {
+        const series = getSeriesScore(match);
+        const winner = getResolvedWinner(match, 'regular');
+        return `
+          <tr>
+            <td><strong>${match.id}</strong></td>
+            <td class="table-team">${getTeamName(match.team1)} vs ${getTeamName(match.team2)}</td>
+            <td class="table-muted">${series.left}:${series.right}</td>
+            <td class="table-muted">${winner ? getTeamName(winner) : '—'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
 
-      body.innerHTML = state.regular.map((match) => `
+    function renderPlayersEditor() {
+      const body = document.getElementById('playersEditorBody');
+      body.innerHTML = state.players.map((player, index) => `
         <tr>
-          <td><strong>${match.id}</strong></td>
-          <td class="table-team">${getTeamName(match.team1)} vs ${getTeamName(match.team2)}</td>
-          <td class="table-muted">${match.winner ? getTeamName(match.winner) : '—'}</td>
+          <td><strong>${index + 1}</strong></td>
+          <td><input class="tiny-input" value="${player.name || ''}" onchange="setPlayerField(${index}, 'name', this.value)"></td>
+          <td><input class="tiny-input" value="${player.team || ''}" onchange="setPlayerField(${index}, 'team', this.value)"></td>
+          <td><input class="tiny-input" type="number" min="0" value="${player.maps}" onchange="setPlayerField(${index}, 'maps', this.value)"></td>
+          <td><input class="tiny-input" type="number" min="0" value="${player.kills}" onchange="setPlayerField(${index}, 'kills', this.value)"></td>
+          <td><input class="tiny-input" type="number" min="0" value="${player.assists}" onchange="setPlayerField(${index}, 'assists', this.value)"></td>
+          <td><input class="tiny-input" type="number" min="0" value="${player.deaths}" onchange="setPlayerField(${index}, 'deaths', this.value)"></td>
+          <td class="player-rating">${calculateTournamentRating(player).toFixed(2)}</td>
         </tr>
       `).join('');
     }
 
-    function renderMatchCard(match, stage, live = false) {
-  const team1Name = getTeamName(match.team1);
-  const team2Name = getTeamName(match.team2);
-  const lobbies = Array.isArray(match.lobbies) ? match.lobbies : ['', '', ''];
+    function renderLeaderboard() {
+      const body = document.getElementById('leaderboardBody');
+      const players = getSortedPlayers().slice(0, 10);
 
-  ensureLobbyScoreArray(match);
-  const lobbyScores = match.lobbyScores;
+      body.innerHTML = players.map((player, index) => `
+        <tr class="${index === 0 ? 'rank-1' : index < 4 ? `rank-${index + 1}` : ''}">
+          <td><strong>${index + 1}</strong></td>
+          <td class="table-team">${player.name}</td>
+          <td class="table-muted">${player.team || '—'}</td>
+          <td class="table-muted">${player.killsNum}</td>
+          <td class="table-muted">${player.assistsNum}</td>
+          <td class="table-muted">${player.deathsNum}</td>
+          <td class="player-rating">${player.rating.toFixed(2)}</td>
+        </tr>
+      `).join('');
 
-  const stageLabel =
-    stage === 'regular' ? 'Main stage' :
-    stage === 'semifinal' ? 'Semifinal' :
-    'Final';
+      if (!players.length) {
+        body.innerHTML = `<tr><td colspan="7" class="table-muted">Пока нет данных по игрокам</td></tr>`;
+      }
+    }
 
-  const radioName = `${stage}_${match.id || 'final'}`;
+    function getMatchByStage(stage, id) {
+      if (stage === 'regular') return state.regular.find((m) => m.id === id) || null;
+      if (stage === 'semifinal') return state.semifinals.find((m) => m.id === id) || null;
+      if (stage === 'final') return state.final;
+      return null;
+    }
 
-  return `
-    <div class="match-card ${live ? 'live' : ''}">
-      <div class="match-title">
-        <span>${stageLabel}</span>
-        <span>${match.winner ? 'Завершен' : live ? 'Сейчас идет' : 'Ожидает'}</span>
-      </div>
+    function setWinner(stage, id, winner) {
+      const match = getMatchByStage(stage, id);
+      if (!match) return;
 
-      <div class="team-line ${match.winner === match.team1 ? 'winner' : ''}">
-        <div class="team-name">${team1Name || 'TBD'}</div>
-        <div>${match.winner === match.team1 ? '✔' : ''}</div>
-      </div>
-      <div class="team-line ${match.winner === match.team2 ? 'winner' : ''}">
-        <div class="team-name">${team2Name || 'TBD'}</div>
-        <div>${match.winner === match.team2 ? '✔' : ''}</div>
-      </div>
+      match.winner = winner;
+      saveState();
+      render();
+    }
 
-      ${match.team1 && match.team2 ? `
-        <div class="check-wrap">
-          <label class="check-btn">
-            <input
-              type="radio"
-              name="${radioName}"
-              ${match.winner === match.team1 ? 'checked' : ''}
-              onchange="setWinner('${stage}', ${match.id || 1}, '${match.team1}')"
-            >
-            ${team1Name}
-          </label>
-          <label class="check-btn">
-            <input
-              type="radio"
-              name="${radioName}"
-              ${match.winner === match.team2 ? 'checked' : ''}
-              onchange="setWinner('${stage}', ${match.id || 1}, '${match.team2}')"
-            >
-            ${team2Name}
-          </label>
-        </div>
-      ` : `<div class="small-note">Пара определится автоматически</div>`}
+    function setMapWinner(stage, id, mapIndex, winner) {
+      const match = getMatchByStage(stage, id);
+      if (!match || !match.maps[mapIndex]) return;
 
-      <div class="lobby-grid">
-        ${[0, 1, 2].map((index) => `
-          <div class="lobby-row">
-            <input
-              class="lobby-input"
-              placeholder="Ссылка на лобби ${index + 1}"
-              value="${lobbies[index] || ''}"
-              oninput="setLobby('${stage}', ${match.id || 1}, ${index}, this.value)"
-            >
-            <div class="lobby-score">
-              ${lobbyScores[index]?.left ?? '—'} : ${lobbyScores[index]?.right ?? '—'}
-            </div>
-            ${lobbies[index]
-              ? `<a class="lobby-open" href="${lobbies[index]}" target="_blank" rel="noopener noreferrer">↗</a>`
-              : `<div></div>`}
+      match.maps[mapIndex].winner = winner;
+      saveState();
+      render();
+    }
+
+    function setMapScore(stage, id, mapIndex, side, value) {
+      const match = getMatchByStage(stage, id);
+      if (!match || !match.maps[mapIndex]) return;
+
+      match.maps[mapIndex][side] = value;
+      saveState();
+      render();
+    }
+
+    function setMapLobby(stage, id, mapIndex, value) {
+      const match = getMatchByStage(stage, id);
+      if (!match || !match.maps[mapIndex]) return;
+
+      match.maps[mapIndex].lobby = value;
+      saveState();
+      render();
+    }
+
+    function setPlayerField(index, field, value) {
+      ensurePlayersLength();
+      if (!state.players[index]) return;
+
+      state.players[index][field] = value;
+      saveState();
+      render();
+    }
+
+    function resetAll() {
+      state = {
+        teams: { ...defaultTeams },
+        regular: schedule.map((pair, i) => createMatch(i + 1, pair[0], pair[1], 3)),
+        semifinals: [
+          createMatch(1, '', '', 3),
+          createMatch(2, '', '', 3)
+        ],
+        final: createMatch(1, '', '', 5),
+        players: Array.from({ length: 20 }, (_, i) => createPlayer(i))
+      };
+
+      saveState();
+      render();
+    }
+
+    function renderMatchCard(match, stage, live = false, mapsCount = 3) {
+      const team1Name = getTeamName(match.team1);
+      const team2Name = getTeamName(match.team2);
+      const stageLabel =
+        stage === 'regular' ? 'Main stage' :
+        stage === 'semifinal' ? 'Semifinal' :
+        'Final';
+
+      const radioName = `${stage}_${match.id || 'final'}`;
+      const series = getSeriesScore(match);
+      const autoWinner = getAutoWinner(match, stage);
+      const resolvedWinner = getResolvedWinner(match, stage);
+
+      return `
+        <div class="match-card ${live ? 'live' : ''}">
+          <div class="match-title">
+            <span>${stageLabel}</span>
+            <span>${resolvedWinner ? 'Завершен' : live ? 'Сейчас идет' : 'Ожидает'}</span>
           </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-}
+
+          <div class="team-line ${resolvedWinner === match.team1 ? 'winner' : ''}">
+            <div class="team-name">${team1Name || 'TBD'}</div>
+            <div>${resolvedWinner === match.team1 ? '✔' : ''}</div>
+          </div>
+          <div class="team-line ${resolvedWinner === match.team2 ? 'winner' : ''}">
+            <div class="team-name">${team2Name || 'TBD'}</div>
+            <div>${resolvedWinner === match.team2 ? '✔' : ''}</div>
+          </div>
+
+          ${match.team1 && match.team2 ? `
+            <div class="check-wrap">
+              <label class="check-btn">
+                <input
+                  type="radio"
+                  name="${radioName}"
+                  ${resolvedWinner === match.team1 ? 'checked' : ''}
+                  onchange="setWinner('${stage}', ${match.id || 1}, '${match.team1}')"
+                >
+                ${team1Name}
+              </label>
+              <label class="check-btn">
+                <input
+                  type="radio"
+                  name="${radioName}"
+                  ${resolvedWinner === match.team2 ? 'checked' : ''}
+                  onchange="setWinner('${stage}', ${match.id || 1}, '${match.team2}')"
+                >
+                ${team2Name}
+              </label>
+            </div>
+          ` : `<div class="small-note">Пара определится автоматически</div>`}
+
+          <div class="series-box">
+            <div>
+              <div class="series-label">Счет серии</div>
+              ${autoWinner ? `<div class="small-note" style="margin-top:6px;">Авто-победитель определен по картам</div>` : ''}
+            </div>
+            <div class="series-score">${series.left}:${series.right}</div>
+          </div>
+
+          <div class="maps-grid">
+            ${Array.from({ length: mapsCount }, (_, index) => {
+              const map = match.maps[index] || createEmptyMap();
+              return `
+                <div class="map-row">
+                  <div class="map-top">
+                    <div class="map-label">Карта ${index + 1}</div>
+                    <div class="map-score-edit">
+                      <input
+                        class="score-input"
+                        type="number"
+                        min="0"
+                        placeholder="-"
+                        value="${map.score1}"
+                        onchange="setMapScore('${stage}', ${match.id || 1}, ${index}, 'score1', this.value)"
+                      >
+                      <span class="score-separator">:</span>
+                      <input
+                        class="score-input"
+                        type="number"
+                        min="0"
+                        placeholder="-"
+                        value="${map.score2}"
+                        onchange="setMapScore('${stage}', ${match.id || 1}, ${index}, 'score2', this.value)"
+                      >
+                    </div>
+                  </div>
+
+                  <div class="map-controls">
+                    <input
+                      class="map-lobby-input"
+                      placeholder="Ссылка на лобби ${index + 1}"
+                      value="${map.lobby || ''}"
+                      onchange="setMapLobby('${stage}', ${match.id || 1}, ${index}, this.value)"
+                    >
+
+                    <div class="map-winner-wrap">
+                      <button
+                        type="button"
+                        class="mini-btn ${map.winner === match.team1 ? 'active-left' : ''}"
+                        onclick="setMapWinner('${stage}', ${match.id || 1}, ${index}, '${match.team1}')"
+                      >${team1Name}</button>
+
+                      <button
+                        type="button"
+                        class="mini-btn ${map.winner === match.team2 ? 'active-right' : ''}"
+                        onclick="setMapWinner('${stage}', ${match.id || 1}, ${index}, '${match.team2}')"
+                      >${team2Name}</button>
+                    </div>
+
+                    ${map.lobby
+                      ? `<a class="lobby-open" href="${map.lobby}" target="_blank" rel="noopener noreferrer">↗</a>`
+                      : `<div></div>`}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
 
     function renderRegularMatches() {
       const container = document.getElementById('regularMatches');
-      const firstOpenIndex = state.regular.findIndex((m) => !m.winner);
+      const firstOpenIndex = state.regular.findIndex((m) => !getResolvedWinner(m, 'regular'));
 
       container.innerHTML = state.regular
-        .map((match, idx) => renderMatchCard(match, 'regular', idx === firstOpenIndex))
+        .map((match, idx) => renderMatchCard(match, 'regular', idx === firstOpenIndex, 3))
         .join('');
     }
 
@@ -1255,8 +1484,8 @@ function startLobbyPolling(match, stage, id, index) {
       const container = document.getElementById('semifinalMatches');
 
       container.innerHTML = `
-        ${renderMatchCard(state.semifinals[0], 'semifinal', !state.semifinals[0].winner && !!state.semifinals[0].team1 && !!state.semifinals[0].team2)}
-        ${renderMatchCard(state.semifinals[1], 'semifinal', !state.semifinals[1].winner && !!state.semifinals[1].team1 && !!state.semifinals[1].team2)}
+        ${renderMatchCard(state.semifinals[0], 'semifinal', !getResolvedWinner(state.semifinals[0], 'semifinal') && !!state.semifinals[0].team1 && !!state.semifinals[0].team2, 3)}
+        ${renderMatchCard(state.semifinals[1], 'semifinal', !getResolvedWinner(state.semifinals[1], 'semifinal') && !!state.semifinals[1].team1 && !!state.semifinals[1].team2, 3)}
       `;
     }
 
@@ -1265,12 +1494,13 @@ function startLobbyPolling(match, stage, id, index) {
       container.innerHTML = renderMatchCard(
         state.final,
         'final',
-        !state.final.winner && !!state.final.team1 && !!state.final.team2
+        !getResolvedWinner(state.final, 'final') && !!state.final.team1 && !!state.final.team2,
+        5
       );
     }
 
     function renderHero(standings) {
-      const completed = state.regular.filter((m) => !!m.winner).length;
+      const completed = state.regular.filter((m) => !!getResolvedWinner(m, 'regular')).length;
       document.getElementById('doneCounter').textContent = `${completed} / ${state.regular.length}`;
 
       const heroStatus = document.getElementById('heroStatus');
@@ -1280,34 +1510,38 @@ function startLobbyPolling(match, stage, id, index) {
 
       championBadge.innerHTML = '';
 
-      const currentRegular = state.regular.find((m) => !m.winner);
+      const currentRegular = state.regular.find((m) => !getResolvedWinner(m, 'regular'));
       if (currentRegular) {
+        const series = getSeriesScore(currentRegular);
         heroStatus.textContent = 'Сейчас играют';
         heroMatch.textContent = `${getTeamName(currentRegular.team1)} vs ${getTeamName(currentRegular.team2)}`;
-        heroMeta.textContent = `Матч #${currentRegular.id} группового этапа / BO3`;
+        heroMeta.textContent = `Матч #${currentRegular.id} группового этапа / BO3 / серия ${series.left}:${series.right}`;
         return;
       }
 
-      const currentSemi = state.semifinals.find((m) => m.team1 && m.team2 && !m.winner);
+      const currentSemi = state.semifinals.find((m) => m.team1 && m.team2 && !getResolvedWinner(m, 'semifinal'));
       if (currentSemi) {
+        const series = getSeriesScore(currentSemi);
         heroStatus.textContent = 'Полуфинал';
         heroMatch.textContent = `${getTeamName(currentSemi.team1)} vs ${getTeamName(currentSemi.team2)}`;
-        heroMeta.textContent = 'Автоматически сформировано из топ-4 по очкам';
+        heroMeta.textContent = `Полуфинал / BO3 / серия ${series.left}:${series.right}`;
         return;
       }
 
-      if (state.final.team1 && state.final.team2 && !state.final.winner) {
+      if (state.final.team1 && state.final.team2 && !getResolvedWinner(state.final, 'final')) {
+        const series = getSeriesScore(state.final);
         heroStatus.textContent = 'Финал';
         heroMatch.textContent = `${getTeamName(state.final.team1)} vs ${getTeamName(state.final.team2)}`;
-        heroMeta.textContent = 'Финальная BO3 серия';
+        heroMeta.textContent = `Финал / BO5 / серия ${series.left}:${series.right}`;
         return;
       }
 
-      if (state.final.winner) {
+      const finalWinner = getResolvedWinner(state.final, 'final');
+      if (finalWinner) {
         heroStatus.textContent = 'Чемпион';
-        heroMatch.textContent = getTeamName(state.final.winner);
+        heroMatch.textContent = getTeamName(finalWinner);
         heroMeta.textContent = 'Победитель турнира';
-        championBadge.innerHTML = `<div class="champion">🏆 Чемпион: ${getTeamName(state.final.winner)}</div>`;
+        championBadge.innerHTML = `<div class="champion">🏆 Чемпион: ${getTeamName(finalWinner)}</div>`;
         return;
       }
 
@@ -1315,122 +1549,6 @@ function startLobbyPolling(match, stage, id, index) {
       heroMatch.textContent = standings[0] ? `Лидер: ${standings[0].name}` : '—';
       heroMeta.textContent = 'Заполняй результаты матчей';
     }
-
-    function setWinner(stage, id, winner) {
-      if (stage === 'regular') {
-        const match = state.regular.find((m) => m.id === id);
-        if (match) match.winner = winner;
-      }
-
-      if (stage === 'semifinal') {
-        const match = state.semifinals.find((m) => m.id === id);
-        if (match) match.winner = winner;
-      }
-
-      if (stage === 'final') {
-        state.final.winner = winner;
-      }
-
-      saveState();
-      render();
-    }
-
-    function setLobby(stage, id, index, value) {
-  const applyLobby = (match, stageKey, matchId) => {
-    if (!Array.isArray(match.lobbies)) {
-      match.lobbies = ['', '', ''];
-    }
-
-    ensureLobbyScoreArray(match);
-
-    match.lobbies[index] = value;
-
-    if (!value || !value.trim()) {
-      stopLobbyPolling(stageKey, matchId, index);
-      match.lobbyScores[index] = emptyLobbyScore();
-      saveState();
-      render();
-      return;
-    }
-
-    startLobbyPolling(match, stageKey, matchId, index);
-    saveState();
-    render();
-  };
-
-  if (stage === 'regular') {
-    const match = state.regular.find((m) => m.id === id);
-    if (match) applyLobby(match, 'regular', id);
-  }
-
-  if (stage === 'semifinal') {
-    const match = state.semifinals.find((m) => m.id === id);
-    if (match) applyLobby(match, 'semifinal', id);
-  }
-
-  if (stage === 'final') {
-    applyLobby(state.final, 'final', 1);
-  }
-}
-
-    function resetAll() {
-  state = {
-    teams: { ...defaultTeams },
-    regular: schedule.map((pair, i) => ({
-      id: i + 1,
-      team1: pair[0],
-      team2: pair[1],
-      winner: '',
-      lobbies: ['', '', ''],
-      lobbyScores: [
-        { left: null, right: null, updatedAt: null },
-        { left: null, right: null, updatedAt: null },
-        { left: null, right: null, updatedAt: null }
-      ]
-    })),
-    semifinals: [
-      {
-        id: 1,
-        team1: '',
-        team2: '',
-        winner: '',
-        lobbies: ['', '', ''],
-        lobbyScores: [
-          { left: null, right: null, updatedAt: null },
-          { left: null, right: null, updatedAt: null },
-          { left: null, right: null, updatedAt: null }
-        ]
-      },
-      {
-        id: 2,
-        team1: '',
-        team2: '',
-        winner: '',
-        lobbies: ['', '', ''],
-        lobbyScores: [
-          { left: null, right: null, updatedAt: null },
-          { left: null, right: null, updatedAt: null },
-          { left: null, right: null, updatedAt: null }
-        ]
-      }
-    ],
-    final: {
-      id: 1,
-      team1: '',
-      team2: '',
-      winner: '',
-      lobbies: ['', '', ''],
-      lobbyScores: [
-        { left: null, right: null, updatedAt: null },
-        { left: null, right: null, updatedAt: null },
-        { left: null, right: null, updatedAt: null }
-      ]
-    }
-  };
-
-  saveState();
-  render();
-}
 
     function render() {
       syncInputs();
@@ -1441,23 +1559,28 @@ function startLobbyPolling(match, stage, id, index) {
       renderRegularMatches();
       renderSemifinals();
       renderFinal();
+      renderPlayersEditor();
+      renderLeaderboard();
       renderHero(standings);
     }
 
     window.setWinner = setWinner;
-    window.setLobby = setLobby;
+    window.setMapWinner = setMapWinner;
+    window.setMapScore = setMapScore;
+    window.setMapLobby = setMapLobby;
+    window.setPlayerField = setPlayerField;
 
     window.addEventListener('load', () => {
-    document.getElementById('applyTeamsBtn').addEventListener('click', setTeamsFromInputs);
-    document.getElementById('resetBtn').addEventListener('click', () => {
-    if (confirm('Сбросить названия, результаты и ссылки на лобби?')) {
-      resetAll();
-    }
-  });
+      document.getElementById('applyTeamsBtn').addEventListener('click', setTeamsFromInputs);
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        if (confirm('Сбросить названия, результаты, карты, лобби и статистику игроков?')) {
+          resetAll();
+        }
+      });
 
-  render();
-  loadState();
-});
+      render();
+      loadState();
+    });
   </script>
 </body>
 </html>
