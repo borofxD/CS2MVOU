@@ -1008,13 +1008,30 @@
     };
 
     async function saveState() {
-      try {
-        await window.setDoc(window.ref, { state }, { merge: true });
-      } catch (e) {
-        console.error(e);
-      }
+  try {
+    // защита от затирания пустыми данными
+    if (!state || Object.keys(state).length === 0) {
+      console.warn('Prevented saving empty state');
+      return;
     }
 
+    await window.setDoc(window.ref, { state }, { merge: true });
+
+    // локальный бэкап
+    backupState();
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+function backupState() {
+  try {
+    localStorage.setItem('backup_state', JSON.stringify(state));
+    console.log('Backup saved');
+  } catch (e) {
+    console.error('Backup error', e);
+  }
+}
     function normalizeMatch(match, id, mapsCount) {
       const maps = Array.isArray(match?.maps) ? match.maps : [];
       return {
