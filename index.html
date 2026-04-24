@@ -1057,8 +1057,8 @@
           const remoteState = docSnap.data()?.state;
 
           if (!remoteState) {
-            saveState();
-            return;
+          console.warn('Remote state is empty. Skip saving default state to prevent data loss.');
+           return;
           }
 
           if (remoteState?.teams && remoteState?.regular) {
@@ -1439,21 +1439,6 @@
       render();
     }
 
-    function resetAll() {
-      state = {
-        teams: { ...defaultTeams },
-        regular: schedule.map((pair, i) => createMatch(i + 1, pair[0], pair[1], 3)),
-        semifinals: [
-          createMatch(1, '', '', 3),
-          createMatch(2, '', '', 3)
-        ],
-        final: createMatch(1, '', '', 5),
-        players: Array.from({ length: 25 }, (_, i) => createPlayer(i))
-      };
-
-      saveState();
-      render();
-    }
 
     function renderMatchCard(match, stage, live = false, mapsCount = 3) {
       const team1Name = getTeamName(match.team1);
