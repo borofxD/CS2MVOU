@@ -411,6 +411,21 @@
       font-weight: 900;
     }
 
+    .stage-round-label {
+      margin: 2px 0 10px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .stage-round-label-final {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
     .match-card {
       background: linear-gradient(180deg, #1a2333 0%, #111827 100%);
       border: 1px solid rgba(148,163,184,0.12);
@@ -1856,15 +1871,12 @@
         <div class="card">
           <h2 class="section-title">Правила</h2>
           <div class="muted">
-            Групповой этап: BO3<br>
-            Полуфинал: BO3<br>
-            Финал: BO5<br><br>
-            Победитель карты отмечается вручную.<br>
-            Победитель встречи можно выбрать вручную, но если серия уже закрыта по картам — он определяется автоматически.<br>
-            Очки в таблице = выигранные карты.<br><br>
-            2:0 → 2 и 0 очков<br>
-            2:1 → 2 и 1 очко<br>
-            3:2 → 3 и 2 очка в финале
+            Каждая команда играет с каждой один матч BO1.<br><br>
+            Топ-4 по количеству побед выходят в полуфинал.<br>
+            Полуфиналы: BO3, серия до двух побед.<br>
+            Матч за 3-е место: BO3.<br>
+            Финал: BO3.<br><br>
+            При равенстве побед выше команда с лучшей разницей раундов.
           </div>
         </div>
       </aside>
@@ -1892,7 +1904,7 @@
 
           <div class="hero-score">
             <div class="hero-score-card">
-              <div class="small">Завершено встреч</div>
+              <div class="small">Матчи группы</div>
               <div class="big" id="doneCounter" aria-live="polite">0 / 10</div>
             </div>
           </div>
@@ -1910,13 +1922,13 @@
                     <th style="width: 88px;">Встречи</th>
                     <th style="width: 88px;">Победы</th>
                     <th style="width: 110px;">Поражения</th>
-                    <th style="width: 88px;">Очки</th>
+                    <th style="width: 110px;">Раунды +/−</th>
                   </tr>
                 </thead>
                 <tbody id="standingsBody"></tbody>
               </table>
             </div>
-            <div class="small-note">Топ-4 автоматически попадают в полуфинал.</div>
+            <div class="small-note">Топ-4 по победам автоматически попадают в полуфинал.</div>
           </div>
 
           <div class="card">
@@ -1927,7 +1939,7 @@
                   <tr>
                     <th style="width: 52px;">#</th>
                     <th>Матч</th>
-                    <th style="width: 90px;">Серия</th>
+                    <th style="width: 110px;">Счёт карты</th>
                     <th style="width: 180px;">Победитель</th>
                   </tr>
                 </thead>
@@ -1946,17 +1958,20 @@
 
           <div class="bracket-grid">
             <div class="stage-column">
-              <h3>Основные матчи</h3>
+              <h3>Групповой этап · BO1</h3>
               <div id="regularMatches"></div>
             </div>
 
             <div class="stage-column">
-              <h3>Полуфинал</h3>
+              <h3>Полуфиналы · BO3</h3>
               <div id="semifinalMatches"></div>
             </div>
 
             <div class="stage-column">
-              <h3>Финал</h3>
+              <h3>Матчи за медали</h3>
+              <div class="stage-round-label">За 3-е место · BO3</div>
+              <div id="thirdPlaceMatch"></div>
+              <div class="stage-round-label stage-round-label-final">Финал · BO3</div>
               <div id="finalMatch"></div>
             </div>
           </div>
@@ -2009,12 +2024,13 @@
 
     let state = {
       teams: { ...defaultTeams },
-      regular: schedule.map((pair, i) => createMatch(i + 1, pair[0], pair[1], 3)),
+      regular: schedule.map((pair, i) => createMatch(i + 1, pair[0], pair[1], 1)),
       semifinals: [
         createMatch(1, '', '', 3),
         createMatch(2, '', '', 3)
       ],
-      final: createMatch(1, '', '', 5)
+      thirdPlace: createMatch(1, '', '', 3),
+      final: createMatch(1, '', '', 3)
     };
 
     async function saveState() {
@@ -2074,14 +2090,15 @@ function backupState() {
           if (remoteState?.teams && remoteState?.regular) {
             state = {
               teams: { ...defaultTeams, ...(remoteState.teams || {}) },
-              regular: (remoteState.regular || []).map((m, index) => normalizeMatch(m, index + 1, 3)),
+              regular: (remoteState.regular || []).map((m, index) => normalizeMatch(m, index + 1, 1)),
               semifinals: (remoteState.semifinals || []).map((m, index) => normalizeMatch(m, index + 1, 3)),
-              final: normalizeMatch(remoteState.final || {}, 1, 5)
+              thirdPlace: normalizeMatch(remoteState.thirdPlace || {}, 1, 3),
+              final: normalizeMatch(remoteState.final || {}, 1, 3)
             };
 
             while (state.regular.length < schedule.length) {
               const pair = schedule[state.regular.length];
-              state.regular.push(createMatch(state.regular.length + 1, pair[0], pair[1], 3));
+              state.regular.push(createMatch(state.regular.length + 1, pair[0], pair[1], 1));
             }
 
             while (state.semifinals.length < 2) {
@@ -2116,7 +2133,7 @@ function backupState() {
     }
 
     function getMatchMapsToWin(stage) {
-      return stage === 'final' ? 3 : 2;
+      return stage === 'regular' ? 1 : 2;
     }
 
     function getSeriesScore(match) {
@@ -2156,7 +2173,9 @@ function backupState() {
           played: 0,
           wins: 0,
           losses: 0,
-          points: 0
+          roundsFor: 0,
+          roundsAgainst: 0,
+          roundDiff: 0
         };
       });
 
@@ -2165,20 +2184,33 @@ function backupState() {
         if (!winner) return;
 
         const loser = winner === match.team1 ? match.team2 : match.team1;
-        const series = getSeriesScore(match);
+        const map = match.maps[0] || createEmptyMap();
 
         stats[match.team1].played += 1;
         stats[match.team2].played += 1;
         stats[winner].wins += 1;
         stats[loser].losses += 1;
-        stats[match.team1].points += series.left;
-        stats[match.team2].points += series.right;
+
+        if (map.score1 !== '' && map.score2 !== '') {
+          const score1 = Number(map.score1);
+          const score2 = Number(map.score2);
+
+          if (Number.isFinite(score1) && Number.isFinite(score2)) {
+            stats[match.team1].roundsFor += score1;
+            stats[match.team1].roundsAgainst += score2;
+            stats[match.team2].roundsFor += score2;
+            stats[match.team2].roundsAgainst += score1;
+          }
+        }
+      });
+
+      Object.values(stats).forEach((team) => {
+        team.roundDiff = team.roundsFor - team.roundsAgainst;
       });
 
       return Object.values(stats).sort((a, b) => {
-        if (b.points !== a.points) return b.points - a.points;
         if (b.wins !== a.wins) return b.wins - a.wins;
-        if (a.losses !== b.losses) return a.losses - b.losses;
+        if (b.roundDiff !== a.roundDiff) return b.roundDiff - a.roundDiff;
         return a.name.localeCompare(b.name, 'ru');
       });
     }
@@ -2186,6 +2218,22 @@ function backupState() {
     function clearMatchProgress(match, mapsCount) {
       match.winner = '';
       match.maps = Array.from({ length: mapsCount }, () => createEmptyMap());
+    }
+
+    function setDerivedMatchTeams(match, team1, team2, mapsCount = 3) {
+      const changed = match.team1 !== team1 || match.team2 !== team2;
+      match.team1 = team1;
+      match.team2 = team2;
+
+      if (changed) {
+        clearMatchProgress(match, mapsCount);
+      }
+    }
+
+    function getMatchLoser(match, stage) {
+      const winner = getResolvedWinner(match, stage);
+      if (!winner) return '';
+      return winner === match.team1 ? match.team2 : match.team1;
     }
 
     function hydratePlayoffFromStandings(standings) {
@@ -2200,9 +2248,8 @@ function backupState() {
           }
         });
 
-        state.final.team1 = '';
-        state.final.team2 = '';
-        clearMatchProgress(state.final, 5);
+        setDerivedMatchTeams(state.thirdPlace, '', '', 3);
+        setDerivedMatchTeams(state.final, '', '', 3);
         return;
       }
 
@@ -2213,26 +2260,16 @@ function backupState() {
 
       state.semifinals.forEach((match, index) => {
         const [next1, next2] = targets[index];
-        const changed = match.team1 !== next1 || match.team2 !== next2;
-
-        match.team1 = next1;
-        match.team2 = next2;
-
-        if (changed) {
-          clearMatchProgress(match, 3);
-        }
+        setDerivedMatchTeams(match, next1, next2, 3);
       });
 
-      const finalT1 = getResolvedWinner(state.semifinals[0], 'semifinal') || '';
-      const finalT2 = getResolvedWinner(state.semifinals[1], 'semifinal') || '';
-      const finalChanged = state.final.team1 !== finalT1 || state.final.team2 !== finalT2;
+      const finalT1 = getResolvedWinner(state.semifinals[0], 'semifinal');
+      const finalT2 = getResolvedWinner(state.semifinals[1], 'semifinal');
+      const thirdT1 = getMatchLoser(state.semifinals[0], 'semifinal');
+      const thirdT2 = getMatchLoser(state.semifinals[1], 'semifinal');
 
-      state.final.team1 = finalT1;
-      state.final.team2 = finalT2;
-
-      if (finalChanged) {
-        clearMatchProgress(state.final, 5);
-      }
+      setDerivedMatchTeams(state.final, finalT1, finalT2, 3);
+      setDerivedMatchTeams(state.thirdPlace, thirdT1, thirdT2, 3);
     }
 
     function renderStandings(standings) {
@@ -2246,7 +2283,7 @@ function backupState() {
             <td class="table-muted">${team.played}</td>
             <td class="table-muted">${team.wins}</td>
             <td class="table-muted">${team.losses}</td>
-            <td class="table-points">${team.points}</td>
+            <td class="table-points">${team.roundDiff > 0 ? '+' : ''}${team.roundDiff}</td>
           </tr>
         `;
       }).join('');
@@ -2271,6 +2308,7 @@ function backupState() {
     function getMatchByStage(stage, id) {
       if (stage === 'regular') return state.regular.find((m) => m.id === id) || null;
       if (stage === 'semifinal') return state.semifinals.find((m) => m.id === id) || null;
+      if (stage === 'thirdPlace') return state.thirdPlace;
       if (stage === 'final') return state.final;
       return null;
     }
@@ -2315,9 +2353,10 @@ function backupState() {
       const team1Name = getTeamName(match.team1);
       const team2Name = getTeamName(match.team2);
       const stageLabel =
-        stage === 'regular' ? 'Main stage' :
-        stage === 'semifinal' ? 'Semifinal' :
-        'Final';
+        stage === 'regular' ? 'Round robin · BO1' :
+        stage === 'semifinal' ? 'Semifinal · BO3' :
+        stage === 'thirdPlace' ? '3rd place · BO3' :
+        'Final · BO3';
 
       const radioName = `${stage}_${match.id || 'final'}`;
       const series = getSeriesScore(match);
@@ -2366,8 +2405,8 @@ function backupState() {
 
           <div class="series-box">
             <div>
-              <div class="series-label">Счет серии</div>
-              ${autoWinner ? `<div class="small-note" style="margin-top:6px;">Авто-победитель определен по картам</div>` : ''}
+              <div class="series-label">${stage === 'regular' ? 'Результат матча' : 'Счёт серии'}</div>
+              ${autoWinner ? `<div class="small-note" style="margin-top:6px;">${stage === 'regular' ? 'Победитель определён по карте' : 'Победитель определён по картам'}</div>` : ''}
             </div>
             <div class="series-score">${series.left}:${series.right}</div>
           </div>
@@ -2448,7 +2487,7 @@ function backupState() {
       const firstOpenIndex = state.regular.findIndex((m) => !getResolvedWinner(m, 'regular'));
 
       container.innerHTML = state.regular
-        .map((match, idx) => renderMatchCard(match, 'regular', idx === firstOpenIndex, 3))
+        .map((match, idx) => renderMatchCard(match, 'regular', idx === firstOpenIndex, 1))
         .join('');
     }
 
@@ -2462,12 +2501,21 @@ function backupState() {
     }
 
     function renderFinal() {
+      const thirdPlaceContainer = document.getElementById('thirdPlaceMatch');
       const container = document.getElementById('finalMatch');
+
+      thirdPlaceContainer.innerHTML = renderMatchCard(
+        state.thirdPlace,
+        'thirdPlace',
+        !getResolvedWinner(state.thirdPlace, 'thirdPlace') && !!state.thirdPlace.team1 && !!state.thirdPlace.team2,
+        3
+      );
+
       container.innerHTML = renderMatchCard(
         state.final,
         'final',
         !getResolvedWinner(state.final, 'final') && !!state.final.team1 && !!state.final.team2,
-        5
+        3
       );
     }
 
@@ -2484,10 +2532,9 @@ function backupState() {
 
       const currentRegular = state.regular.find((m) => !getResolvedWinner(m, 'regular'));
       if (currentRegular) {
-        const series = getSeriesScore(currentRegular);
         heroStatus.textContent = 'Сейчас играют';
         heroMatch.textContent = `${getTeamName(currentRegular.team1)} vs ${getTeamName(currentRegular.team2)}`;
-        heroMeta.textContent = `Матч #${currentRegular.id} группового этапа / BO3 / серия ${series.left}:${series.right}`;
+        heroMeta.textContent = `Матч #${currentRegular.id} группового этапа / BO1 / одна карта`;
         return;
       }
 
@@ -2500,11 +2547,19 @@ function backupState() {
         return;
       }
 
+      if (state.thirdPlace.team1 && state.thirdPlace.team2 && !getResolvedWinner(state.thirdPlace, 'thirdPlace')) {
+        const series = getSeriesScore(state.thirdPlace);
+        heroStatus.textContent = 'За 3-е место';
+        heroMatch.textContent = `${getTeamName(state.thirdPlace.team1)} vs ${getTeamName(state.thirdPlace.team2)}`;
+        heroMeta.textContent = `Матч за 3-е место / BO3 / серия ${series.left}:${series.right}`;
+        return;
+      }
+
       if (state.final.team1 && state.final.team2 && !getResolvedWinner(state.final, 'final')) {
         const series = getSeriesScore(state.final);
         heroStatus.textContent = 'Финал';
         heroMatch.textContent = `${getTeamName(state.final.team1)} vs ${getTeamName(state.final.team2)}`;
-        heroMeta.textContent = `Финал / BO5 / серия ${series.left}:${series.right}`;
+        heroMeta.textContent = `Финал / BO3 / серия ${series.left}:${series.right}`;
         return;
       }
 
