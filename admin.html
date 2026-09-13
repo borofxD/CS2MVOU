@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://iiijyotbqwkxvalrdlxc.supabase.co; connect-src 'self' https://iiijyotbqwkxvalrdlxc.supabase.co wss://iiijyotbqwkxvalrdlxc.supabase.co; frame-src https://player.twitch.tv; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b11">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Управление турниром · CS2 MVOU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="admin">
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="CS2 MVOU — публичная страница">
+        <span class="brand-mark" aria-hidden="true">MV</span>
+        <span class="brand-copy"><span class="eyebrow">Панель управления</span><span class="brand-title">CS2 MVOU Tournament</span><span class="brand-subtitle">Редактирование команд, карт и результатов</span></span>
+      </a>
+      <nav class="top-actions" aria-label="Основная навигация">
+        <span class="status-badge" id="connectionStatus" aria-live="polite"><span class="status-dot" aria-hidden="true"></span>Подключение</span>
+        <a class="button button-ghost" href="index.html">Публичная страница</a>
+      </nav>
+    </header>
+
+    <main class="page-stack admin-page">
+      <section class="admin-intro">
+        <div><span class="section-kicker">Открытое редактирование</span><h1>Управление турниром</h1><p>Изменения сохраняются сразу и появляются у всех открытых пользователей.</p></div>
+        <button class="button button-danger" id="resetTournament" type="button">Начать новый турнир</button>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading"><div><span class="section-kicker">5 участников</span><h2>Команды и логотипы</h2></div><button class="button button-primary" id="saveTeams" type="button">Сохранить команды</button></div>
+        <p class="hint">PNG, JPG или WebP. Изображение автоматически уменьшается до 512 × 512 px.</p>
+        <div class="team-editor-grid" id="teamEditor"></div>
+      </section>
+
+      <section class="admin-stage">
+        <div class="stage-heading"><div><span class="section-kicker">Каждая команда играет с каждой</span><h2>Групповой этап · BO1</h2></div><span class="stage-counter" id="adminGroupProgress">0 / 10</span></div>
+        <div class="match-editor-grid" id="regularEditor"></div>
+      </section>
+
+      <section class="admin-stage">
+        <div class="stage-heading"><div><span class="section-kicker">1-е против 4-го · 2-е против 3-го</span><h2>Полуфиналы · BO3</h2></div></div>
+        <div class="match-editor-grid" id="semifinalEditor"></div>
+      </section>
+
+      <section class="admin-stage medal-editor-grid">
+        <div><div class="stage-heading"><div><span class="section-kicker">Проигравшие полуфиналов</span><h2>За третье место · BO3</h2></div></div><div class="match-editor-grid single-match-grid" id="thirdPlaceEditor"></div></div>
+        <div><div class="stage-heading"><div><span class="section-kicker">Победители полуфиналов</span><h2>Финал · BO3</h2></div></div><div class="match-editor-grid single-match-grid" id="finalEditor"></div></div>
+      </section>
+    </main>
+
+    <footer class="footer"><span>Изменения сохраняются в Supabase</span><span>Не загружайте конфиденциальные данные</span></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
