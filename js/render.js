@@ -134,8 +134,8 @@ function readonlyMatch(state, match, stage, label) {
   return `
     <article class="readonly-match ${ready && !winner ? "is-live" : ""}">
       <div class="readonly-match-meta"><span>${escapeHtml(label)}</span><span>${winner ? "Завершён" : ready ? "Ожидает результата" : "Пары определяются"}</span></div>
-      <div class="readonly-team ${winner === match.team1 ? "is-winner" : ""}">${teamInline(state, match.team1)}<span class="series-score">${score.left}</span></div>
-      <div class="readonly-team ${winner === match.team2 ? "is-winner" : ""}">${teamInline(state, match.team2)}<span class="series-score">${score.right}</span></div>
+      <div class="readonly-team ${winner && winner === match.team1 ? "is-winner" : ""}">${teamInline(state, match.team1)}<span class="series-score">${score.left}</span></div>
+      <div class="readonly-team ${winner && winner === match.team2 ? "is-winner" : ""}">${teamInline(state, match.team2)}<span class="series-score">${score.right}</span></div>
       <div class="map-summary">${maps}</div>
     </article>
   `;

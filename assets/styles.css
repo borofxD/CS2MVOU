@@ -211,10 +211,32 @@ a { color: inherit; }
 .team-inline { display: inline-flex; min-width: 0; align-items: center; gap: 9px; }
 .team-inline > span:last-child, .team-inline > strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr); gap: 24px; min-width: 0; }
+.stage-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; min-width: 0; }
+.stage-nav-link { display: flex; min-width: 0; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: rgba(18, 26, 38, 0.58); text-decoration: none; transition: border-color 160ms ease, background 160ms ease; }
+.stage-nav-link:hover { border-color: rgba(244, 171, 44, 0.4); background: rgba(244, 171, 44, 0.055); }
+.stage-nav-link-group { border-color: rgba(244, 171, 44, 0.28); background: linear-gradient(135deg, rgba(244, 171, 44, 0.1), rgba(18, 26, 38, 0.72)); }
+.stage-nav-index { flex: 0 0 auto; color: var(--accent-2); font-family: var(--display); font-size: 22px; }
+.stage-nav-copy { display: flex; min-width: 0; flex-direction: column; }
+.stage-nav-copy strong { overflow: hidden; font-family: var(--display); font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.stage-nav-copy small { margin-top: 2px; overflow: hidden; color: var(--muted); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+
+.tournament-stage { min-width: 0; padding: clamp(18px, 2.4vw, 30px); scroll-margin-top: 24px; border: 1px solid var(--line); border-radius: 28px; background: linear-gradient(160deg, rgba(17, 25, 37, 0.98), rgba(9, 14, 22, 0.98)); box-shadow: var(--shadow); }
+.tournament-stage-group { border-color: rgba(244, 171, 44, 0.24); }
+.tournament-stage-playoff { background: linear-gradient(160deg, rgba(20, 29, 43, 0.98), rgba(8, 13, 21, 0.98)); }
+.stage-overview { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; min-width: 0; align-items: center; margin-bottom: 22px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.stage-number { color: rgba(244, 171, 44, 0.22); font-family: var(--display); font-size: clamp(44px, 5vw, 68px); line-height: 0.9; }
+.stage-copy { min-width: 0; }
+.stage-copy h2 { margin: 4px 0 6px; font-family: var(--display); font-size: clamp(24px, 2.6vw, 36px); line-height: 1.15; }
+.stage-copy p { max-width: 700px; margin: 0; color: var(--muted); }
+.format-card { display: flex; min-width: 180px; flex-direction: column; padding: 13px 15px; border: 1px solid var(--line-strong); border-radius: 14px; background: rgba(4, 8, 13, 0.38); }
+.format-card span, .format-card small { color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+.format-card strong { margin: 3px 0; color: var(--accent-2); font-family: var(--display); font-size: 18px; }
+
+.dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr); gap: 18px; min-width: 0; }
 .panel, .admin-stage { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: linear-gradient(160deg, rgba(23, 33, 48, 0.94), rgba(14, 20, 30, 0.98)); box-shadow: var(--shadow); }
 .panel-heading, .stage-heading, .admin-intro { display: flex; min-width: 0; align-items: flex-start; justify-content: space-between; gap: 18px; }
-.panel h2, .stage-heading h2, .admin-intro h1 { margin: 4px 0 0; font-family: var(--display); font-size: clamp(20px, 2vw, 27px); line-height: 1.2; }
+.panel h2, .panel h3, .stage-heading h2, .admin-intro h1 { margin: 4px 0 0; font-family: var(--display); font-size: clamp(20px, 2vw, 27px); line-height: 1.2; }
+.stage-panel { border-radius: 18px; background: rgba(18, 26, 38, 0.72); box-shadow: none; }
 .panel-note, .stage-counter { flex: 0 0 auto; color: var(--accent-2); }
 .hint { margin: 12px 0 0; color: var(--muted); font-size: 11px; }
 
@@ -324,7 +346,7 @@ tbody tr:first-child { background: rgba(244, 171, 44, 0.075); }
   .stream-shell { min-height: 340px; }
   .hero-progress { grid-column: auto; }
   .team-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .dashboard-grid, .medal-editor-grid { grid-template-columns: minmax(0, 1fr); }
+  .stage-nav, .dashboard-grid, .medal-editor-grid { grid-template-columns: minmax(0, 1fr); }
   .playoff-grid { grid-template-columns: minmax(0, 1fr); }
   .team-editor-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -336,12 +358,16 @@ tbody tr:first-child { background: rgba(244, 171, 44, 0.075); }
   .brand-subtitle { display: none; }
   .top-actions { align-items: stretch; flex-direction: column; }
   .status-badge { width: 100%; justify-content: center; }
-  .hero, .panel, .admin-stage { padding: 15px; border-radius: 18px; }
+  .hero, .panel, .admin-stage, .tournament-stage { padding: 15px; border-radius: 18px; }
   .hero h1 { white-space: normal; overflow-wrap: anywhere; }
   .stream-shell, .stream-frame { min-height: 230px; }
   .hero-progress { grid-template-columns: 1fr auto; }
   .hero-progress small { grid-column: 1 / -1; }
   .team-strip, .team-editor-grid { grid-template-columns: minmax(0, 1fr); }
+  .stage-overview { grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 12px; }
+  .stage-number { font-size: 38px; }
+  .stage-copy h2 { font-size: 23px; }
+  .format-card { grid-column: 1 / -1; min-width: 0; }
   .panel-heading, .stage-heading { align-items: stretch; flex-direction: column; }
   .panel-note, .stage-counter { flex: 0 0 auto; }
   .result-row { grid-template-columns: 24px minmax(0, 1fr); }

@@ -51,29 +51,60 @@
 
       <section class="team-strip" aria-label="Участники турнира" id="teamStrip"></section>
 
-      <section class="dashboard-grid">
-        <article class="panel">
-          <div class="panel-heading">
-            <div><span class="section-kicker">Round robin · BO1</span><h2>Турнирная таблица</h2></div>
-            <span class="panel-note">Топ-4 → плей-офф</span>
-          </div>
-          <div class="table-scroll">
-            <table class="standings-table">
-              <thead><tr><th scope="col">#</th><th scope="col">Команда</th><th scope="col">И</th><th scope="col">В</th><th scope="col">П</th><th scope="col">Раунды +/−</th></tr></thead>
-              <tbody id="standingsBody"></tbody>
-            </table>
-          </div>
-          <p class="hint">При равенстве побед выше команда с лучшей разницей раундов.</p>
-        </article>
+      <nav class="stage-nav" aria-label="Этапы турнира">
+        <a class="stage-nav-link stage-nav-link-group" href="#group-stage">
+          <span class="stage-nav-index" aria-hidden="true">01</span>
+          <span class="stage-nav-copy"><strong>Групповой этап</strong><small>10 матчей · BO1</small></span>
+        </a>
+        <a class="stage-nav-link" href="#playoffs">
+          <span class="stage-nav-index" aria-hidden="true">02</span>
+          <span class="stage-nav-copy"><strong>Плей-офф</strong><small>Полуфиналы, 3-е место и финал · BO3</small></span>
+        </a>
+      </nav>
 
-        <article class="panel">
-          <div class="panel-heading"><div><span class="section-kicker">10 встреч · одна карта</span><h2>Матчи группы</h2></div></div>
-          <div class="results-list" id="groupResults"></div>
-        </article>
+      <section class="tournament-stage tournament-stage-group" id="group-stage" aria-labelledby="groupStageTitle">
+        <header class="stage-overview">
+          <span class="stage-number" aria-hidden="true">01</span>
+          <div class="stage-copy">
+            <span class="section-kicker">Round robin · одна карта</span>
+            <h2 id="groupStageTitle">Групповой этап · BO1</h2>
+            <p>Каждая команда встречается с каждой. Четыре лучшие команды проходят в полуфиналы.</p>
+          </div>
+          <div class="format-card"><span>Формат</span><strong>10 × BO1</strong><small>Топ-4 проходят дальше</small></div>
+        </header>
+
+        <div class="dashboard-grid">
+          <article class="panel stage-panel">
+            <div class="panel-heading">
+              <div><span class="section-kicker">Текущие места</span><h3>Таблица группового этапа</h3></div>
+              <span class="panel-note">Топ-4 → плей-офф</span>
+            </div>
+            <div class="table-scroll">
+              <table class="standings-table">
+                <thead><tr><th scope="col">#</th><th scope="col">Команда</th><th scope="col">И</th><th scope="col">В</th><th scope="col">П</th><th scope="col">Раунды +/−</th></tr></thead>
+                <tbody id="standingsBody"></tbody>
+              </table>
+            </div>
+            <p class="hint">При равенстве побед выше команда с лучшей разницей раундов.</p>
+          </article>
+
+          <article class="panel stage-panel">
+            <div class="panel-heading"><div><span class="section-kicker">Расписание и результаты</span><h3>Все матчи · BO1</h3></div><span class="panel-note">10 встреч</span></div>
+            <div class="results-list" id="groupResults"></div>
+          </article>
+        </div>
       </section>
 
-      <section class="panel playoff-panel">
-        <div class="panel-heading"><div><span class="section-kicker">Серия до двух побед</span><h2>Плей-офф · BO3</h2></div></div>
+      <section class="tournament-stage tournament-stage-playoff playoff-panel" id="playoffs" aria-labelledby="playoffStageTitle">
+        <header class="stage-overview">
+          <span class="stage-number" aria-hidden="true">02</span>
+          <div class="stage-copy">
+            <span class="section-kicker">Серия до двух побед</span>
+            <h2 id="playoffStageTitle">Плей-офф · BO3</h2>
+            <p>Полуфиналы определяют участников финала и матча за третье место.</p>
+          </div>
+          <div class="format-card"><span>Формат</span><strong>4 × BO3</strong><small>До двух побед</small></div>
+        </header>
         <div class="playoff-grid">
           <section class="playoff-stage" aria-labelledby="semifinalsTitle"><h3 id="semifinalsTitle">Полуфиналы</h3><div class="readonly-match-list" id="semifinalView"></div></section>
           <section class="playoff-stage" aria-labelledby="thirdPlaceTitle"><h3 id="thirdPlaceTitle">За третье место</h3><div class="readonly-match-list" id="thirdPlaceView"></div></section>
@@ -85,6 +116,6 @@
     <footer class="footer"><span>CS2 MVOU Tournament</span><span>Данные синхронизируются для всех зрителей</span></footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="js/public.js"></script>
+  <script type="module" src="js/public.js?v=20260913b"></script>
 </body>
 </html>

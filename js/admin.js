@@ -1,5 +1,5 @@
 import { TEAM_KEYS, cloneState, createInitialState, derivePlayoffs, getMatch } from "./data.js";
-import { renderAdmin } from "./render.js";
+import { renderAdmin } from "./render.js?v=20260913b";
 import { loadTournament, saveTournament, subscribeTournament, uploadTeamLogo } from "./supabase.js";
 
 const status = document.getElementById("connectionStatus");
