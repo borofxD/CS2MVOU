@@ -291,7 +291,7 @@
 
     .top-grid {
       display: grid;
-      grid-template-columns: minmax(500px, 1fr) minmax(500px, 1fr) minmax(360px, 0.9fr);
+      grid-template-columns: repeat(2, minmax(500px, 1fr));
       gap: 22px;
       min-width: 0;
     }
@@ -333,8 +333,6 @@
 
     .standings-table table { min-width: 590px; }
     .summary-table table { min-width: 640px; }
-    .leaderboard-table table { min-width: 520px; }
-    .editor-table table { min-width: 980px; }
 
     .rank-1 { background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(245,158,11,0.04)); }
     .rank-2, .rank-3, .rank-4 { background: rgba(59, 130, 246, 0.08); }
@@ -350,14 +348,6 @@
     }
 
     .table-muted { color: var(--muted); }
-
-    .player-name-only {
-      font-weight: 700;
-      color: #f8fafc;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
 
     .stage-tabs {
       display: flex;
@@ -683,46 +673,10 @@
       font-size: 13px;
     }
 
-    .tiny-input, .tiny-select {
-      width: 100%;
-      padding: 8px 8px;
-      border-radius: 10px;
-      font-size: 13px;
-      min-width: 0;
-    }
-
-    .tiny-select {
-      appearance: none;
-      background-image: linear-gradient(45deg, transparent 50%, #94a3b8 50%), linear-gradient(135deg, #94a3b8 50%, transparent 50%);
-      background-position: calc(100% - 16px) calc(50% - 2px), calc(100% - 11px) calc(50% - 2px);
-      background-size: 5px 5px, 5px 5px;
-      background-repeat: no-repeat;
-      padding-right: 28px;
-    }
-
-    .player-maps {
-      font-weight: 700;
-      color: #cbd5e1;
-    }
-
-    .player-kd {
-      font-weight: 900;
-      color: #f8fafc;
-    }
-
     .small-note {
       margin-top: 12px;
       font-size: 13px;
       color: var(--muted);
-    }
-
-    @media (max-width: 1500px) {
-      .top-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .top-grid > .card:last-child {
-        grid-column: 1 / -1;
-      }
     }
 
     @media (max-width: 1250px) {
@@ -756,7 +710,7 @@
     <div class="topbar">
       <div>
         <h1 class="title">CS2 MVOU Tournament</h1>
-        <div class="subtitle">BO3 групповой этап и полуфиналы, BO5 финал, K/D в топе игроков, формулы в редакторе</div>
+        <div class="subtitle">BO3 групповой этап и полуфиналы, BO5 финал, результаты матчей в реальном времени</div>
       </div>
       <div class="pill">Major board</div>
     </div>
@@ -793,12 +747,7 @@
             Очки в таблице = выигранные карты.<br><br>
             2:0 → 2 и 0 очков<br>
             2:1 → 2 и 1 очко<br>
-            3:2 → 3 и 2 очка в финале<br><br>
-            В редакторе игроков можно писать формулы:<br>
-            K = 14+20+30<br>
-            A = 3+7+5<br>
-            D = 16+18+14<br><br>
-            В Top-10 выводятся уже финальные суммы и K/D.
+            3:2 → 3 и 2 очка в финале
           </div>
         </div>
       </aside>
@@ -809,7 +758,7 @@
             <div class="pill" id="heroStatus">Сейчас играют</div>
             <h2 id="heroMatch">—</h2>
             <div class="hero-meta-wrap">
-              <p id="heroMeta">Заполни карты, победителей и статистику игроков.</p>
+              <p id="heroMeta">Заполни карты и победителей матчей.</p>
               <div class="hero-stream-note">● Twitch stream</div>
               <div id="championBadge"></div>
             </div>
@@ -869,27 +818,6 @@
             </div>
           </div>
 
-          <div class="card">
-            <h2 class="section-title">Топ-10 игроков турнира</h2>
-            <div class="small-note" style="margin-top:0; margin-bottom:14px;">
-              Здесь показываются уже финальные суммы K/A/D и K/D.
-            </div>
-            <div class="leaderboard-wrap table-shell leaderboard-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th style="width: 42px;">#</th>
-                    <th>Игрок</th>
-                    <th style="width: 72px;">K</th>
-                    <th style="width: 72px;">A</th>
-                    <th style="width: 72px;">D</th>
-                    <th style="width: 90px;">K/D</th>
-                  </tr>
-                </thead>
-                <tbody id="leaderboardBody"></tbody>
-              </table>
-            </div>
-          </div>
         </section>
 
         <section class="bracket-card">
@@ -916,30 +844,6 @@
           </div>
         </section>
 
-        <section class="card players-editor-card">
-          <h2 class="section-title">Редактор статистики игроков</h2>
-          <div class="small-note" style="margin-top:0; margin-bottom:14px;">
-            В K / A / D можно писать формулы по картам, например: 14+20+30.
-            Поле “Карты” считается автоматически по сыгранным картам команды.
-          </div>
-          <div class="editor-table-wrap table-shell editor-table">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width: 42px;">#</th>
-                  <th style="width: 220px;">Игрок</th>
-                  <th style="width: 190px;">Команда</th>
-                  <th style="width: 90px;">Карты</th>
-                  <th style="width: 130px;">K</th>
-                  <th style="width: 130px;">A</th>
-                  <th style="width: 130px;">D</th>
-                  <th style="width: 90px;">K/D</th>
-                </tr>
-              </thead>
-              <tbody id="playersEditorBody"></tbody>
-            </table>
-          </div>
-        </section>
       </main>
     </div>
   </div>
@@ -985,17 +889,6 @@
       };
     }
 
-    function createPlayer(index) {
-      return {
-        id: index + 1,
-        name: '',
-        team: '',
-        kills: '',
-        assists: '',
-        deaths: ''
-      };
-    }
-
     let state = {
       teams: { ...defaultTeams },
       regular: schedule.map((pair, i) => createMatch(i + 1, pair[0], pair[1], 3)),
@@ -1003,8 +896,7 @@
         createMatch(1, '', '', 3),
         createMatch(2, '', '', 3)
       ],
-      final: createMatch(1, '', '', 5),
-      players: Array.from({ length: 25 }, (_, i) => createPlayer(i))
+      final: createMatch(1, '', '', 5)
     };
 
     async function saveState() {
@@ -1051,23 +943,6 @@ function backupState() {
       };
     }
 
-    function normalizePlayer(player, index) {
-      return {
-        id: player?.id || index + 1,
-        name: player?.name || '',
-        team: player?.team || '',
-        kills: player?.kills ?? '',
-        assists: player?.assists ?? '',
-        deaths: player?.deaths ?? ''
-      };
-    }
-
-    function ensurePlayersLength() {
-      while (state.players.length < 25) {
-        state.players.push(createPlayer(state.players.length));
-      }
-    }
-
     function loadState() {
       window.onSnapshot(window.ref, (docSnap) => {
         try {
@@ -1083,10 +958,7 @@ function backupState() {
               teams: { ...defaultTeams, ...(remoteState.teams || {}) },
               regular: (remoteState.regular || []).map((m, index) => normalizeMatch(m, index + 1, 3)),
               semifinals: (remoteState.semifinals || []).map((m, index) => normalizeMatch(m, index + 1, 3)),
-              final: normalizeMatch(remoteState.final || {}, 1, 5),
-              players: Array.isArray(remoteState.players)
-                ? remoteState.players.map((p, index) => normalizePlayer(p, index))
-                : Array.from({ length: 25 }, (_, i) => createPlayer(i))
+              final: normalizeMatch(remoteState.final || {}, 1, 5)
             };
 
             while (state.regular.length < schedule.length) {
@@ -1098,7 +970,6 @@ function backupState() {
               state.semifinals.push(createMatch(state.semifinals.length + 1, '', '', 3));
             }
 
-            ensurePlayersLength();
             render();
           }
         } catch (e) {
@@ -1109,62 +980,6 @@ function backupState() {
 
     function getTeamName(key) {
       return state.teams[key] || key || '—';
-    }
-
-    function getTeamOptions() {
-      return Object.entries(state.teams).map(([key, name]) => ({
-        key,
-        name: name || defaultTeams[key] || key
-      }));
-    }
-
-    function parseStatExpression(value) {
-      if (value === null || value === undefined) return 0;
-
-      const text = String(value).trim();
-      if (!text) return 0;
-
-      return text
-        .split('+')
-        .map(part => Number(part.trim()))
-        .filter(num => !Number.isNaN(num))
-        .reduce((sum, num) => sum + num, 0);
-    }
-
-    function getPlayerMapsByTeam(teamKey) {
-      if (!teamKey) return 0;
-
-      const allMatches = [
-        ...state.regular.map(m => ({ match: m, stage: 'regular' })),
-        ...state.semifinals.map(m => ({ match: m, stage: 'semifinal' })),
-        { match: state.final, stage: 'final' }
-      ];
-
-      let mapsCount = 0;
-
-      allMatches.forEach(({ match }) => {
-        if (!match || !match.team1 || !match.team2) return;
-        if (match.team1 !== teamKey && match.team2 !== teamKey) return;
-
-        match.maps.forEach((map) => {
-          if (map.winner) {
-            mapsCount += 1;
-          }
-        });
-      });
-
-      return mapsCount;
-    }
-
-    function calculateKDFromRaw(killsRaw, deathsRaw) {
-      const kills = parseStatExpression(killsRaw);
-      const deaths = parseStatExpression(deathsRaw);
-
-      if (deaths === 0) {
-        return kills > 0 ? kills : 0;
-      }
-
-      return kills / deaths;
     }
 
     function setTeamsFromInputs() {
@@ -1302,25 +1117,6 @@ function backupState() {
       }
     }
 
-    function getSortedPlayers() {
-      return state.players
-        .filter((p) => p.name && String(p.name).trim())
-        .map((p) => ({
-          ...p,
-          killsTotal: parseStatExpression(p.kills),
-          assistsTotal: parseStatExpression(p.assists),
-          deathsTotal: parseStatExpression(p.deaths),
-          kd: calculateKDFromRaw(p.kills, p.deaths),
-          mapsAuto: getPlayerMapsByTeam(p.team)
-        }))
-        .sort((a, b) => {
-          if (b.kd !== a.kd) return b.kd - a.kd;
-          if (b.killsTotal !== a.killsTotal) return b.killsTotal - a.killsTotal;
-          if (a.deathsTotal !== b.deathsTotal) return a.deathsTotal - b.deathsTotal;
-          return String(a.name).localeCompare(String(b.name), 'ru');
-        });
-    }
-
     function renderStandings(standings) {
       const body = document.getElementById('standingsBody');
       body.innerHTML = standings.map((team, idx) => {
@@ -1352,56 +1148,6 @@ function backupState() {
           </tr>
         `;
       }).join('');
-    }
-
-    function renderPlayersEditor() {
-      const body = document.getElementById('playersEditorBody');
-      const teamOptions = getTeamOptions();
-
-      body.innerHTML = state.players.map((player, index) => {
-        const mapsAuto = getPlayerMapsByTeam(player.team);
-        const kd = calculateKDFromRaw(player.kills, player.deaths);
-
-        return `
-          <tr>
-            <td><strong>${index + 1}</strong></td>
-            <td><input class="tiny-input" value="${player.name || ''}" onchange="setPlayerField(${index}, 'name', this.value)"></td>
-            <td>
-              <select class="tiny-select" onchange="setPlayerField(${index}, 'team', this.value)">
-                <option value="">—</option>
-                ${teamOptions.map((team) => `
-                  <option value="${team.key}" ${player.team === team.key ? 'selected' : ''}>${team.name}</option>
-                `).join('')}
-              </select>
-            </td>
-            <td class="player-maps">${mapsAuto}</td>
-            <td><input class="tiny-input" value="${player.kills || ''}" onchange="setPlayerField(${index}, 'kills', this.value)"></td>
-            <td><input class="tiny-input" value="${player.assists || ''}" onchange="setPlayerField(${index}, 'assists', this.value)"></td>
-            <td><input class="tiny-input" value="${player.deaths || ''}" onchange="setPlayerField(${index}, 'deaths', this.value)"></td>
-            <td class="player-kd">${kd.toFixed(2)}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function renderLeaderboard() {
-      const body = document.getElementById('leaderboardBody');
-      const players = getSortedPlayers().slice(0, 10);
-
-      body.innerHTML = players.map((player, index) => `
-        <tr class="${index === 0 ? 'rank-1' : index < 4 ? `rank-${index + 1}` : ''}">
-          <td><strong>${index + 1}</strong></td>
-          <td><div class="player-name-only">${player.name}</div></td>
-          <td class="table-muted">${player.killsTotal}</td>
-          <td class="table-muted">${player.assistsTotal}</td>
-          <td class="table-muted">${player.deathsTotal}</td>
-          <td class="player-kd">${player.kd.toFixed(2)}</td>
-        </tr>
-      `).join('');
-
-      if (!players.length) {
-        body.innerHTML = `<tr><td colspan="6" class="table-muted">Пока нет данных по игрокам</td></tr>`;
-      }
     }
 
     function getMatchByStage(stage, id) {
@@ -1446,16 +1192,6 @@ function backupState() {
       saveState();
       render();
     }
-
-    function setPlayerField(index, field, value) {
-      ensurePlayersLength();
-      if (!state.players[index]) return;
-
-      state.players[index][field] = value;
-      saveState();
-      render();
-    }
-
 
     function renderMatchCard(match, stage, live = false, mapsCount = 3) {
       const team1Name = getTeamName(match.team1);
@@ -1668,11 +1404,9 @@ function backupState() {
       hydratePlayoffFromStandings(standings);
       renderStandings(standings);
       renderSummaryTable();
-      renderLeaderboard();
       renderRegularMatches();
       renderSemifinals();
       renderFinal();
-      renderPlayersEditor();
       renderHero(standings);
     }
 
@@ -1680,7 +1414,6 @@ function backupState() {
     window.setMapWinner = setMapWinner;
     window.setMapScore = setMapScore;
     window.setMapLobby = setMapLobby;
-    window.setPlayerField = setPlayerField;
 
     window.addEventListener('load', () => {
       document.getElementById('applyTeamsBtn').addEventListener('click', setTeamsFromInputs);
@@ -1691,3 +1424,4 @@ function backupState() {
   </script>
 </body>
 </html>
+
