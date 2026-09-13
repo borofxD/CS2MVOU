@@ -23,7 +23,9 @@ test("playoff pairs and medal matches are derived from results", () => {
   state.regular.forEach((match, index) => { match.maps[0].winner = winners[index]; });
   derivePlayoffs(state);
 
-  assert.deepEqual(calculateStandings(state).map((team) => team.key), ["a", "c", "d", "b", "e"]);
+  const standings = calculateStandings(state);
+  assert.deepEqual(standings.map((team) => team.key), ["a", "c", "d", "b", "e"]);
+  assert.deepEqual(standings.map((team) => team.points), [4, 3, 2, 1, 0]);
   assert.deepEqual(state.semifinals.map(({ team1, team2 }) => [team1, team2]), [["a", "b"], ["c", "d"]]);
 
   state.semifinals[0].maps[0].winner = "a";

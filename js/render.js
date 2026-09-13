@@ -7,7 +7,7 @@ import {
   getSeriesScore,
   getTeamLogo,
   getTeamName
-} from "./data.js";
+} from "./data.js?v=20260913c";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -90,8 +90,6 @@ function renderTeamStrip(state) {
 function renderStandings(state) {
   const standings = calculateStandings(state);
   document.getElementById("standingsBody").innerHTML = standings.map((team, index) => {
-    const diffClass = team.roundDiff > 0 ? "round-positive" : team.roundDiff < 0 ? "round-negative" : "";
-    const diff = team.roundDiff > 0 ? `+${team.roundDiff}` : String(team.roundDiff);
     return `
       <tr class="${index < 4 ? "is-qualified" : ""}">
         <td class="rank">${index + 1}</td>
@@ -99,7 +97,7 @@ function renderStandings(state) {
         <td>${team.played}</td>
         <td>${team.wins}</td>
         <td>${team.losses}</td>
-        <td class="${diffClass}">${diff}</td>
+        <td class="points-cell">${team.points}</td>
       </tr>
     `;
   }).join("");

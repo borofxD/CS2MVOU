@@ -134,40 +134,24 @@ export function calculateStandings(state) {
     played: 0,
     wins: 0,
     losses: 0,
-    roundsFor: 0,
-    roundsAgainst: 0,
-    roundDiff: 0
+    points: 0
   }]));
 
   state.regular.forEach((match) => {
     const winner = getMatchWinner(match, "regular");
     if (!winner) return;
     const loser = winner === match.team1 ? match.team2 : match.team1;
-    const map = match.maps[0] || createEmptyMap();
 
     stats[match.team1].played += 1;
     stats[match.team2].played += 1;
     stats[winner].wins += 1;
     stats[loser].losses += 1;
-
-    if (map.score1 !== "" && map.score2 !== "") {
-      const score1 = Number(map.score1);
-      const score2 = Number(map.score2);
-      stats[match.team1].roundsFor += score1;
-      stats[match.team1].roundsAgainst += score2;
-      stats[match.team2].roundsFor += score2;
-      stats[match.team2].roundsAgainst += score1;
-    }
-  });
-
-  Object.values(stats).forEach((team) => {
-    team.roundDiff = team.roundsFor - team.roundsAgainst;
+    stats[winner].points += 1;
   });
 
   return Object.values(stats).sort((left, right) => {
-    if (right.wins !== left.wins) return right.wins - left.wins;
-    if (right.roundDiff !== left.roundDiff) return right.roundDiff - left.roundDiff;
-    return getTeamName(state, left.key).localeCompare(getTeamName(state, right.key), "ru");
+    if (right.points !== left.points) return right.points - left.points;
+    return TEAM_KEYS.indexOf(left.key) - TEAM_KEYS.indexOf(right.key);
   });
 }
 

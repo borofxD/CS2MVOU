@@ -1,5 +1,5 @@
-import { createInitialState } from "./data.js";
-import { renderPublic } from "./render.js?v=20260913b";
+import { createInitialState } from "./data.js?v=20260913c";
+import { renderPublic } from "./render.js?v=20260913c";
 import { subscribeTournament } from "./supabase.js";
 
 const status = document.getElementById("connectionStatus");
