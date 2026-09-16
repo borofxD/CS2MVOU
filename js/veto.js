@@ -88,7 +88,7 @@ function centralStage() {
     </div><p class="step-note">Победитель выбирает роль A/B. Стартовая сторона выбирается отдельно для каждой карты по Major-порядку.</p>`;
   }
   if (state.phase === "complete") {
-    return `<span class="stage-chip stage-chip-done">Veto завершён</span><h1>Карты готовы</h1><p>Итог серии синхронизирован у обоих капитанов. Можно переходить в игровой лобби.</p>`;
+    return `<span class="stage-chip stage-chip-done">Veto завершён</span><h1>Карты готовы</h1><p>Итог серии синхронизирован у обоих капитанов. Через 15 минут комната и все её данные будут автоматически удалены.</p>`;
   }
 
   const step = getExpectedStep(state);
