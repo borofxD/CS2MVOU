@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://iiijyotbqwkxvalrdlxc.supabase.co wss://iiijyotbqwkxvalrdlxc.supabase.co; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b0c">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Создание синхронной комнаты выбора карт CS2">
+  <title>Создать комнату map veto · CS2 MVOU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/veto.css">
+</head>
+<body class="veto-body" data-page="veto-admin">
+  <div class="veto-shell">
+    <header class="veto-topbar">
+      <a class="veto-brand" href="index.html"><span class="veto-brand-mark">MV</span><span><small>CS2 MVOU</small><strong>MAP VETO</strong></span></a>
+      <nav class="veto-nav" aria-label="Навигация"><a href="index.html">Турнир</a><a href="admin.html">Управление</a></nav>
+    </header>
+
+    <main class="room-builder">
+      <section class="builder-hero">
+        <div class="builder-copy"><span class="section-kicker">Private room · Realtime</span><h1>Создать комнату выбора карт</h1><p>У каждого капитана будет своя защищённая ссылка. Формат, жеребьёвка, баны, пики и стороны синхронизируются в реальном времени.</p></div>
+        <div class="builder-orb" aria-hidden="true"><span>VETO</span></div>
+      </section>
+
+      <section class="builder-panel">
+        <form id="roomForm" class="room-form">
+          <div class="room-versus">
+            <label><span>Команда 1</span><input class="veto-field" id="roomTeam1" name="team1" list="teamSuggestions" maxlength="48" autocomplete="off" placeholder="Название команды" required></label>
+            <span class="room-vs">VS</span>
+            <label><span>Команда 2</span><input class="veto-field" id="roomTeam2" name="team2" list="teamSuggestions" maxlength="48" autocomplete="off" placeholder="Название команды" required></label>
+            <datalist id="teamSuggestions"></datalist>
+          </div>
+          <div class="builder-details">
+            <div><span>01</span><p><strong>Две разные ссылки</strong>Капитан может действовать только за свою команду.</p></div>
+            <div><span>02</span><p><strong>Серверная монетка</strong>Результат создаётся в базе, а не в браузере.</p></div>
+            <div><span>03</span><p><strong>7 дней доступа</strong>После этого ссылки автоматически перестают работать.</p></div>
+          </div>
+          <button class="button button-primary builder-submit" id="createRoom" type="submit">Создать комнату</button>
+        </form>
+      </section>
+
+      <section class="room-result" id="roomResult" hidden></section>
+
+      <section class="rules-note">
+        <span class="rules-note-index">RULESET</span>
+        <div><h2>Major-порядок, но с монеткой</h2><p>В официальном Major veto приоритет задаёт посев. Здесь его заменяет жеребьёвка: победитель выбирает Team A или Team B, а стартовые стороны затем выбираются отдельно по порядку veto. BO1 и BO3 повторяют Valve rulebook; BO5 — аккуратное расширение для семи карт.</p></div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="js/veto-admin.js?v=20260916a"></script>
+</body>
+</html>

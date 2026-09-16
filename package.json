@@ -4,6 +4,6 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "check": "node --check js/data.js && node --check js/render.js && node --check js/supabase.js && node --check js/public.js && node --check js/admin.js"
+    "check": "node --check js/data.js && node --check js/render.js && node --check js/supabase.js && node --check js/public.js && node --check js/admin.js && node --check js/veto-rules.js && node --check js/veto-api.js && node --check js/veto-admin.js && node --check js/veto.js"
   }
 }

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://iiijyotbqwkxvalrdlxc.supabase.co wss://iiijyotbqwkxvalrdlxc.supabase.co; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b0c">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Map veto room · CS2 MVOU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/veto.css">
+</head>
+<body class="veto-body" data-page="veto-room">
+  <div class="veto-shell">
+    <header class="veto-topbar">
+      <a class="veto-brand" href="index.html"><span class="veto-brand-mark">MV</span><span><small>CS2 MVOU</small><strong>MAP VETO</strong></span></a>
+      <div class="room-meta"><span class="status-badge" id="connectionStatus" aria-live="polite"><span class="status-dot" aria-hidden="true"></span>Подключение</span><span class="room-code">ROOM <strong id="roomCode">—</strong></span><span class="role-badge" id="roleBadge">Участник</span></div>
+    </header>
+    <main class="veto-app" id="vetoApp" aria-live="polite"><section class="veto-empty"><span class="stage-chip">Загрузка</span><h1>Подключаем комнату</h1><p>Проверяем персональную ссылку и синхронизируем состояние.</p></section></main>
+    <footer class="veto-footer"><span>CS2 MVOU · Map veto</span><a href="veto-admin.html">Создать новую комнату</a></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="js/veto.js?v=20260916a"></script>
+</body>
+</html>
