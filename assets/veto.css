@@ -50,11 +50,6 @@
 .veto-field { width: 100%; min-height: 58px; padding: 14px 16px; border: 1px solid var(--veto-line); border-radius: 12px; outline: 0; background: #080e10; color: white; font-size: 16px; font-weight: 800; }
 .veto-field:hover { border-color: rgba(140,255,184,.24); }
 .veto-field:focus-visible { border-color: var(--veto-green); box-shadow: 0 0 0 4px rgba(53,214,122,.11); }
-.builder-details { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
-.builder-details > div { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; padding: 14px; border: 1px solid rgba(218,237,225,.08); border-radius: 12px; background: rgba(255,255,255,.015); }
-.builder-details > div > span { color: var(--veto-green); font-family: var(--veto-mono); font-size: 10px; }
-.builder-details p { margin: 0; color: #77857c; font-size: 11px; }
-.builder-details strong { display: block; margin-bottom: 2px; color: #e9f1ec; font-size: 12px; }
 .builder-submit { min-height: 54px; background: linear-gradient(135deg, var(--veto-green-bright), var(--veto-green)); color: #041108; }
 
 .room-result { padding: clamp(20px, 4vw, 38px); scroll-margin-top: 20px; border-color: rgba(53,214,122,.3); }
@@ -180,7 +175,6 @@
   .builder-copy h1 { font-size: clamp(36px,12vw,58px); }
   .room-versus { grid-template-columns: minmax(0,1fr); }
   .room-vs { padding: 0; text-align: center; }
-  .builder-details { grid-template-columns: minmax(0,1fr); }
   .access-card { align-items: stretch; flex-direction: column; }
   .access-actions { width: 100%; }
   .access-actions .button { flex: 1; }

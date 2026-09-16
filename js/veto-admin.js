@@ -56,7 +56,7 @@ form.addEventListener("submit", async (event) => {
     const team1Url = roomLink(room.roomId, room.team1Token);
     const team2Url = roomLink(room.roomId, room.team2Token);
     result.hidden = false;
-    result.innerHTML = `<div class="room-created-head"><div><span class="section-kicker">Комната готова</span><h2>${escapeHtml(room.code)}</h2></div><p>Ссылки действуют 7 дней. Перешлите капитанам только их личные ссылки.</p></div>
+    result.innerHTML = `<div class="room-created-head"><div><span class="section-kicker">Комната готова</span><h2>${escapeHtml(room.code)}</h2></div><p>Комната закроется через 15 минут бездействия. Перешлите капитанам их личные ссылки.</p></div>
       <div class="access-list">
         ${accessCard("Капитан 1", team1.value.trim(), team1Url, "access-card-team1")}
         ${accessCard("Капитан 2", team2.value.trim(), team2Url, "access-card-team2")}

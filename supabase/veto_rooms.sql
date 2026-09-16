@@ -13,7 +13,7 @@ create table if not exists public.veto_rooms (
   revision bigint not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  expires_at timestamptz not null default (now() + interval '7 days'),
+  expires_at timestamptz not null default (now() + interval '15 minutes'),
   constraint veto_rooms_code_format check (code ~ '^[A-F0-9]{8}$'),
   constraint veto_rooms_team1_name check (char_length(team1_name) between 1 and 48),
   constraint veto_rooms_team2_name check (char_length(team2_name) between 1 and 48),
@@ -159,7 +159,7 @@ begin
     'team1Token', v_team1_token,
     'team2Token', v_team2_token,
     'adminToken', v_admin_token,
-    'expiresAt', now() + interval '7 days'
+    'expiresAt', now() + interval '15 minutes'
   );
 end;
 $$;

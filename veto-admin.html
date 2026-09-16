@@ -24,7 +24,7 @@
 
     <main class="room-builder">
       <section class="builder-hero">
-        <div class="builder-copy"><span class="section-kicker">Private room · Realtime</span><h1>Создать комнату выбора карт</h1><p>У каждого капитана будет своя защищённая ссылка. Формат, жеребьёвка, баны, пики и стороны синхронизируются в реальном времени.</p></div>
+        <div class="builder-copy"><span class="section-kicker">Выбор карт · CS2</span><h1>Создать комнату выбора карт</h1><p>Укажите команды, создайте комнату и отправьте капитанам их ссылки.</p></div>
         <div class="builder-orb" aria-hidden="true"><span>VETO</span></div>
       </section>
 
@@ -36,11 +36,6 @@
             <label><span>Команда 2</span><input class="veto-field" id="roomTeam2" name="team2" list="teamSuggestions" maxlength="48" autocomplete="off" placeholder="Название команды" required></label>
             <datalist id="teamSuggestions"></datalist>
           </div>
-          <div class="builder-details">
-            <div><span>01</span><p><strong>Две разные ссылки</strong>Капитан может действовать только за свою команду.</p></div>
-            <div><span>02</span><p><strong>Серверная монетка</strong>Результат создаётся в базе, а не в браузере.</p></div>
-            <div><span>03</span><p><strong>7 дней доступа</strong>После этого ссылки автоматически перестают работать.</p></div>
-          </div>
           <button class="button button-primary builder-submit" id="createRoom" type="submit">Создать комнату</button>
         </form>
       </section>
@@ -48,12 +43,12 @@
       <section class="room-result" id="roomResult" hidden></section>
 
       <section class="rules-note">
-        <span class="rules-note-index">RULESET</span>
+        <span class="rules-note-index">ПРАВИЛА</span>
         <div><h2>Major-порядок, но с монеткой</h2><p>В официальном Major veto приоритет задаёт посев. Здесь его заменяет жеребьёвка: победитель выбирает Team A или Team B, а стартовые стороны затем выбираются отдельно по порядку veto. BO1 и BO3 повторяют Valve rulebook; BO5 — аккуратное расширение для семи карт.</p></div>
       </section>
     </main>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="js/veto-admin.js?v=20260916a"></script>
+  <script type="module" src="js/veto-admin.js?v=20260917b"></script>
 </body>
 </html>
