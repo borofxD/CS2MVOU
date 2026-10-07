@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { chromium } from "playwright";
 import { createHash } from "node:crypto";
+import { pathToFileURL } from "node:url";
 
 const clamp = (value, min = 0, max = 100) => Math.min(max, Math.max(min, Number(value) || 0));
 const asNumber = (value) => {
@@ -68,7 +69,8 @@ function premierScore(rating) {
 
 export function calculateMvRating(registration, csstats = {}, csrep = {}) {
   const exactFaceit = registration.faceit_elo ?? faceitEloFromLevel(registration.faceit_level);
-  const detectedPremier = registration.premier_rating ?? csstats.premier_current;
+  const declaredPremier = Number(registration.premier_rating) > 0 ? Number(registration.premier_rating) : null;
+  const detectedPremier = declaredPremier ?? csstats.premier_current;
   const faceit = faceitScore(exactFaceit);
   const premier = premierScore(detectedPremier);
   let baseline = 50;
@@ -103,8 +105,12 @@ export function calculateMvRating(registration, csstats = {}, csrep = {}) {
 async function scrapePage(page, url, source) {
   try {
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
-    const marker = source === "csstats" ? page.getByText("HLTV RATING", { exact: true }) : page.getByText("Stats Overview", { exact: true });
-    await marker.waitFor({ state: "visible", timeout: 30000 });
+    await page.waitForFunction((currentSource) => {
+      const text = document.body?.innerText || "";
+      return currentSource === "csstats"
+        ? /HLTV RATING\s+[\d.,]+/i.test(text)
+        : /HLTV RATING 2\.0\s+[\d.,]+/i.test(text);
+    }, source, { timeout: 90000 });
     const text = await page.locator("body").innerText({ timeout: 10000 });
     const metrics = source === "csstats" ? parseCsStats(text) : parseCsRep(text);
     const useful = Object.values(metrics).filter((value) => value != null).length;
@@ -127,18 +133,21 @@ async function main() {
   const queue = data || [];
   if (!queue.length) { console.log("Нет анкет для обновления"); return; }
 
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: process.env.PLAYWRIGHT_HEADLESS !== "false" });
   const context = await browser.newContext({ locale: "en-US", userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0 Safari/537.36" });
   for (const registration of queue) {
     const { error: processingError } = await supabase.rpc("collector_set_processing", { p_collector_token_hash: collectorTokenHash, p_registration_id: registration.id });
     if (processingError) throw processingError;
-    const page = await context.newPage();
-    const csstats = await scrapePage(page, registration.csstats_url, "csstats");
-    const csrep = await scrapePage(page, registration.csrep_url, "csrep");
-    await page.close();
+    const [csstatsPage, csrepPage] = await Promise.all([context.newPage(), context.newPage()]);
+    const [csstats, csrep] = await Promise.all([
+      scrapePage(csstatsPage, registration.csstats_url, "csstats"),
+      scrapePage(csrepPage, registration.csrep_url, "csrep")
+    ]);
+    await Promise.all([csstatsPage.close(), csrepPage.close()]);
     const snapshots = [csstats, csrep];
     const ready = snapshots.filter((snapshot) => snapshot.fetch_status === "ready");
-    const rating = ready.length ? calculateMvRating(registration, csstats.metrics, csrep.metrics) : null;
+    const hasDeclaredLevel = registration.faceit_level != null || registration.faceit_elo != null || registration.premier_rating != null;
+    const rating = ready.length || hasDeclaredLevel ? calculateMvRating(registration, csstats.metrics, csrep.metrics) : null;
     const scrapeStatus = ready.length === 2 ? "ready" : ready.length === 1 ? "partial" : "failed";
     const scrapeError = snapshots.filter((snapshot) => snapshot.error).map((snapshot) => `${snapshot.source}: ${snapshot.error}`).join(" | ") || null;
     const { error: storeError } = await supabase.rpc("collector_store_results", {
@@ -156,6 +165,7 @@ async function main() {
   await browser.close();
 }
 
-if (import.meta.url === `file://${process.argv[1].replace(/\\/g, "/")}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => { console.error(error); process.exitCode = 1; });
 }
+

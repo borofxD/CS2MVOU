@@ -32,7 +32,6 @@ function renderPlayers() {
       <div class="player-identity"><span class="country-code">${escapeHtml(player.country_code)}</span><div><strong>${escapeHtml(player.cs_nick)}</strong><small>${escapeHtml(player.primary_role || "flex")} · ${player.faceit_level ? `FACEIT ${player.faceit_level}` : "без FACEIT"}${player.premier_rating ? ` · ${Number(player.premier_rating).toLocaleString("ru-RU")} Premier` : ""}</small></div></div>
       <div class="rating-breakdown"><span><small>Уровень</small><b>${player.baseline_score == null ? "—" : Math.round(player.baseline_score)}</b></span><span><small>Форма</small><b>${player.performance_score == null ? "—" : Math.round(player.performance_score)}</b></span><span><small>Данные</small><b>${player.confidence == null ? "Ожидание" : confidenceLabel(player.confidence)}</b></span></div>
       <div class="mv-score ${rating === "—" ? "is-pending" : ""}"><small>MV</small><strong>${rating}</strong></div>
-      <div class="player-links"><a href="${escapeHtml(player.csstats_url)}" target="_blank" rel="noopener">CSStats</a><a href="${escapeHtml(player.csrep_url)}" target="_blank" rel="noopener">CSRep</a></div>
     </article>`;
   }).join("");
 }
@@ -65,3 +64,4 @@ search.addEventListener("input", renderPlayers);
 sort.addEventListener("change", renderPlayers);
 subscribePublicPlayers(() => loadPlayers().catch(() => {}));
 loadPlayers().catch((error) => { list.innerHTML = `<div class="empty-state">${escapeHtml(error.message)}</div>`; });
+

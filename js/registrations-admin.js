@@ -10,6 +10,7 @@ let adminToken = sessionStorage.getItem("mvou-registration-admin-token") || "";
 
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
 const localInputValue = (iso) => iso ? new Date(new Date(iso).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : "";
+const normalizeAdminToken = (value) => String(value || "").trim().replace(/^`+|`+$/g, "").replace(/\s+/g, "");
 
 function renderRegistrations() {
   status.textContent = `${registrations.length} заявок · ${registrations.filter((row) => row.status === "approved").length} подтверждено · ${registrations.filter((row) => row.mv_rating != null).length} рассчитано`;
@@ -44,8 +45,12 @@ async function loadAdminData() {
 }
 
 document.getElementById("unlockRegistrationAdmin").addEventListener("click", async () => {
-  adminToken = document.getElementById("registrationAdminToken").value.trim();
+  adminToken = normalizeAdminToken(document.getElementById("registrationAdminToken").value);
   if (!adminToken) return;
+  if (!/^[0-9a-f]{64}$/i.test(adminToken)) {
+    document.getElementById("registrationAccessMessage").textContent = "Ключ организатора должен состоять из 64 символов без кавычек.";
+    return;
+  }
   sessionStorage.setItem("mvou-registration-admin-token", adminToken);
   try {
     await loadAdminData();
@@ -136,3 +141,4 @@ if (adminToken) loadAdminData().catch((error) => {
   adminToken = "";
   document.getElementById("registrationAccessMessage").textContent = error.message;
 });
+

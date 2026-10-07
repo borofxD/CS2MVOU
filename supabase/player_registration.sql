@@ -76,7 +76,7 @@ create table if not exists public.player_registrations (
   csrep_url text not null,
   primary_role text not null default 'flex' check (primary_role in ('flex','igl','awp','entry','support','lurker')),
   secondary_role text check (secondary_role is null or secondary_role in ('igl','awp','entry','support','lurker')),
-  status text not null default 'pending' check (status in ('pending','approved','rejected')),
+  status text not null default 'approved' check (status in ('pending','approved','rejected')),
   scrape_status text not null default 'queued' check (scrape_status in ('queued','processing','ready','partial','failed')),
   scrape_error text,
   last_scraped_at timestamptz,
@@ -188,7 +188,7 @@ declare
   v_tournament_id text := coalesce(nullif(trim(p_payload->>'tournament_id'), ''), 'main');
   v_faceit_level smallint := nullif(p_payload->>'faceit_level', '')::smallint;
   v_faceit_elo integer := nullif(p_payload->>'faceit_elo', '')::integer;
-  v_premier integer := nullif(p_payload->>'premier_rating', '')::integer;
+  v_premier integer := nullif(nullif(p_payload->>'premier_rating', '')::integer, 0);
 begin
   select * into v_settings from public.registration_settings where tournament_id = v_tournament_id;
   if not found or not v_settings.enabled or now() < v_settings.opens_at or now() >= v_settings.closes_at then
@@ -223,7 +223,7 @@ begin
       csrep_url = 'https://csrep.gg/player/' || v_steam_id,
       primary_role = coalesce(nullif(p_payload->>'primary_role', ''), 'flex'),
       secondary_role = nullif(p_payload->>'secondary_role', ''),
-      status = 'pending',
+      status = case when v_existing.status = 'rejected' then 'pending' else 'approved' end,
       scrape_status = 'queued',
       scrape_error = null
     where id = p_registration_id
@@ -234,12 +234,12 @@ begin
   insert into public.player_registrations (
     tournament_id, edit_token_hash, steam_id, cs_nick, teams_nick, country_code,
     faceit_level, faceit_elo, premier_rating, faceit_url, csstats_url, csrep_url,
-    primary_role, secondary_role
+    primary_role, secondary_role, status
   ) values (
     v_tournament_id, p_edit_token_hash, v_steam_id, trim(p_payload->>'cs_nick'), trim(p_payload->>'teams_nick'), p_payload->>'country_code',
     v_faceit_level, v_faceit_elo, v_premier, nullif(trim(p_payload->>'faceit_url'), ''),
     'https://csstats.gg/player/' || v_steam_id, 'https://csrep.gg/player/' || v_steam_id,
-    coalesce(nullif(p_payload->>'primary_role', ''), 'flex'), nullif(p_payload->>'secondary_role', '')
+    coalesce(nullif(p_payload->>'primary_role', ''), 'flex'), nullif(p_payload->>'secondary_role', ''), 'approved'
   ) returning id into v_id;
   return jsonb_build_object('id', v_id, 'created', true);
 exception
@@ -381,7 +381,12 @@ begin
     r.csstats_url, r.csrep_url, r.scrape_status, r.last_scraped_at
   from public.player_registrations r
   where r.status in ('pending','approved')
-    and (r.scrape_status = 'queued' or r.last_scraped_at is null or r.last_scraped_at < now() - interval '12 hours')
+    and (
+      r.scrape_status = 'queued'
+      or r.last_scraped_at is null
+      or (r.scrape_status = 'failed' and r.last_scraped_at < now() - interval '30 minutes')
+      or r.last_scraped_at < now() - interval '12 hours'
+    )
   order by r.submitted_at
   limit 10;
 end;
@@ -508,3 +513,4 @@ begin
     end if;
   end loop;
 end $$;
+

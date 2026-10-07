@@ -4,6 +4,13 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "17,47 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/collect-player-stats.yml"
+      - "scripts/collect-player-stats.mjs"
+      - "package.json"
+      - "package-lock.json"
 
 permissions:
   contents: read
@@ -14,14 +21,21 @@ concurrency:
 
 jobs:
   collect:
-    if: ${{ secrets.STATS_COLLECTOR_TOKEN != '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       SUPABASE_URL: https://iiijyotbqwkxvalrdlxc.supabase.co
       SUPABASE_PUBLISHABLE_KEY: sb_publishable_3rkI2Xm9uWqFDdPTjkArEA_tfFIhwMb
       STATS_COLLECTOR_TOKEN: ${{ secrets.STATS_COLLECTOR_TOKEN }}
+      PLAYWRIGHT_HEADLESS: "false"
     steps:
+      - name: Check collector secret
+        shell: bash
+        run: |
+          if [ -z "$STATS_COLLECTOR_TOKEN" ]; then
+            echo "::error::Add the STATS_COLLECTOR_TOKEN repository secret"
+            exit 1
+          fi
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -29,4 +43,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: npm run collect-stats
+      - run: xvfb-run --auto-servernum -- npm run collect-stats
+

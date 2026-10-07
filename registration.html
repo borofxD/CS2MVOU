@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css?v=20261007c">
+  <link rel="stylesheet" href="assets/styles.css?v=20261007d">
 </head>
 <body data-page="registration">
   <div class="site-shell">
@@ -73,7 +73,7 @@
             <div class="field-grid field-grid-3">
               <label class="field"><span>FACEIT level</span><select name="faceit_level"><option value="">Нет FACEIT</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10 / 2000+</option></select></label>
               <label class="field" id="faceitEloField" hidden><span>Точное FACEIT ELO</span><input name="faceit_elo" type="number" min="2000" max="5000" inputmode="numeric" placeholder="Например, 2800"></label>
-              <label class="field"><span>Premier Rating</span><input name="premier_rating" type="number" min="0" max="50000" inputmode="numeric" placeholder="Например, 15420"></label>
+              <label class="field"><span>Premier Rating</span><input name="premier_rating" type="number" min="1" max="50000" inputmode="numeric" placeholder="Если рейтинга нет — оставь пустым"></label>
             </div>
             <label class="field"><span>FACEIT профиль</span><input name="faceit_url" type="url" maxlength="300" placeholder="https://www.faceit.com/ru/players/..."></label>
           </div>
@@ -108,3 +108,4 @@
   <script type="module" src="js/registration.js?v=20261007c"></script>
 </body>
 </html>
+

@@ -129,7 +129,7 @@
 .players-filters { display: flex; gap: .6rem; }
 .players-filters input { width: 210px; }
 .players-list { display: grid; gap: .55rem; }
-.player-row { display: grid; grid-template-columns: 42px minmax(210px, 1.4fr) minmax(270px, 1fr) 74px auto; gap: 1rem; align-items: center; padding: 1rem; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.018); }
+.player-row { display: grid; grid-template-columns: 42px minmax(210px, 1.4fr) minmax(270px, 1fr) 74px; gap: 1rem; align-items: center; padding: 1rem; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.018); }
 .player-rank { color: #65717d; font: .8rem "Russo One", sans-serif; }
 .player-identity { display: flex; gap: .85rem; align-items: center; }
 .player-identity div { min-width: 0; }
@@ -566,3 +566,4 @@ tbody tr:first-child { background: rgba(244, 171, 44, 0.075); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+

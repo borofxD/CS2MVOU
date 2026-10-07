@@ -24,3 +24,18 @@ test("high FACEIT baseline beats dominant mid Premier player without erasing per
   assert.ok(faceit.mv_rating > premier.mv_rating);
   assert.ok(premier.performance_score > faceit.performance_score);
 });
+
+test("calculates a provisional rating from declared rank when stat sites are unavailable", () => {
+  const rating = calculateMvRating({ faceit_level: 10, faceit_elo: 2121, premier_rating: null }, {}, {});
+  assert.ok(rating.mv_rating > 50);
+  assert.equal(rating.explanation.sources, 0);
+  assert.equal(rating.confidence, 10);
+});
+
+test("treats zero Premier rating as missing", () => {
+  const zero = calculateMvRating({ faceit_level: 10, faceit_elo: 2121, premier_rating: 0 }, { premier_current: 20635 }, {});
+  const missing = calculateMvRating({ faceit_level: 10, faceit_elo: 2121, premier_rating: null }, { premier_current: 20635 }, {});
+  assert.equal(zero.mv_rating, missing.mv_rating);
+  assert.equal(zero.explanation.premier_rating, 20635);
+});
+
