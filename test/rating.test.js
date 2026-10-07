@@ -38,4 +38,3 @@ test("treats zero Premier rating as missing", () => {
   assert.equal(zero.mv_rating, missing.mv_rating);
   assert.equal(zero.explanation.premier_rating, 20635);
 });
-

@@ -141,4 +141,3 @@ if (adminToken) loadAdminData().catch((error) => {
   adminToken = "";
   document.getElementById("registrationAccessMessage").textContent = error.message;
 });
-

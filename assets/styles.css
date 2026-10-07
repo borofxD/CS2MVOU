@@ -566,4 +566,3 @@ tbody tr:first-child { background: rgba(244, 171, 44, 0.075); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
-

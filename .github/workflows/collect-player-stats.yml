@@ -44,4 +44,3 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: xvfb-run --auto-servernum -- npm run collect-stats
-

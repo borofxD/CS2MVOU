@@ -64,4 +64,3 @@ search.addEventListener("input", renderPlayers);
 sort.addEventListener("change", renderPlayers);
 subscribePublicPlayers(() => loadPlayers().catch(() => {}));
 loadPlayers().catch((error) => { list.innerHTML = `<div class="empty-state">${escapeHtml(error.message)}</div>`; });
-
