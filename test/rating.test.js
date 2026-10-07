@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { calculateMvRating, parseCsRep, parseCsStats } from "../scripts/collect-player-stats.mjs";
+import { calculateMvRating, parseCsRep, parseCsStats, scrapePage } from "../scripts/collect-player-stats.mjs";
 
 test("parses core CSStats metrics", () => {
   const metrics = parseCsStats("K/D\n0.79\nHLTV RATING\n0.89\nWIN RATE\n40%\nPLAYED 217\nHS% 46%\nADR 64\nKAST 68%\nS1 2023 124 11,502 12,524");
@@ -37,4 +37,33 @@ test("treats zero Premier rating as missing", () => {
   const missing = calculateMvRating({ faceit_level: 10, faceit_elo: 2121, premier_rating: null }, { premier_current: 20635 }, {});
   assert.equal(zero.mv_rating, missing.mv_rating);
   assert.equal(zero.explanation.premier_rating, 20635);
+});
+
+test("reloads an incomplete stats page and retries collection", async () => {
+  let bodyReads = 0;
+  let reloads = 0;
+  const page = {
+    goto: async () => {},
+    reload: async () => { reloads += 1; },
+    waitForFunction: async () => {},
+    waitForTimeout: async () => {},
+    locator: () => ({
+      innerText: async () => {
+        bodyReads += 1;
+        if (bodyReads === 1) return "HLTV RATING 1.39";
+        return "K/D 1.42 HLTV RATING 1.39 WIN RATE 53% PLAYED 559 HS% 48% ADR 95 KAST 74% KILLS 11208 DEATHS 7899";
+      }
+    })
+  };
+
+  const result = await scrapePage(page, "https://csstats.gg/player/example", "csstats", {
+    maxAttempts: 2,
+    readyTimeout: 10,
+    navigationTimeout: 10,
+    retryDelay: 0
+  });
+
+  assert.equal(result.fetch_status, "ready");
+  assert.equal(result.metrics.kd, 1.42);
+  assert.equal(reloads, 1);
 });

@@ -102,23 +102,71 @@ export function calculateMvRating(registration, csstats = {}, csrep = {}) {
   };
 }
 
-async function scrapePage(page, url, source) {
-  try {
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
-    await page.waitForFunction((currentSource) => {
-      const text = document.body?.innerText || "";
-      return currentSource === "csstats"
-        ? /HLTV RATING\s+[\d.,]+/i.test(text)
-        : /HLTV RATING 2\.0\s+[\d.,]+/i.test(text);
-    }, source, { timeout: 90000 });
-    const text = await page.locator("body").innerText({ timeout: 10000 });
-    const metrics = source === "csstats" ? parseCsStats(text) : parseCsRep(text);
-    const useful = Object.values(metrics).filter((value) => value != null).length;
-    if (useful < 3) throw new Error("Недостаточно публичных показателей на странице");
-    return { source, source_url: url, metrics, fetch_status: "ready", error: null, fetched_at: new Date().toISOString() };
-  } catch (error) {
-    return { source, source_url: url, metrics: {}, fetch_status: "failed", error: String(error.message).slice(0, 500), fetched_at: new Date().toISOString() };
+export async function scrapePage(page, url, source, options = {}) {
+  const maxAttempts = Math.max(1, Math.min(5, Number(options.maxAttempts ?? process.env.SCRAPE_ATTEMPTS) || 3));
+  const readyTimeout = Math.max(1000, Number(options.readyTimeout ?? process.env.STAT_READY_TIMEOUT_MS) || 120000);
+  const navigationTimeout = Math.max(1000, Number(options.navigationTimeout) || 60000);
+  const retryDelay = Math.max(0, Number(options.retryDelay) || 5000);
+  let navigated = false;
+  let lastError = "Не удалось получить статистику";
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      if (navigated) await page.reload({ waitUntil: "domcontentloaded", timeout: navigationTimeout });
+      else {
+        await page.goto(url, { waitUntil: "domcontentloaded", timeout: navigationTimeout });
+        navigated = true;
+      }
+      await page.waitForFunction((currentSource) => {
+        const text = document.body?.innerText || "";
+        return currentSource === "csstats"
+          ? /HLTV RATING\s+[\d.,]+/i.test(text)
+          : /HLTV RATING 2\.0\s+[\d.,]+/i.test(text);
+      }, source, { timeout: readyTimeout });
+      const text = await page.locator("body").innerText({ timeout: 15000 });
+      const metrics = source === "csstats" ? parseCsStats(text) : parseCsRep(text);
+      const useful = Object.values(metrics).filter((value) => value != null).length;
+      if (useful < 3) throw new Error(`Получено только ${useful} публичных показателя`);
+      return { source, source_url: url, metrics, fetch_status: "ready", error: null, fetched_at: new Date().toISOString() };
+    } catch (error) {
+      lastError = `Попытка ${attempt}/${maxAttempts}: ${String(error.message)}`;
+      if (attempt < maxAttempts) await page.waitForTimeout(retryDelay);
+    }
   }
+
+  return { source, source_url: url, metrics: {}, fetch_status: "failed", error: lastError.slice(0, 500), fetched_at: new Date().toISOString() };
+}
+
+async function processRegistration(registration, supabase, context, collectorTokenHash) {
+  const { error: processingError } = await supabase.rpc("collector_set_processing", { p_collector_token_hash: collectorTokenHash, p_registration_id: registration.id });
+  if (processingError) throw processingError;
+  const [csstatsPage, csrepPage] = await Promise.all([context.newPage(), context.newPage()]);
+  let csstats;
+  let csrep;
+  try {
+    [csstats, csrep] = await Promise.all([
+      scrapePage(csstatsPage, registration.csstats_url, "csstats"),
+      scrapePage(csrepPage, registration.csrep_url, "csrep")
+    ]);
+  } finally {
+    await Promise.all([csstatsPage.close(), csrepPage.close()]);
+  }
+  const snapshots = [csstats, csrep];
+  const ready = snapshots.filter((snapshot) => snapshot.fetch_status === "ready");
+  const hasDeclaredLevel = registration.faceit_level != null || registration.faceit_elo != null || registration.premier_rating != null;
+  const rating = ready.length || hasDeclaredLevel ? calculateMvRating(registration, csstats.metrics, csrep.metrics) : null;
+  const scrapeStatus = ready.length === 2 ? "ready" : ready.length === 1 ? "partial" : "failed";
+  const scrapeError = snapshots.filter((snapshot) => snapshot.error).map((snapshot) => `${snapshot.source}: ${snapshot.error}`).join(" | ") || null;
+  const { error: storeError } = await supabase.rpc("collector_store_results", {
+    p_collector_token_hash: collectorTokenHash,
+    p_registration_id: registration.id,
+    p_snapshots: snapshots,
+    p_rating: rating,
+    p_scrape_status: scrapeStatus,
+    p_scrape_error: scrapeError
+  });
+  if (storeError) throw storeError;
+  console.log(`${registration.cs_nick}: ${scrapeStatus}`);
 }
 
 async function main() {
@@ -134,35 +182,29 @@ async function main() {
   if (!queue.length) { console.log("Нет анкет для обновления"); return; }
 
   const browser = await chromium.launch({ headless: process.env.PLAYWRIGHT_HEADLESS !== "false" });
-  const context = await browser.newContext({ locale: "en-US", userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0 Safari/537.36" });
-  for (const registration of queue) {
-    const { error: processingError } = await supabase.rpc("collector_set_processing", { p_collector_token_hash: collectorTokenHash, p_registration_id: registration.id });
-    if (processingError) throw processingError;
-    const [csstatsPage, csrepPage] = await Promise.all([context.newPage(), context.newPage()]);
-    const [csstats, csrep] = await Promise.all([
-      scrapePage(csstatsPage, registration.csstats_url, "csstats"),
-      scrapePage(csrepPage, registration.csrep_url, "csrep")
-    ]);
-    await Promise.all([csstatsPage.close(), csrepPage.close()]);
-    const snapshots = [csstats, csrep];
-    const ready = snapshots.filter((snapshot) => snapshot.fetch_status === "ready");
-    const hasDeclaredLevel = registration.faceit_level != null || registration.faceit_elo != null || registration.premier_rating != null;
-    const rating = ready.length || hasDeclaredLevel ? calculateMvRating(registration, csstats.metrics, csrep.metrics) : null;
-    const scrapeStatus = ready.length === 2 ? "ready" : ready.length === 1 ? "partial" : "failed";
-    const scrapeError = snapshots.filter((snapshot) => snapshot.error).map((snapshot) => `${snapshot.source}: ${snapshot.error}`).join(" | ") || null;
-    const { error: storeError } = await supabase.rpc("collector_store_results", {
-      p_collector_token_hash: collectorTokenHash,
-      p_registration_id: registration.id,
-      p_snapshots: snapshots,
-      p_rating: rating,
-      p_scrape_status: scrapeStatus,
-      p_scrape_error: scrapeError
-    });
-    if (storeError) throw storeError;
-    console.log(`${registration.cs_nick}: ${scrapeStatus}`);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+  try {
+    const context = await browser.newContext({ locale: "en-US", userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0 Safari/537.36" });
+    const concurrency = Math.max(1, Math.min(3, Number(process.env.REGISTRATION_CONCURRENCY) || 2));
+    let nextIndex = 0;
+    const failures = [];
+    const worker = async () => {
+      while (nextIndex < queue.length) {
+        const registration = queue[nextIndex];
+        nextIndex += 1;
+        try {
+          await processRegistration(registration, supabase, context, collectorTokenHash);
+        } catch (error) {
+          const message = `${registration.cs_nick}: ${String(error.message || error)}`;
+          failures.push(message);
+          console.error(message);
+        }
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(concurrency, queue.length) }, worker));
+    if (failures.length) throw new Error(`Ошибки обработки: ${failures.join(" | ")}`);
+  } finally {
+    await browser.close();
   }
-  await browser.close();
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
