@@ -1,4 +1,5 @@
 import { loadOwnRegistration, loadRegistrationSettings, submitRegistration } from "./registration-api.js";
+import { extractSteamId64, resolveSteamId64 } from "./steam-profile.js";
 
 const form = document.getElementById("registrationForm");
 const submitButton = document.getElementById("registrationSubmit");
@@ -10,8 +11,10 @@ const toast = document.getElementById("toast");
 const progressBar = document.getElementById("formProgressBar");
 const progressLabel = document.getElementById("formProgressLabel");
 const preview = document.getElementById("profilePreview");
+const steamProfileHint = document.getElementById("steamProfileHint");
 let settings;
 let countdownTimer;
+let resolvedProfile = { input: "", steamId: "" };
 
 function showToast(text, type = "info") {
   toast.textContent = text;
@@ -20,22 +23,30 @@ function showToast(text, type = "info") {
   window.setTimeout(() => toast.classList.remove("is-visible"), 4200);
 }
 
-function extractSteamId(value) {
-  return String(value || "").match(/7656119\d{10}/)?.[0] || "";
-}
-
 function numberOrNull(value) {
   return value === "" ? null : Number(value);
 }
 
-function updatePreview() {
-  const steamId = extractSteamId(form.elements.steam_profile.value);
+function updatePreview(steamId = extractSteamId64(form.elements.steam_profile.value)) {
   preview.hidden = !steamId;
   if (!steamId) return;
   const csstats = `https://csstats.gg/player/${steamId}`;
   const csrep = `https://csrep.gg/player/${steamId}`;
   document.getElementById("csstatsPreview").href = csstats;
   document.getElementById("csrepPreview").href = csrep;
+}
+
+async function resolveSteamProfile({ quiet = false } = {}) {
+  const input = form.elements.steam_profile.value.trim();
+  if (!input) return "";
+  if (resolvedProfile.input === input && resolvedProfile.steamId) return resolvedProfile.steamId;
+  if (!quiet) steamProfileHint.textContent = "Определяем SteamID64…";
+  const steamId = await resolveSteamId64(input);
+  resolvedProfile = { input, steamId };
+  steamProfileHint.textContent = `SteamID64 найден: ${steamId}`;
+  form.elements.steam_profile.setCustomValidity("");
+  updatePreview(steamId);
+  return steamId;
 }
 
 function updateProgress() {
@@ -78,6 +89,7 @@ function fillForm(data) {
     if (form.elements[key] && data[key] != null) form.elements[key].value = data[key];
   });
   form.elements.steam_profile.value = data.steam_id || "";
+  resolvedProfile = { input: data.steam_id || "", steamId: data.steam_id || "" };
   form.elements.consent.checked = true;
   submitButton.textContent = "Сохранить изменения";
   message.textContent = `Заявка уже создана · статус: ${data.status}`;
@@ -86,18 +98,28 @@ function fillForm(data) {
   updateProgress();
 }
 
-form.addEventListener("input", () => { updatePreview(); updateProgress(); });
+form.addEventListener("input", (event) => {
+  if (event.target === form.elements.steam_profile) {
+    resolvedProfile = { input: "", steamId: "" };
+    form.elements.steam_profile.setCustomValidity("");
+    steamProfileHint.textContent = "Можно вставить SteamID64 или ссылку вида steamcommunity.com/id/твой_ник.";
+  }
+  updatePreview();
+  updateProgress();
+});
 form.addEventListener("change", () => { updateFaceitEloVisibility(); updateProgress(); });
+form.elements.steam_profile.addEventListener("blur", async () => {
+  if (!form.elements.steam_profile.value.trim() || extractSteamId64(form.elements.steam_profile.value)) return;
+  try {
+    await resolveSteamProfile();
+  } catch (error) {
+    steamProfileHint.textContent = error.message;
+  }
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!form.reportValidity()) return;
-  const steamId = extractSteamId(form.elements.steam_profile.value);
-  if (!steamId) {
-    form.elements.steam_profile.setCustomValidity("Нужна ссылка с числовым SteamID64 или сам SteamID64");
-    form.elements.steam_profile.reportValidity();
-    return;
-  }
   form.elements.steam_profile.setCustomValidity("");
   if (form.elements.faceit_level.value === "10" && !form.elements.faceit_elo.value) {
     form.elements.faceit_elo.setCustomValidity("Для 10 уровня укажи точное ELO");
@@ -106,8 +128,10 @@ form.addEventListener("submit", async (event) => {
   }
   form.elements.faceit_elo.setCustomValidity("");
   submitButton.disabled = true;
-  message.textContent = "Сохраняем…";
+  message.textContent = "Проверяем Steam-профиль…";
   try {
+    const steamId = await resolveSteamProfile({ quiet: true });
+    message.textContent = "Сохраняем…";
     const result = await submitRegistration({
       cs_nick: form.elements.cs_nick.value.trim(),
       teams_nick: form.elements.teams_nick.value.trim(),
@@ -124,6 +148,10 @@ form.addEventListener("submit", async (event) => {
     message.textContent = "Заявка сохранена. Статистика появится после ближайшего обновления.";
     showToast(result.created ? "Заявка принята" : "Изменения сохранены");
   } catch (error) {
+    if (!resolvedProfile.steamId) {
+      form.elements.steam_profile.setCustomValidity(error.message);
+      form.elements.steam_profile.reportValidity();
+    }
     message.textContent = error.message;
     showToast(error.message, "error");
   } finally {
