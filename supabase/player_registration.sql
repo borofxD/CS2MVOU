@@ -55,7 +55,7 @@ create table if not exists public.registration_settings (
   ratings_published boolean not null default false,
   team_count smallint not null default 5 check (team_count between 2 and 12),
   team_size smallint not null default 5 check (team_size between 2 and 10),
-  rating_model_version text not null default 'mv-1.0',
+  rating_model_version text not null default 'mv-1.1',
   updated_at timestamptz not null default now(),
   check (closes_at > opens_at)
 );
@@ -99,7 +99,7 @@ create table if not exists public.player_stat_snapshots (
 
 create table if not exists public.player_ratings (
   registration_id uuid primary key references public.player_registrations(id) on delete cascade,
-  model_version text not null default 'mv-1.0',
+  model_version text not null default 'mv-1.1',
   mv_rating numeric(5,2) not null check (mv_rating between 0 and 100),
   baseline_score numeric(5,2) not null check (baseline_score between 0 and 100),
   performance_score numeric(5,2) not null check (performance_score between 0 and 100),

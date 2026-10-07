@@ -39,6 +39,19 @@ test("treats zero Premier rating as missing", () => {
   assert.equal(zero.explanation.premier_rating, 20635);
 });
 
+test("blends long-term CSStats with recent CSRep form at 60 to 40", () => {
+  const rating = calculateMvRating(
+    { faceit_level: 10, faceit_elo: 2815, premier_rating: 25120 },
+    { kd: 1.35, hltv: 1.31, adr: 95, matches: 30 },
+    { kd: 1.6, hltv: 1.5, adr: 110, kast: 77.9, matches: 20 }
+  );
+  assert.equal(rating.explanation.kd, 1.4500000000000002);
+  assert.equal(rating.explanation.hltv, 1.3860000000000001);
+  assert.equal(rating.explanation.adr, 101);
+  assert.equal(rating.mv_rating, 86.03);
+  assert.equal(rating.model_version, "mv-1.1");
+});
+
 test("reloads an incomplete stats page and retries collection", async () => {
   let bodyReads = 0;
   let reloads = 0;

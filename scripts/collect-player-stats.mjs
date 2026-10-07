@@ -67,6 +67,13 @@ function premierScore(rating) {
   return clamp(100 / (1 + Math.exp(-(rating - 15500) / 5200)));
 }
 
+function blendMetric(csstats, csrep, key) {
+  const longTerm = csstats[key];
+  const recent = csrep[key];
+  if (longTerm != null && recent != null) return longTerm * 0.6 + recent * 0.4;
+  return recent ?? longTerm ?? null;
+}
+
 export function calculateMvRating(registration, csstats = {}, csrep = {}) {
   const exactFaceit = registration.faceit_elo ?? faceitEloFromLevel(registration.faceit_level);
   const declaredPremier = Number(registration.premier_rating) > 0 ? Number(registration.premier_rating) : null;
@@ -78,10 +85,10 @@ export function calculateMvRating(registration, csstats = {}, csrep = {}) {
   else if (faceit != null) baseline = faceit;
   else if (premier != null) baseline = premier;
 
-  const kd = csrep.kd ?? csstats.kd;
-  const hltv = csrep.hltv ?? csstats.hltv;
-  const adr = csrep.adr ?? csstats.adr;
-  const kast = csrep.kast ?? csstats.kast;
+  const kd = blendMetric(csstats, csrep, "kd");
+  const hltv = blendMetric(csstats, csrep, "hltv");
+  const adr = blendMetric(csstats, csrep, "adr");
+  const kast = blendMetric(csstats, csrep, "kast");
   const observed = clamp(50 + ((hltv ?? 1) - 1) * 40 + ((kd ?? 1) - 1) * 15 + ((adr ?? 75) - 75) * 0.3 + ((kast ?? 70) - 70) * 0.5);
   const matchCount = Math.max(csrep.matches ?? 0, Math.min(csstats.matches ?? 0, 30));
   const reliability = clamp(matchCount / 20, 0, 1);
@@ -92,12 +99,12 @@ export function calculateMvRating(registration, csstats = {}, csrep = {}) {
   const mv = clamp(baseline * 0.62 + performance * 0.30 + confidence * 0.08);
 
   return {
-    model_version: "mv-1.0",
+    model_version: "mv-1.1",
     mv_rating: Number(mv.toFixed(2)),
     baseline_score: Number(baseline.toFixed(2)),
     performance_score: Number(performance.toFixed(2)),
     confidence: Number(confidence.toFixed(2)),
-    explanation: { faceit_elo: exactFaceit, premier_rating: detectedPremier, kd, hltv, adr, kast, matches: matchCount, sources },
+    explanation: { faceit_elo: exactFaceit, premier_rating: detectedPremier, kd, hltv, adr, kast, matches: matchCount, sources, source_weights: { csstats: 0.6, csrep: 0.4 } },
     calculated_at: new Date().toISOString()
   };
 }
