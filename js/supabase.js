@@ -1,10 +1,10 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.55.0/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/+esm";
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL, TEAM_LOGO_BUCKET, TOURNAMENT_ID } from "./config.js";
 import { normalizeState } from "./data.js";
 
 let client;
 
-function getClient() {
+export function getClient() {
   if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
     throw new Error("Supabase ещё не настроен: заполните js/config.js");
   }

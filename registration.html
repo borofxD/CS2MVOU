@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://avatars.steamstatic.com https://iiijyotbqwkxvalrdlxc.supabase.co; connect-src 'self' https://iiijyotbqwkxvalrdlxc.supabase.co wss://iiijyotbqwkxvalrdlxc.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b11">
+  <meta name="description" content="Регистрация игроков на турнир CS2 MVOU">
+  <title>Регистрация игрока · CS2 MVOU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css?v=20261007a">
+</head>
+<body data-page="registration">
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="CS2 MVOU — главная">
+        <span class="brand-mark" aria-hidden="true">MV</span>
+        <span class="brand-copy"><span class="eyebrow">Новый турнир</span><span class="brand-title">Регистрация игрока</span><span class="brand-subtitle">Одна анкета · один Steam-профиль</span></span>
+      </a>
+      <nav class="top-actions" aria-label="Основная навигация">
+        <a class="button button-ghost" href="players.html">Игроки</a>
+        <a class="button button-ghost" href="index.html">Турнир</a>
+      </nav>
+    </header>
+
+    <main class="page-stack registration-layout">
+      <section class="registration-hero">
+        <div>
+          <span class="stage-badge" id="registrationState">Проверяем регистрацию</span>
+          <h1>Заявка на участие</h1>
+          <p>Заполни профиль один раз. CSStats и CSRep будут собраны автоматически, а после дедлайна система рассчитает MV Rating и соберёт равные команды.</p>
+        </div>
+        <div class="deadline-card"><span>До закрытия регистрации</span><strong id="registrationCountdown">—</strong><small id="registrationDeadline">Дата загружается</small></div>
+      </section>
+
+      <section class="registration-grid">
+        <form class="panel registration-form" id="registrationForm" novalidate>
+          <div class="form-progress" aria-label="Прогресс заполнения"><span id="formProgressBar"></span></div>
+          <div class="panel-heading"><div><span class="section-kicker">Профиль участника</span><h2>Данные игрока</h2></div><span class="panel-note" id="formProgressLabel">0 / 6</span></div>
+
+          <div class="form-section">
+            <div class="field-grid field-grid-2">
+              <label class="field"><span>Ник в CS2 *</span><input name="cs_nick" maxlength="40" required autocomplete="nickname" placeholder="Например, sk0t1x"></label>
+              <label class="field"><span>Ник в Teams *</span><input name="teams_nick" maxlength="80" required placeholder="Как тебя найти в Teams"></label>
+            </div>
+            <div class="field-grid field-grid-2">
+              <label class="field"><span>Страна *</span><select name="country_code" required><option value="">Выбрать</option><option value="UA">Украина</option><option value="PL">Польша</option><option value="DE">Германия</option><option value="CZ">Чехия</option><option value="SK">Словакия</option><option value="RO">Румыния</option><option value="MD">Молдова</option><option value="KZ">Казахстан</option><option value="GE">Грузия</option><option value="OTHER">Другая</option></select></label>
+              <label class="field"><span>Steam ID или ссылка *</span><input name="steam_profile" required inputmode="url" placeholder="steamcommunity.com/profiles/7656…"><small>Из SteamID автоматически создадим ссылки CSStats и CSRep.</small></label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title"><span>Уровень игры</span><small>FACEIT или Premier можно пропустить, но лучше указать оба</small></div>
+            <div class="field-grid field-grid-3">
+              <label class="field"><span>FACEIT level</span><select name="faceit_level"><option value="">Нет FACEIT</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10 / 2000+</option></select></label>
+              <label class="field" id="faceitEloField" hidden><span>Точное FACEIT ELO</span><input name="faceit_elo" type="number" min="2000" max="5000" inputmode="numeric" placeholder="Например, 2800"></label>
+              <label class="field"><span>Premier Rating</span><input name="premier_rating" type="number" min="0" max="50000" inputmode="numeric" placeholder="Например, 15420"></label>
+            </div>
+            <label class="field"><span>FACEIT профиль</span><input name="faceit_url" type="url" maxlength="300" placeholder="https://www.faceit.com/ru/players/..."></label>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title"><span>Предпочтения</span><small>Используем для распределения ролей по командам</small></div>
+            <div class="field-grid field-grid-2">
+              <label class="field"><span>Основная роль</span><select name="primary_role"><option value="flex">Универсал</option><option value="igl">IGL</option><option value="awp">AWP</option><option value="entry">Entry</option><option value="support">Support</option><option value="lurker">Lurker</option></select></label>
+              <label class="field"><span>Дополнительная роль</span><select name="secondary_role"><option value="">Неважно</option><option value="igl">IGL</option><option value="awp">AWP</option><option value="entry">Entry</option><option value="support">Support</option><option value="lurker">Lurker</option></select></label>
+            </div>
+          </div>
+
+          <div class="profile-preview" id="profilePreview" hidden>
+            <div><span>CSStats</span><a id="csstatsPreview" target="_blank" rel="noopener">Открыть профиль</a></div>
+            <div><span>CSRep</span><a id="csrepPreview" target="_blank" rel="noopener">Открыть профиль</a></div>
+          </div>
+
+          <label class="consent-row"><input type="checkbox" name="consent" required><span>Разрешаю использовать публичную игровую статистику для расчёта рейтинга и формирования команд.</span></label>
+          <div class="form-actions"><button class="button button-primary button-large" type="submit" id="registrationSubmit">Отправить заявку</button><span class="form-message" id="registrationMessage" role="status"></span></div>
+        </form>
+
+        <aside class="registration-aside">
+          <article class="panel info-card"><span class="section-kicker">Что произойдёт дальше</span><ol class="process-list"><li><b>01</b><span><strong>Сбор данных</strong><small>CSStats и CSRep обновятся автоматически.</small></span></li><li><b>02</b><span><strong>MV Rating</strong><small>Уровень и форма объединятся в оценку 0–100.</small></span></li><li><b>03</b><span><strong>Баланс команд</strong><small>Алгоритм распределит силу и роли.</small></span></li></ol></article>
+          <article class="panel info-card"><span class="section-kicker">Важно</span><p>Перед регистрацией включи отслеживание матчей в CSStats/CSRep. Профиль без свежих матчей получит меньшую уверенность рейтинга.</p></article>
+        </aside>
+      </section>
+    </main>
+    <footer class="footer"><span>CS2 MVOU Tournament</span><span>Рейтинг фиксируется после дедлайна</span></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="js/registration.js?v=20261007a"></script>
+</body>
+</html>

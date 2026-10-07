@@ -1,0 +1,32 @@
+name: Collect player stats
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17,47 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: player-stats
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    if: ${{ secrets.STATS_COLLECTOR_TOKEN != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_URL: https://iiijyotbqwkxvalrdlxc.supabase.co
+      SUPABASE_PUBLISHABLE_KEY: sb_publishable_3rkI2Xm9uWqFDdPTjkArEA_tfFIhwMb
+      STATS_COLLECTOR_TOKEN: ${{ secrets.STATS_COLLECTOR_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run collect-stats

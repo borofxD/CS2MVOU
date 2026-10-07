@@ -4,6 +4,11 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "check": "node --check js/data.js && node --check js/render.js && node --check js/supabase.js && node --check js/public.js && node --check js/admin.js && node --check js/veto-rules.js && node --check js/veto-api.js && node --check js/veto-admin.js && node --check js/veto.js"
+    "check": "node --check js/data.js && node --check js/render.js && node --check js/supabase.js && node --check js/public.js && node --check js/admin.js && node --check js/registration-api.js && node --check js/registration.js && node --check js/players.js && node --check js/registrations-admin.js && node --check js/veto-rules.js && node --check js/veto-api.js && node --check js/veto-admin.js && node --check js/veto.js && node --check scripts/collect-player-stats.mjs",
+    "collect-stats": "node scripts/collect-player-stats.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "playwright": "^1.55.1"
   }
 }
