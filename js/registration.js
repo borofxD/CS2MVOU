@@ -12,9 +12,22 @@ const progressBar = document.getElementById("formProgressBar");
 const progressLabel = document.getElementById("formProgressLabel");
 const preview = document.getElementById("profilePreview");
 const steamProfileHint = document.getElementById("steamProfileHint");
+const successPanel = document.getElementById("registrationSuccess");
+const successTitle = document.getElementById("registrationSuccessTitle");
+const successMessage = document.getElementById("registrationSuccessMessage");
+const successStatus = document.getElementById("registrationSuccessStatus");
+const successSteam = document.getElementById("registrationSuccessSteam");
+const editRegistrationButton = document.getElementById("editRegistration");
 let settings;
 let countdownTimer;
 let resolvedProfile = { input: "", steamId: "" };
+let currentRegistration;
+
+const statusLabels = {
+  pending: "На проверке",
+  approved: "Подтверждена",
+  rejected: "Нужно исправить"
+};
 
 function showToast(text, type = "info") {
   toast.textContent = text;
@@ -71,6 +84,7 @@ function updateCountdown() {
   const open = settings.enabled && remaining > 0 && (!settings.opens_at || Date.now() >= new Date(settings.opens_at).getTime());
   form.toggleAttribute("inert", !open);
   submitButton.disabled = !open;
+  editRegistrationButton.disabled = !open;
   stateBadge.textContent = open ? "Регистрация открыта" : "Регистрация закрыта";
   stateBadge.dataset.state = open ? "open" : "closed";
   if (remaining <= 0) {
@@ -98,6 +112,40 @@ function fillForm(data) {
   updateProgress();
 }
 
+function resetVisibleForm() {
+  form.reset();
+  resolvedProfile = { input: "", steamId: "" };
+  form.elements.steam_profile.setCustomValidity("");
+  form.elements.faceit_elo.setCustomValidity("");
+  steamProfileHint.textContent = "Можно вставить SteamID64 или ссылку вида steamcommunity.com/id/твой_ник.";
+  submitButton.textContent = "Отправить заявку";
+  message.textContent = "";
+  updatePreview();
+  updateFaceitEloVisibility();
+  updateProgress();
+}
+
+function showConfirmation(data, created = false) {
+  currentRegistration = data;
+  resetVisibleForm();
+  form.hidden = true;
+  successPanel.hidden = false;
+  successTitle.textContent = created ? "Заявка отправлена" : "Заявка уже создана";
+  successMessage.textContent = created
+    ? "Данные приняты и синхронизированы. Статистика появится после ближайшего обновления."
+    : "Твои данные сохранены. При необходимости заявку можно открыть и изменить.";
+  successStatus.textContent = statusLabels[data?.status] || data?.status || "На проверке";
+  successSteam.textContent = data?.steam_id || "—";
+}
+
+function openEditMode() {
+  if (!currentRegistration) return;
+  successPanel.hidden = true;
+  form.hidden = false;
+  fillForm(currentRegistration);
+  form.elements.cs_nick.focus();
+}
+
 form.addEventListener("input", (event) => {
   if (event.target === form.elements.steam_profile) {
     resolvedProfile = { input: "", steamId: "" };
@@ -116,6 +164,7 @@ form.elements.steam_profile.addEventListener("blur", async () => {
     steamProfileHint.textContent = error.message;
   }
 });
+editRegistrationButton.addEventListener("click", openEditMode);
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -144,8 +193,8 @@ form.addEventListener("submit", async (event) => {
       primary_role: form.elements.primary_role.value,
       secondary_role: form.elements.secondary_role.value || null
     });
-    submitButton.textContent = "Сохранить изменения";
-    message.textContent = "Заявка сохранена. Статистика появится после ближайшего обновления.";
+    const saved = await loadOwnRegistration();
+    showConfirmation(saved || { ...result, steam_id: steamId, status: "pending" }, result.created);
     showToast(result.created ? "Заявка принята" : "Изменения сохранены");
   } catch (error) {
     if (!resolvedProfile.steamId) {
@@ -164,7 +213,8 @@ try {
   deadline.textContent = new Intl.DateTimeFormat("ru-RU", { dateStyle: "long", timeStyle: "short" }).format(new Date(settings.closes_at));
   updateCountdown();
   countdownTimer = window.setInterval(updateCountdown, 30000);
-  fillForm(await loadOwnRegistration());
+  const ownRegistration = await loadOwnRegistration();
+  if (ownRegistration) showConfirmation(ownRegistration);
 } catch (error) {
   stateBadge.textContent = "Нет подключения";
   message.textContent = error.message;

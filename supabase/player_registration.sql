@@ -199,7 +199,13 @@ begin
   if char_length(trim(p_payload->>'cs_nick')) not between 1 and 40 then raise exception 'Проверь ник в CS2'; end if;
   if char_length(trim(p_payload->>'teams_nick')) not between 1 and 80 then raise exception 'Проверь ник в Teams'; end if;
   if coalesce(p_payload->>'country_code', '') !~ '^[A-Z]{2,8}$' then raise exception 'Выбери страну'; end if;
-  if v_faceit_level = 10 and v_faceit_elo is null then raise exception 'Для FACEIT 10 укажи точное ELO'; end if;
+  if v_faceit_level is not null and v_faceit_level not between 1 and 10 then raise exception 'FACEIT level должен быть от 1 до 10'; end if;
+  if v_faceit_elo is not null and v_faceit_elo not between 100 and 5000 then raise exception 'Проверь FACEIT ELO'; end if;
+  if v_faceit_level = 10 and (v_faceit_elo is null or v_faceit_elo < 2000) then raise exception 'Для FACEIT 10 укажи точное ELO от 2000'; end if;
+  if v_premier is not null and v_premier not between 0 and 50000 then raise exception 'Premier Rating должен быть от 0 до 50000'; end if;
+  if nullif(trim(p_payload->>'faceit_url'), '') is not null and trim(p_payload->>'faceit_url') !~ '^https://(www\.)?faceit\.com/' then raise exception 'Проверь ссылку на FACEIT'; end if;
+  if coalesce(nullif(p_payload->>'primary_role', ''), 'flex') not in ('flex','igl','awp','entry','support','lurker') then raise exception 'Выбери основную роль'; end if;
+  if nullif(p_payload->>'secondary_role', '') is not null and p_payload->>'secondary_role' not in ('igl','awp','entry','support','lurker') then raise exception 'Выбери дополнительную роль'; end if;
 
   if p_registration_id is not null then
     select * into v_existing from public.player_registrations where id = p_registration_id for update;
@@ -217,6 +223,7 @@ begin
       csrep_url = 'https://csrep.gg/player/' || v_steam_id,
       primary_role = coalesce(nullif(p_payload->>'primary_role', ''), 'flex'),
       secondary_role = nullif(p_payload->>'secondary_role', ''),
+      status = 'pending',
       scrape_status = 'queued',
       scrape_error = null
     where id = p_registration_id

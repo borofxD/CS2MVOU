@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css?v=20261007a">
+  <link rel="stylesheet" href="assets/styles.css?v=20261007c">
 </head>
 <body data-page="registration">
   <div class="site-shell">
@@ -37,7 +37,23 @@
       </section>
 
       <section class="registration-grid">
-        <form class="panel registration-form" id="registrationForm" novalidate>
+        <div class="registration-main">
+          <section class="panel registration-success" id="registrationSuccess" hidden aria-live="polite">
+            <div class="registration-success-mark" aria-hidden="true">✓</div>
+            <span class="section-kicker">Заявка сохранена</span>
+            <h2 id="registrationSuccessTitle">Ты зарегистрирован</h2>
+            <p id="registrationSuccessMessage">Данные приняты. Теперь можно закрыть страницу.</p>
+            <div class="registration-success-meta">
+              <div><span>Статус</span><strong id="registrationSuccessStatus">На проверке</strong></div>
+              <div><span>SteamID64</span><strong id="registrationSuccessSteam">—</strong></div>
+            </div>
+            <div class="form-actions">
+              <button class="button button-ghost" id="editRegistration" type="button">Редактировать заявку</button>
+              <a class="button button-primary" href="players.html">Посмотреть участников</a>
+            </div>
+          </section>
+
+          <form class="panel registration-form" id="registrationForm" novalidate>
           <div class="form-progress" aria-label="Прогресс заполнения"><span id="formProgressBar"></span></div>
           <div class="panel-heading"><div><span class="section-kicker">Профиль участника</span><h2>Данные игрока</h2></div><span class="panel-note" id="formProgressLabel">0 / 6</span></div>
 
@@ -77,7 +93,8 @@
 
           <label class="consent-row"><input type="checkbox" name="consent" required><span>Разрешаю использовать публичную игровую статистику для расчёта рейтинга и формирования команд.</span></label>
           <div class="form-actions"><button class="button button-primary button-large" type="submit" id="registrationSubmit">Отправить заявку</button><span class="form-message" id="registrationMessage" role="status"></span></div>
-        </form>
+          </form>
+        </div>
 
         <aside class="registration-aside">
           <article class="panel info-card"><span class="section-kicker">Что произойдёт дальше</span><ol class="process-list"><li><b>01</b><span><strong>Сбор данных</strong><small>CSStats и CSRep обновятся автоматически.</small></span></li><li><b>02</b><span><strong>MV Rating</strong><small>Уровень и форма объединятся в оценку 0–100.</small></span></li><li><b>03</b><span><strong>Баланс команд</strong><small>Алгоритм распределит силу и роли.</small></span></li></ol></article>
@@ -88,6 +105,6 @@
     <footer class="footer"><span>CS2 MVOU Tournament</span><span>Рейтинг фиксируется после дедлайна</span></footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="js/registration.js?v=20261007b"></script>
+  <script type="module" src="js/registration.js?v=20261007c"></script>
 </body>
 </html>

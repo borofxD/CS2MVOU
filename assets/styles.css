@@ -61,6 +61,7 @@
 .stage-badge[data-state="closed"] { color: #ff9b8e; border-color: rgba(255, 91, 70, .35); }
 
 .registration-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 1rem; align-items: start; }
+.registration-main { min-width: 0; }
 .registration-form { position: relative; overflow: hidden; }
 .form-progress { position: absolute; inset: 0 0 auto; height: 3px; background: rgba(255,255,255,.05); }
 .form-progress span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--accent), #5bdcff); transition: width .25s ease; }
@@ -102,6 +103,16 @@
 .form-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 .button-large { min-height: 50px; padding-inline: 1.4rem; }
 .form-message { color: var(--muted); }
+.registration-success { min-height: 420px; display: grid; align-content: center; justify-items: start; gap: 1rem; background: radial-gradient(circle at 12% 14%, rgba(61,255,139,.13), transparent 32%), var(--panel); }
+.registration-success-mark { display: grid; place-items: center; width: 58px; height: 58px; border: 1px solid rgba(61,255,139,.34); border-radius: 50%; background: rgba(61,255,139,.1); color: var(--accent); font: 1.65rem "Russo One", sans-serif; }
+.registration-success h2 { margin: 0; font: clamp(1.7rem, 4vw, 2.6rem) "Russo One", sans-serif; }
+.registration-success > p { max-width: 62ch; margin: 0; color: var(--muted); line-height: 1.65; }
+.registration-success-meta { display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: .75rem; width: 100%; margin: .5rem 0; }
+.registration-success-meta div { padding: .9rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.02); }
+.registration-success-meta span,
+.registration-success-meta strong { display: block; }
+.registration-success-meta span { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; }
+.registration-success-meta strong { margin-top: .25rem; overflow-wrap: anywhere; }
 .registration-aside { display: grid; gap: 1rem; position: sticky; top: 1rem; }
 .info-card p { color: var(--muted); line-height: 1.65; }
 .process-list { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: 1rem; }
@@ -186,6 +197,7 @@
   .registration-aside { grid-template-columns: 1fr; }
   .form-section-title { display: grid; }
   .profile-preview { grid-template-columns: 1fr; }
+  .registration-success-meta { grid-template-columns: 1fr; }
   .players-summary { width: 100%; min-width: 0; }
   .players-filters { width: 100%; display: grid; grid-template-columns: 1fr; }
   .players-filters input { width: 100%; }
